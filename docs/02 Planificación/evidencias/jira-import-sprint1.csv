@@ -1,0 +1,13 @@
+key,issue type,summary,parent,story points,assignee,component,description,fixVersion
+ECO-1,Epic,EP-01 Identidad acceso y cumplimiento,, ,Eilene Carhuapoma,Backend,Modulo de autenticacion JWT roles y Ley 29733,v1.0.0-MVP
+ECO-2,Epic,EP-02 Gestion de flota,, ,Axel Estrada,Backend,RF-001 registro y estado de vehiculos,v1.0.0-MVP
+ECO-3,Epic,EP-03 Gestion de conductores y jornadas,, ,Axel Estrada,Backend,RF-008 Ley 30224,v1.0.0-MVP
+ECO-4,Epic,EP-04 Pedidos y preferencias de clientes,, ,Katheryn Huaman,Frontend,RF-002 RF-009,v1.0.0-MVP
+ECO-5,Epic,EP-05 Optimizacion y re-optimizacion de rutas,, ,Jorge Cruz,Optimizer,RF-003 RF-007,v1.0.0-MVP
+ECO-6,Epic,EP-06 Visualizacion geoespacial,, ,Katheryn Huaman,Frontend,RF-004,v1.0.0-MVP
+ECO-7,Epic,EP-07 Sostenibilidad dashboard y reportes,, ,Katheryn Huaman,Frontend,RF-005 RF-006 RF-010,v1.0.0-MVP
+ECO-10,Task,ENB-003 Esquema PostgreSQL + PostGIS,,8,Brayan Leon,DB,Migraciones Alembic 3FN + GIST,v1.0.0-MVP
+ECO-11,Task,ENB-002 Pipeline CI/CD y Quality Gate,,5,Axel Estrada,DevOps,GitHub Actions tests CodeQL deploy Staging,v1.0.0-MVP
+ECO-12,Story,US-001 Autenticacion JWT,EP-01,5,Axel Estrada,Backend,Como operador quiero autenticarme con JWT,v1.0.0-MVP
+ECO-13,Story,US-004 Registrar vehiculo,EP-02,5,Katheryn Huaman,Frontend,Como operador quiero registrar un vehiculo con factor de CO2,v1.0.0-MVP
+ECO-14,Task,ENB-007 OpenAPI vivo,,3,Jorge Cruz,Backend,Swagger FastAPI en Staging,v1.0.0-MVP
