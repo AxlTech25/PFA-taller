@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 11/09/2026  
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -566,7 +566,7 @@ Entonces el sistema informa que no hay información y no genera archivo.
 **ID:** US-017  
 **Título:** Calcular árboles y proyectos locales de compensación  
 **Épica Relacionada:** EP-07 Sostenibilidad, dashboard y reportes  
-**SP:** 5 · **MoSCoW:** Could · **Sprint objetivo:** 7  
+**SP:** 5 · **MoSCoW:** Could · **Sprint objetivo:** 6  
 **RF/RNF:** RF-010, RN-018  
 
 **Redacción:**  
@@ -743,7 +743,7 @@ Entonces la secuencia tabular carga primero y el mapa queda opcional.
 
 ## 8. Backlog priorizado y estimación
 
-Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota y pedidos). Estimación Fibonacci. Total **156 SP**. Velocidad objetivo: **22 SP / sprint** × 7 sprints ≈ 154 SP (holgura de 2 SP).
+Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota y pedidos). Estimación Fibonacci. Total **156 SP**. Velocidad objetivo: **26 SP / sprint** × 6 sprints = **156 SP**.
 
 | Orden | ID | Título | Tipo | Épica | SP | Sprint | Componente Jira |
 |---|---|---|---|---|---|---|---|
@@ -772,7 +772,7 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 23 | US-011 | Re-optimización dinámica | US | EP-05 | 8 | 6 | Optimizer |
 | 24 | US-016 | Reporte PDF | US | EP-07 | 5 | 6 | API |
 | 25 | US-018 | Confirmar entrega | US | EP-07 | 3 | 6 | Frontend / API |
-| 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 7 | API / Frontend |
+| 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 6 | API / Frontend |
 | | | **Total** | | | **156** | | |
 
 US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable.
@@ -781,6 +781,7 @@ US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas �
 
 ## 9. Sprint 1 — planificación de referencia
 
+**Fechas:** 02/09/2026 – 15/09/2026 (2 semanas).
 **Duración:** 2 semanas (estándar de la consigna).  
 **Capacidad académica:** 86 h/semana × 2 = **172 h**. Con 6–8 h/SP ≈ **21–28 SP**. Se comprometen **26 SP**.
 
@@ -807,6 +808,9 @@ Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_0
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Transformación inicial RF/RNF → 7 épicas, 18 US, 8 enablers, DoD global y backlog de 156 SP. |
 
+| 1.0.0 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre, en vez de 7 sprints/14 semanas. US-017 reasignada de Sprint 7 a Sprint 6. |
 ---
 
 [← Volver al README Principal](../../README.md)
+
+
