@@ -7,12 +7,12 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 11/09/2026  
-**Versión:** 1.0.0  
+**Versión:** 1.0.2  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
 **Tipo:** Company-managed Scrum  
-**Release oficial:** `v1.0.0-MVP`
+**Release oficial:** `v1.0.2-MVP`
 
 ---
 
@@ -36,7 +36,7 @@ Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclus
 | Estimación | Story Points (secuencia 1, 2, 3, 5, 8, 13) |
 | Sprint duration | 2 semanas |
 | Working days | Lun–Sáb (carga académica) |
-| Release | `v1.0.0-MVP` (fecha objetivo 14/12/2026, hito 4 del Acta) |
+| Release | `v1.0.2-MVP` (fecha objetivo 27/11/2026, hito 4 del Acta) |
 | Idioma de issues | Español peruano |
 | Componentes | Backend, Frontend, Optimizer, DB, DevOps |
 
@@ -69,36 +69,37 @@ Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformand
 
 Épicas alineadas a 7 sprints de 2 semanas (14 semanas) y a las 4 iteraciones del Acta.
 
-| Épica | S1 | S2 | S3 | S4 | S5 | S6 | S7 |
-|---|---|---|---|---|---|---|---|
-| EP-01 Identidad y cumplimiento | ■ | ■ | | | | | |
-| EP-02 Gestión de flota | ■ | ■ | | | | | |
-| EP-03 Conductores y jornadas | | ■ | ■ | | | | |
-| EP-04 Pedidos y clientes | | ■ | ■ | | ■ | | |
-| EP-05 Optimización de rutas | | | ■ | ■ | | ■ | |
-| EP-06 Visualización geoespacial | | | | ■ | ■ | | |
-| EP-07 Sostenibilidad y reportes | | | | | ■ | ■ | ■ |
-| Enablers de plataforma | ■ | ■ | ■ | | ■ | | ■ UAT |
+| Épica | S1 | S2 | S3 | S4 | S5 | S6 |
+|---|---|---|---|---|---|---|
+| EP-01 Identidad y cumplimiento | ■ | ■ | | | | |
+| EP-02 Gestión de flota | ■ | ■ | | | | |
+| EP-03 Conductores y jornadas | | ■ | ■ | | | |
+| EP-04 Pedidos y clientes | | ■ | ■ | | ■ | |
+| EP-05 Optimización de rutas | | | ■ | ■ | | ■ |
+| EP-06 Visualización geoespacial | | | | ■ | ■ | |
+| EP-07 Sostenibilidad y reportes | | | | | ■ | ■ |
+| Enablers de plataforma | ■ | ■ | ■ | | ■ | ■ UAT |
 
 ```mermaid
 gantt
     title Roadmap EcoLogística Lima — v1.0.0-MVP
     dateFormat YYYY-MM-DD
     axisFormat %d/%m
-    section Iteración 1
-    EP-01 Identidad          :epic1, 2026-09-14, 28d
-    EP-02 Flota              :epic2, 2026-09-14, 28d
-    ENB Plataforma / CI / BD :plat, 2026-09-14, 14d
-    section Iteración 2
-    EP-03 Conductores        :epic3, 2026-09-28, 28d
-    EP-04 Pedidos            :epic4, 2026-09-28, 28d
-    section Iteración 3
-    EP-05 Optimización       :epic5, 2026-10-12, 28d
-    EP-06 Mapa               :epic6, 2026-10-26, 28d
-    EP-07 Dashboard          :epic7, 2026-11-09, 28d
-    section Iteración 4
-    Re-opt + PDF + UAT       :cierre, 2026-11-23, 28d
-    Release v1.0.0-MVP       :milestone, 2026-12-14, 1d
+    section Sprints 1–2
+    EP-01 Identidad          :epic1, 2026-09-02, 28d
+    EP-02 Flota              :epic2, 2026-09-02, 28d
+    ENB Plataforma / CI / BD :plat, 2026-09-02, 14d
+    section Sprints 2–3
+    EP-03 Conductores        :epic3, 2026-09-16, 28d
+    EP-04 Pedidos            :epic4, 2026-09-16, 28d
+    section Sprints 3–4
+    EP-05 Optimización       :epic5, 2026-09-30, 28d
+    section Sprints 4–5
+    EP-06 Mapa               :epic6, 2026-10-14, 28d
+    section Sprints 5–6
+    EP-07 Dashboard          :epic7, 2026-10-28, 28d
+    Re-opt + PDF + UAT       :cierre, 2026-11-11, 17d
+    Release v1.0.0-MVP       :milestone, 2026-11-27, 1d
 ```
 
 **Captura requerida:** Timeline / Roadmap de Jira Cloud con las 7 épicas en el eje de tiempo, recorte al panel Timeline (sin chrome del SO). Archivo destino: `evidencias/evidencia-01-roadmap.png`.
@@ -154,7 +155,7 @@ Vista general con Story Points, épica, componente y responsable. El orden es el
 ## 5. Evidencia 3 — Sprint Planning y Sprint Goal
 
 **Sprint:** `ECO Sprint 1`  
-**Fechas:** 14/09/2026 – 27/09/2026 (2 semanas)  
+**Fechas:** 02/09/2026 – 15/09/2026 (2 semanas)  
 **Capacidad:** 172 h académicas · compromiso **26 SP**
 
 ### Sprint Goal (texto a pegar en la cabecera de Jira)
@@ -217,15 +218,15 @@ WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 
 | Campo | Valor |
 |---|---|
-| Nombre | `v1.0.0-MVP` |
-| Fecha de lanzamiento | 14/12/2026 |
+| Nombre | `v1.0.2-MVP` |
+| Fecha de lanzamiento | 27/11/2026 |
 | Descripción | MVP EcoLogística Lima: flota, pedidos, ruteo VRPTW/Green VRP, mapa, dashboard y re-optimización. Umbral de aceptación: ≥ 70 % de RF de prioridad Alta. |
 | Issues asociados | ECO-1 a ECO-7 (épicas) y todas las Stories/Tasks Must + Should del backlog |
 | Estado | Unreleased hasta el Hito 4 |
 
 Historias **Must** de la release: US-001 a US-008, US-010, US-012 y ENB-001 a ENB-007. Las Could (US-009, US-016, US-017) permanecen en la misma versión pero son las primeras en recortarse si se materializa RSK-05.
 
-**Captura requerida:** módulo Releases de Jira mostrando `v1.0.0-MVP` y la asociación de issues/épicas; recorte al panel de la versión. Archivo destino: `evidencias/evidencia-05-release.png`.
+**Captura requerida:** módulo Releases de Jira mostrando `v1.0.2-MVP` y la asociación de issues/épicas; recorte al panel de la versión. Archivo destino: `evidencias/evidencia-05-release.png`.
 
 ---
 
@@ -237,7 +238,7 @@ Incumplir este protocolo resta el 50 % del puntaje de la sección, según la con
 2. Recortar **solo** el widget: Timeline, listado de backlog, cabecera+lista del Sprint, tablero de columnas o ficha de Release.
 3. Prohibido: barra de tareas, reloj, fondos de escritorio, pestaña del navegador, bookmarks, URL completa, espacio blanco masivo.
 4. Exportar PNG (no JPEG) a `docs/02 Planificación/evidencias/` con los nombres de las secciones 3 a 7.
-5. Verificar que se lea: nombre de épicas/issues, SP, columnas y `v1.0.0-MVP`.
+5. Verificar que se lea: nombre de épicas/issues, SP, columnas y `v1.0.2-MVP`.
 
 Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md).
 
@@ -259,8 +260,9 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
-| 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.0-MVP y protocolo de evidencias. |
+| 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.2-MVP y protocolo de evidencias. |
 
 ---
+| 1.0.2 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 
 [← Volver al README Principal](../../README.md)
