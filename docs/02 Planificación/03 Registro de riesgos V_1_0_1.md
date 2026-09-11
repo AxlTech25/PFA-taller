@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 11/09/2026  
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Estándar:** PMBOK 8ª Edición / CMMI-DEV (Gestión de Riesgos)
 
@@ -63,7 +63,7 @@ El análisis parte de los riesgos macro del [Acta de Constitución](../../01%20I
 | RSK-02 | Curva de aprendizaje elevada en el framework del frontend (React + TypeScript + Vite) y en la integración con Leaflet, que retrasa las historias de mapa y modo conductor. | Recursos Humanos / Capacidades | 3 | 3 | **9 (Medium)** | Realizar 2 jornadas de *Pair Programming* y pases de conocimiento al inicio del Sprint 1. Acotar el alcance de UI a componentes reutilizables. | Reasignar las tareas de mayor complejidad a Axel (Full-Stack) y dejar a Katheryn las vistas de menor acoplamiento (formularios CRUD). |
 | RSK-03 | El motor VRPTW + Green VRP no alcanza el SLA de ≤ 45 s para 150 pedidos y 15 vehículos (RNF-001 / RN-014), bloqueando la aceptación de RF-003. | Técnica / Algoritmos | 3 | 5 | **15 (High)** | Diseño incremental: heurística constructiva (Sweep/NN) en Sprint 3, metaheurística (GA/Tabú) en Sprints 4–5, profiling con datasets de 50/100/150 pedidos. | Entregar una solución factible subóptima (desviación ≤ 15% según RNF-008) y documentar el *trade-off*; relajar el tamaño del escenario de demo a 80 pedidos si el docente lo autoriza. |
 | RSK-04 | APIs de tráfico (Waze CCP / Google Maps) inestables o sin cobertura suficiente en vías periféricas de San Juan de Lurigancho (supuesto S-01). | Técnica / Integración externa | 4 | 3 | **12 (Medium)** | Implementar desde Sprint 3 un conector con *fallback* a carga manual de congestión y a tiles OSM. No acoplar el algoritmo a un único proveedor. | Operar con matriz de tiempos estática + overlay manual de incidentes; registrar el degradado en el dashboard para no ocultar la pérdida de precisión. |
-| RSK-05 | Incumplimiento del cronograma de 14 semanas por carga académica simultánea del equipo (restricción C-02 / RES-T4). | Cronograma / Organizacional | 4 | 4 | **16 (High)** | Rituales Scrum de 2 semanas, WIP limitado a 3 ítems *In Progress*, buffer de 1 sprint (Sprint 7) para endurecimiento y UAT. Dedicaciones semanales declaradas en Jira. | Recortar el alcance del MVP al 70% de RF de prioridad Alta (objetivo SMART del Acta): diferir RF-006, RF-009 y RF-010 al *Won't have* del MoSCoW. |
+| RSK-05 | Incumplimiento del cronograma de 12.4 semanas (6 sprints + cierre) por carga académica simultánea del equipo (restricción C-02 / RES-T4). | Cronograma / Organizacional | 4 | 4 | **16 (High)** | Rituales Scrum de 2 semanas, WIP limitado a 3 ítems *In Progress*, sin holgura de un sprint completo (velocidad exacta 26 SP/sprint): cualquier desviación activa recorte MoSCoW desde el Sprint 4. Dedicaciones semanales declaradas en Jira. | Recortar el alcance del MVP al 70% de RF de prioridad Alta (objetivo SMART del Acta): diferir RF-006, RF-009 y RF-010 al *Won't have* del MoSCoW antes de entrar al Sprint 6. |
 | RSK-06 | Fallas de integración entre flota, pedidos, ruteo y mapa (contratos API inconsistentes, estados de pedido desalineados). | Técnica / Integración | 3 | 3 | **9 (Medium)** | Contrato OpenAPI desde Sprint 1; integración continua (GitHub Actions) y pruebas de contrato en cada PR. | Congelar el contrato de la API, abrir un *spike* de 8 h y rehacer el *adapter* del mapa sobre la vista tabular de respaldo (RF-004 ruta infeliz). |
 | RSK-07 | Direcciones no estandarizadas y geocodificación débil en SJL, El Agustino, Santa Anita y Ate (supuesto S-03 / RES-CS2). | Datos / Operativa | 4 | 3 | **12 (Medium)** | Campo obligatorio de punto de referencia + coordenadas; bandera de “georreferencia aproximada”; dataset sintético validado por el analista de datos. | Permitir pin manual en el mapa y excluir del cálculo los pedidos sin coordenada válida, notificándolos al Operador. |
 | RSK-08 | Incumplimiento de la Ley N.º 29733 (datos personales de conductores y clientes) o aparición de vulnerabilidades OWASP Top 10. | Normativa / Seguridad | 2 | 5 | **10 (Medium)** | Consentimiento explícito (RN-020), JWT + bloqueo de 3 intentos (RN-019), TLS 1.3, checklist OWASP en el DoD, CodeQL/SonarQube en CI. | Aislar el ambiente, rotar secretos, desactivar el módulo afectado y notificar al docente/auditor. No promover a Staging hasta cerrar el hallazgo crítico. |
@@ -88,7 +88,7 @@ El análisis parte de los riesgos macro del [Acta de Constitución](../../01%20I
 **Exposición agregada (suma de P×I):** 2×4 + 3×3 + 3×5 + 4×3 + 4×4 + 3×3 + 4×3 + 2×5 + 3×4 + 3×3 + 2×2 + 3×4 + 3×3 + 3×4 = **149**  
 **Exposición media por riesgo:** 149 / 14 ≈ **10.6 (Medium)**
 
-Los dos riesgos High (algoritmo y cronograma académico) condicionan la estrategia híbrida ya elegida en el documento 01: *spike* temprano del motor y sprints cortos con recorte MoSCoW predefinido.
+Los dos riesgos High (algoritmo y cronograma académico) condicionan la estrategia híbrida ya elegida en el documento 01: *spike* temprano del motor y sprints cortos con recorte MoSCoW predefinido y **sin sprint de colchón**, por lo que la vigilancia semanal de RSK-05 es crítica desde el Sprint 3.
 
 ---
 
@@ -155,6 +155,8 @@ Detalle monetario: [04 Presupuesto del proyecto V_1_0_0.md](./04%20Presupuesto%2
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Creación del registro cuantitativo de 14 riesgos, matriz P×I y planes de mitigación/contingencia. |
+
+| 1.0.1 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 
 ---
 
