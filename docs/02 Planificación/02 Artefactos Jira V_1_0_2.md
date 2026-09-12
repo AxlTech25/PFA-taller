@@ -7,12 +7,12 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 11/09/2026  
-**Versión:** 1.0.2  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
 **Tipo:** Company-managed Scrum  
-**Release oficial:** `v1.0.2-MVP`
+**Release oficial:** `v1.0.3-MVP`
 
 ---
 
@@ -36,7 +36,7 @@ Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclus
 | Estimación | Story Points (secuencia 1, 2, 3, 5, 8, 13) |
 | Sprint duration | 2 semanas |
 | Working days | Lun–Sáb (carga académica) |
-| Release | `v1.0.2-MVP` (fecha objetivo 27/11/2026, hito 4 del Acta) |
+| Release | `v1.0.3-MVP` (fecha objetivo 27/11/2026, hito 4 del Acta) |
 | Idioma de issues | Español peruano |
 | Componentes | Backend, Frontend, Optimizer, DB, DevOps |
 
@@ -67,7 +67,7 @@ Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformand
 
 ## 3. Evidencia 1 — Roadmap del proyecto
 
-Épicas alineadas a 7 sprints de 2 semanas (14 semanas) y a las 4 iteraciones del Acta.
+Épicas alineadas a 6 sprints de 2 semanas (02/09/2026 – 24/11/2026) más 3 días de cierre y presentación (25/11 – 27/11/2026), según el cronograma corregido del Acta.
 
 | Épica | S1 | S2 | S3 | S4 | S5 | S6 |
 |---|---|---|---|---|---|---|
@@ -78,11 +78,11 @@ Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformand
 | EP-05 Optimización de rutas | | | ■ | ■ | | ■ |
 | EP-06 Visualización geoespacial | | | | ■ | ■ | |
 | EP-07 Sostenibilidad y reportes | | | | | ■ | ■ |
-| Enablers de plataforma | ■ | ■ | ■ | | ■ | ■ UAT |
+| Enablers de plataforma | ■ | ■ | ■ | ■ | ■ | ■ UAT |
 
 ```mermaid
 gantt
-    title Roadmap EcoLogística Lima — v1.0.0-MVP
+    title Roadmap EcoLogística Lima — v1.0.3-MVP
     dateFormat YYYY-MM-DD
     axisFormat %d/%m
     section Sprints 1–2
@@ -91,7 +91,7 @@ gantt
     ENB Plataforma / CI / BD :plat, 2026-09-02, 14d
     section Sprints 2–3
     EP-03 Conductores        :epic3, 2026-09-16, 28d
-    EP-04 Pedidos            :epic4, 2026-09-16, 28d
+    EP-04 Pedidos            :epic4, 2026-09-16, 42d
     section Sprints 3–4
     EP-05 Optimización       :epic5, 2026-09-30, 28d
     section Sprints 4–5
@@ -218,7 +218,7 @@ WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 
 | Campo | Valor |
 |---|---|
-| Nombre | `v1.0.2-MVP` |
+| Nombre | `v1.0.3-MVP` |
 | Fecha de lanzamiento | 27/11/2026 |
 | Descripción | MVP EcoLogística Lima: flota, pedidos, ruteo VRPTW/Green VRP, mapa, dashboard y re-optimización. Umbral de aceptación: ≥ 70 % de RF de prioridad Alta. |
 | Issues asociados | ECO-1 a ECO-7 (épicas) y todas las Stories/Tasks Must + Should del backlog |
@@ -226,7 +226,7 @@ WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 
 Historias **Must** de la release: US-001 a US-008, US-010, US-012 y ENB-001 a ENB-007. Las Could (US-009, US-016, US-017) permanecen en la misma versión pero son las primeras en recortarse si se materializa RSK-05.
 
-**Captura requerida:** módulo Releases de Jira mostrando `v1.0.2-MVP` y la asociación de issues/épicas; recorte al panel de la versión. Archivo destino: `evidencias/evidencia-05-release.png`.
+**Captura requerida:** módulo Releases de Jira mostrando `v1.0.3-MVP` y la asociación de issues/épicas; recorte al panel de la versión. Archivo destino: `evidencias/evidencia-05-release.png`.
 
 ---
 
@@ -260,7 +260,7 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
-| 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.2-MVP y protocolo de evidencias. |
+| 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.3-MVP y protocolo de evidencias. |
 
 ---
 | 1.0.2 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
