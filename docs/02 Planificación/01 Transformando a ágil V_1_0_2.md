@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 11/09/2026  
-**Versión:** 1.0.1  
+**Versión:** 1.0.2  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -55,10 +55,10 @@ flowchart LR
 | RNF-001, RNF-008 | ENB-001 Motor y factibilidad | ENB-001 | Must | Sprint 3–6 |
 | RNF-007, CI | ENB-002 Pipeline CI/CD y análisis estático | ENB-002 | Must | Sprint 1 |
 | Documento 11 | ENB-003 Esquema PostgreSQL + PostGIS | ENB-003 | Must | Sprint 1 |
-| RNF-002, RNF-010 | ENB-004 Hardening OWASP y auditoría | ENB-004 | Must | Sprint 1–7 (transversal) |
+| RNF-002, RNF-010 | ENB-004 Hardening OWASP y auditoría | ENB-004 | Must | Sprint 1–6 (transversal) |
 | RNF-003 | ENB-005 Accesibilidad WCAG 2.1 AA | ENB-005 | Must | Sprint 5 |
 | Arquitectura C4 | ENB-006 Worker y cola de optimización | ENB-006 | Must | Sprint 3 |
-| RNF-007 | ENB-007 OpenAPI / Swagger vivo | ENB-007 | Must | Sprint 1–7 (DoD) |
+| RNF-007 | ENB-007 OpenAPI / Swagger vivo | ENB-007 | Must | Sprint 1–6 (DoD) |
 | RNF-005, RNF-009 | ENB-008 Payload liviano 2G/3G | ENB-008 | Should | Sprint 5 |
 
 El Acta de Constitución citaba RF-01 a RF-07 como núcleo del 70 % de aceptación. Este backlog incorpora además RF-008, RF-009 y RF-010 elicitados en el documento 06; no se altera el Acta (el umbral del 70 % sigue siendo alcanzable con Must).
@@ -808,7 +808,7 @@ Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_0
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Transformación inicial RF/RNF → 7 épicas, 18 US, 8 enablers, DoD global y backlog de 156 SP. |
 
-| 1.0.0 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre, en vez de 7 sprints/14 semanas. US-017 reasignada de Sprint 7 a Sprint 6. |
+| 1.0.2 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre, en vez de 7 sprints/14 semanas. US-017 reasignada de Sprint 7 a Sprint 6. |
 ---
 
 [← Volver al README Principal](../../README.md)
