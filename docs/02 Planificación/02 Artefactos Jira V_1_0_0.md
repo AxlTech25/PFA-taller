@@ -239,7 +239,7 @@ Incumplir este protocolo resta el 50 % del puntaje de la sección, según la con
 4. Exportar PNG (no JPEG) a `docs/02 Planificación/evidencias/` con los nombres de las secciones 3 a 7.
 5. Verificar que se lea: nombre de épicas/issues, SP, columnas y `v1.0.0-MVP`.
 
-Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md).
+Instructivo clic a clic (crear proyecto, columnas, Sprint Goal y las 5 fotos): [`evidencias/Guia paso a paso Jira.md`](./evidencias/Guia%20paso%20a%20paso%20Jira.md).
 
 ---
 
