@@ -51,6 +51,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 |---|---|---|---|
 | 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_0.md) | 5.0 |
 | 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_0.md) | 5.0 |
+| — | Guía clic a clic para Jira (5 evidencias) | [Guia paso a paso Jira.md](./docs/02%20Planificaci%C3%B3n/evidencias/Guia%20paso%20a%20paso%20Jira.md) | instructivo |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_0.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_0.md) | 3.0 |
 
