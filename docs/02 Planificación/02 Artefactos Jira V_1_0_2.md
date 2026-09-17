@@ -102,7 +102,7 @@ gantt
     Release v1.0.0-MVP       :milestone, 2026-11-27, 1d
 ```
 
-**Captura requerida:** Timeline / Roadmap de Jira Cloud con las 7 épicas en el eje de tiempo, recorte al panel Timeline (sin chrome del SO). Archivo destino: `evidencias/evidencia-01-roadmap.png`.
+**Captura requerida:** Timeline / Roadmap de Jira Cloud con las 7 épicas en el eje de tiempo, recorte al panel Timeline (sin chrome del SO). ![Evidencia 1: Roadmap del proyecto](./evidencias/evidencia-01-roadmap.png)Archivo destino: `evidencias/evidencia-01-roadmap.png`.
 
 ---
 
@@ -148,7 +148,7 @@ Vista general con Story Points, épica, componente y responsable. El orden es el
 
 **Σ Story Points del backlog:** 156.
 
-**Captura requerida:** Backlog de Scrum con SP visibles y épicas/componentes a la izquierda; recorte al listado (sin navegador). Archivo destino: `evidencias/evidencia-02-backlog.png`.
+**Captura requerida:** Backlog de Scrum con SP visibles y épicas/componentes a la izquierda; recorte al listado (sin navegador). ![Evidencia 2: Backlog priorizado](./evidencias/evidencia-02-backlog.png) Archivo destino: `evidencias/evidencia-02-backlog.png`.
 
 ---
 
@@ -173,7 +173,7 @@ Vista general con Story Points, épica, componente y responsable. El orden es el
 
 Subtareas de ejemplo (≤ 8 h) para ECO-10: (1) extensión PostGIS, (2) tablas de seguridad, (3) tablas de flota, (4) seed de vehículos de demo.
 
-**Captura requerida:** vista Sprint 1 con el *Sprint Goal* en la cabecera y los 5 ítems comprometidos; recorte al contenedor del sprint. Archivo destino: `evidencias/evidencia-03-sprint-1.png`.
+**Captura requerida:** vista Sprint 1 con el *Sprint Goal* en la cabecera y los 5 ítems comprometidos; recorte al contenedor del sprint. ![Evidencia 3: Sprint Planning y Sprint Goal](./evidencias/evidencia-03-sprint-1.png) Archivo destino: `evidencias/evidencia-03-sprint-1.png`.
 
 ---
 
@@ -210,7 +210,7 @@ flowchart TB
 
 WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 
-**Captura requerida:** tablero con columnas `To Do`, `In Progress`, `In Review / QA`, `Done` y tarjetas en más de una columna; recorte al board. Archivo destino: `evidencias/evidencia-04-tablero.png`.
+**Captura requerida:** tablero con columnas `To Do`, `In Progress`, `In Review / QA`, `Done` y tarjetas en más de una columna; recorte al board. ![Evidencia 4: Tablero Scrum activo](./evidencias/evidencia-04-tablero.png) Archivo destino: `evidencias/evidencia-04-tablero.png`.
 
 ---
 
@@ -226,7 +226,7 @@ WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 
 Historias **Must** de la release: US-001 a US-008, US-010, US-012 y ENB-001 a ENB-007. Las Could (US-009, US-016, US-017) permanecen en la misma versión pero son las primeras en recortarse si se materializa RSK-05.
 
-**Captura requerida:** módulo Releases de Jira mostrando `v1.0.3-MVP` y la asociación de issues/épicas; recorte al panel de la versión. Archivo destino: `evidencias/evidencia-05-release.png`.
+**Captura requerida:** módulo Releases de Jira mostrando `v1.0.3-MVP` y la asociación de issues/épicas; recorte al panel de la versión. ![Evidencia 5: Release v1.0.0-MVP](./evidencias/evidencia-05-release.png) Archivo destino: `evidencias/evidencia-05-release.png`.
 
 ---
 
