@@ -21,4 +21,4 @@ Colocar aquí **cinco PNG recortados** al panel de Jira (sin escritorio ni pesta
 7. Asociar épicas Must/Should a `v1.0.0-MVP`.
 8. Capturar y recortar las cinco evidencias.
 
-Fuente de datos: [02 Artefactos Jira V_1_0_0.md](../02%20Artefactos%20Jira%20V_1_0_0.md).
+Fuente de datos: [02 Artefactos Jira V_1_0_0.md](../02%20Artefactos%20Jira%20V_1_0_4.md).
