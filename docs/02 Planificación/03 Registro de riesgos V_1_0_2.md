@@ -6,8 +6,8 @@
 # 03. Registro de Riesgos del Proyecto
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 11/09/2026  
-**Versión:** 1.0.1  
+**Fecha:** 18/09/2026  
+**Versión:** 1.0.2  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Estándar:** PMBOK 8ª Edición / CMMI-DEV (Gestión de Riesgos)
 
@@ -94,30 +94,42 @@ Los dos riesgos High (algoritmo y cronograma académico) condicionan la estrateg
 
 ## 5. Mapa de Calor de Riesgos
 
+Ubicación según **Severidad = Probabilidad × Impacto**. Verde = Low (1–6), amarillo = Medium (8–12), rojo = High (15–25).
+
+| P \ I | 1 Insignificante | 2 Menor | 3 Moderado | 4 Mayor | 5 Catastrófico |
+|---|---|---|---|---|---|
+| **5 Muy alta** | | | | | |
+| **4 Alta** | | | RSK-04, RSK-07 | **RSK-05** | |
+| **3 Media** | | | RSK-02, RSK-06, RSK-10, RSK-13 | RSK-09, RSK-12, RSK-14 | **RSK-03** |
+| **2 Baja** | | RSK-11 | | RSK-01 | RSK-08 |
+| **1 Muy baja** | | | | | |
+
 ```mermaid
 quadrantChart
-    title Mapa de calor — Probabilidad vs Impacto
+    title Mapa de calor Probabilidad vs Impacto
     x-axis Baja probabilidad --> Alta probabilidad
     y-axis Bajo impacto --> Alto impacto
     quadrant-1 Vigilar y planificar contingencia
-    quadrant-2 Actuar ahora (High)
-    quadrant-3 Aceptar / monitorear
+    quadrant-2 Actuar ahora High
+    quadrant-3 Aceptar y monitorear
     quadrant-4 Mitigar de forma continua
-    RSK-01: [0.25, 0.75]
-    RSK-02: [0.50, 0.50]
-    RSK-03: [0.50, 0.95]
-    RSK-04: [0.75, 0.50]
-    RSK-05: [0.75, 0.75]
-    RSK-06: [0.50, 0.50]
-    RSK-07: [0.75, 0.50]
-    RSK-08: [0.25, 0.95]
-    RSK-09: [0.50, 0.75]
-    RSK-10: [0.50, 0.50]
-    RSK-11: [0.25, 0.25]
-    RSK-12: [0.50, 0.75]
-    RSK-13: [0.50, 0.50]
-    RSK-14: [0.50, 0.75]
+    RSK01: [0.25, 0.75]
+    RSK02: [0.50, 0.50]
+    RSK03: [0.50, 0.95]
+    RSK04: [0.75, 0.50]
+    RSK05: [0.75, 0.75]
+    RSK06: [0.45, 0.48]
+    RSK07: [0.72, 0.52]
+    RSK08: [0.25, 0.95]
+    RSK09: [0.50, 0.75]
+    RSK10: [0.48, 0.52]
+    RSK11: [0.25, 0.25]
+    RSK12: [0.52, 0.72]
+    RSK13: [0.53, 0.47]
+    RSK14: [0.47, 0.78]
 ```
+
+En el diagrama, `RSK01` corresponde a RSK-01 (y así sucesivamente). Mermaid no admite el guion en la etiqueta del punto.
 
 ---
 
@@ -155,8 +167,8 @@ Detalle monetario: [04 Presupuesto del proyecto V_1_0_0.md](./04%20Presupuesto%2
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Creación del registro cuantitativo de 14 riesgos, matriz P×I y planes de mitigación/contingencia. |
-
-| 1.0.1 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
+| 1.0.1 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
+| 1.0.2 | 18/09/2026 | Equipo EcoLogística Lima | Corrección del mapa de calor para renderizado en GitHub y matriz P×I con los 14 riesgos. |
 
 ---
 
