@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 18/09/2026  
-**Versión:** 1.0.2  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Estándar:** PMBOK 8ª Edición / CMMI-DEV (Gestión de Riesgos)
 
@@ -17,7 +17,7 @@
 
 Este registro consolida la línea base de gestión de riesgos del PFA. Cada amenaza se evalúa de forma cuantitativa, se clasifica por severidad y cuenta con un plan preventivo (mitigación) y un plan reactivo (contingencia), de modo que el equipo pueda actuar antes y después de la materialización del evento.
 
-El análisis parte de los riesgos macro del [Acta de Constitución](../../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_0.md), de las restricciones del [documento 13](../../01%20Inicio/13.%20Restricciones%20V_1_0_0.md) y de los supuestos del [documento 04](../../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_0.md).
+El análisis parte de los riesgos macro del [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_1.md), de las restricciones del [documento 13](../01%20Inicio/13.%20Restricciones%20V_1_0_1.md) y de los supuestos del [documento 04](../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_1.md).
 
 ---
 
@@ -94,42 +94,19 @@ Los dos riesgos High (algoritmo y cronograma académico) condicionan la estrateg
 
 ## 5. Mapa de Calor de Riesgos
 
-Ubicación según **Severidad = Probabilidad × Impacto**. Verde = Low (1–6), amarillo = Medium (8–12), rojo = High (15–25).
+Mapa **5 × 5** alineado a la sección 3. Cada celda se colorea por la banda de `P × I` (🟢 Low 1–6, 🟡 Medium 8–12, 🔴 High 15–25). Los identificadores se colocan en la celda de su probabilidad (filas) y su impacto (columnas).
+
+No hay riesgos con probabilidad 1 ni 5; esas filas quedan vacías de IDs, pero conservan el color de su banda.
 
 | P \ I | 1 Insignificante | 2 Menor | 3 Moderado | 4 Mayor | 5 Catastrófico |
 |---|---|---|---|---|---|
-| **5 Muy alta** | | | | | |
-| **4 Alta** | | | RSK-04, RSK-07 | **RSK-05** | |
-| **3 Media** | | | RSK-02, RSK-06, RSK-10, RSK-13 | RSK-09, RSK-12, RSK-14 | **RSK-03** |
-| **2 Baja** | | RSK-11 | | RSK-01 | RSK-08 |
-| **1 Muy baja** | | | | | |
+| **5 Muy alta** | 🟢 5 | 🟡 10 | 🔴 15 | 🔴 20 | 🔴 25 |
+| **4 Alta** | 🟢 4 | 🟡 8 | 🟡 12<br>RSK-04<br>RSK-07 | 🔴 **16 RSK-05** | 🔴 20 |
+| **3 Media** | 🟢 3 | 🟢 6 | 🟡 9<br>RSK-02<br>RSK-06<br>RSK-10<br>RSK-13 | 🟡 12<br>RSK-09<br>RSK-12<br>RSK-14 | 🔴 **15 RSK-03** |
+| **2 Baja** | 🟢 2 | 🟢 **4 RSK-11** | 🟢 6 | 🟡 **8 RSK-01** | 🟡 **10 RSK-08** |
+| **1 Muy baja** | 🟢 1 | 🟢 2 | 🟢 3 | 🟢 4 | 🟢 5 |
 
-```mermaid
-quadrantChart
-    title Mapa de calor Probabilidad vs Impacto
-    x-axis Baja probabilidad --> Alta probabilidad
-    y-axis Bajo impacto --> Alto impacto
-    quadrant-1 Vigilar y planificar contingencia
-    quadrant-2 Actuar ahora High
-    quadrant-3 Aceptar y monitorear
-    quadrant-4 Mitigar de forma continua
-    RSK01: [0.25, 0.75]
-    RSK02: [0.50, 0.50]
-    RSK03: [0.50, 0.95]
-    RSK04: [0.75, 0.50]
-    RSK05: [0.75, 0.75]
-    RSK06: [0.45, 0.48]
-    RSK07: [0.72, 0.52]
-    RSK08: [0.25, 0.95]
-    RSK09: [0.50, 0.75]
-    RSK10: [0.48, 0.52]
-    RSK11: [0.25, 0.25]
-    RSK12: [0.52, 0.72]
-    RSK13: [0.53, 0.47]
-    RSK14: [0.47, 0.78]
-```
-
-En el diagrama, `RSK01` corresponde a RSK-01 (y así sucesivamente). Mermaid no admite el guion en la etiqueta del punto.
+**Lectura:** RSK-05 (cronograma) y RSK-03 (algoritmo) son los únicos High. RSK-08 tiene impacto catastrófico, pero probabilidad baja, por eso permanece Medium. RSK-11 es el único Low.
 
 ---
 
@@ -158,7 +135,7 @@ En el diagrama, `RSK01` corresponde a RSK-01 (y así sucesivamente). Mermaid no 
 
 La exposición media Medium justifica una **reserva de contingencia del 12 %** sobre el subtotal de proyecto, coherente con la consigna de presupuesto y con los dos riesgos High. El uso de esta reserva requiere autorización del PM y registro en el historial de control de cambios.
 
-Detalle monetario: [04 Presupuesto del proyecto V_1_0_0.md](./04%20Presupuesto%20del%20proyecto%20V_1_0_0.md).
+Detalle monetario: [04 Presupuesto del proyecto V_1_0_1.md](./04%20Presupuesto%20del%20proyecto%20V_1_0_1.md).
 
 ---
 
@@ -169,6 +146,7 @@ Detalle monetario: [04 Presupuesto del proyecto V_1_0_0.md](./04%20Presupuesto%2
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Creación del registro cuantitativo de 14 riesgos, matriz P×I y planes de mitigación/contingencia. |
 | 1.0.1 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 | 1.0.2 | 18/09/2026 | Equipo EcoLogística Lima | Corrección del mapa de calor para renderizado en GitHub y matriz P×I con los 14 riesgos. |
+| 1.0.3 | 18/09/2026 | Equipo EcoLogística Lima | Mapa de calor 5×5 con bandas de color, se elimina el quadrantChart 2×2 y se corrigen enlaces a la Fase 01 / presupuesto vigentes. |
 
 ---
 
