@@ -6,8 +6,8 @@
 # 03. Registro de Riesgos del Proyecto
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 18/09/2026  
-**Versión:** 1.0.3  
+**Fecha:** 25/09/2026  
+**Versión:** 1.0.4  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Estándar:** PMBOK 8ª Edición / CMMI-DEV (Gestión de Riesgos)
 
@@ -17,7 +17,7 @@
 
 Este registro consolida la línea base de gestión de riesgos del PFA. Cada amenaza se evalúa de forma cuantitativa, se clasifica por severidad y cuenta con un plan preventivo (mitigación) y un plan reactivo (contingencia), de modo que el equipo pueda actuar antes y después de la materialización del evento.
 
-El análisis parte de los riesgos macro del [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_1.md), de las restricciones del [documento 13](../01%20Inicio/13.%20Restricciones%20V_1_0_1.md) y de los supuestos del [documento 04](../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_1.md).
+El análisis parte de los riesgos macro del [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_5.md), de las restricciones del [documento 13](../01%20Inicio/13.%20Restricciones%20V_1_0_2.md) y de los supuestos del [documento 04](../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_2.md).
 
 ---
 
@@ -133,9 +133,9 @@ No hay riesgos con probabilidad 1 ni 5; esas filas quedan vacías de IDs, pero c
 
 ## 7. Reserva para Imprevistos
 
-La exposición media Medium justifica una **reserva de contingencia del 12 %** sobre el subtotal de proyecto, coherente con la consigna de presupuesto y con los dos riesgos High. El uso de esta reserva requiere autorización del PM y registro en el historial de control de cambios.
+La exposición media Medium justifica una **reserva de contingencia de S/ 1,500** (13 % del subtotal S/ 11,500), fijada en el Acta y coherente con el rango 10–15 % de la consigna y con los dos riesgos High. El uso de esta reserva requiere autorización del PM y registro en el historial de control de cambios.
 
-Detalle monetario: [04 Presupuesto del proyecto V_1_0_1.md](./04%20Presupuesto%20del%20proyecto%20V_1_0_1.md).
+Detalle monetario: [04 Presupuesto del proyecto V_1_0_2.md](./04%20Presupuesto%20del%20proyecto%20V_1_0_2.md).
 
 ---
 
@@ -147,6 +147,7 @@ Detalle monetario: [04 Presupuesto del proyecto V_1_0_1.md](./04%20Presupuesto%2
 | 1.0.1 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 | 1.0.2 | 18/09/2026 | Equipo EcoLogística Lima | Corrección del mapa de calor para renderizado en GitHub y matriz P×I con los 14 riesgos. |
 | 1.0.3 | 18/09/2026 | Equipo EcoLogística Lima | Mapa de calor 5×5 con bandas de color, se elimina el quadrantChart 2×2 y se corrigen enlaces a la Fase 01 / presupuesto vigentes. |
+| 1.0.4 | 25/09/2026 | Equipo EcoLogística Lima | Reserva de imprevistos alineada al rebaseline del Acta: S/ 1,500 (13 % del subtotal). Enlaces al Acta V_1_0_5, restricciones V_1_0_2 y presupuesto V_1_0_2. |
 
 ---
 
