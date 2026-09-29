@@ -6,15 +6,15 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 11/09/2026  
-**Versión:** 1.0.2  
+**Fecha:** 29/09/2026  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
 
 ## 1. Propósito
 
-Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_0.md)) y se estima en Story Points Fibonacci.
+Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_5.md)) y se estima en Story Points Fibonacci.
 
 No se reescriben los requisitos: se descomponen. Cualquier omisión detectada se registra en el historial de control de cambios.
 
@@ -169,6 +169,8 @@ Entonces el sistema responde 403 y no crea el registro.
 **SP:** 3 · **MoSCoW:** Must · **Sprint objetivo:** 2  
 **RF/RNF:** RN-019, RN-020, RNF-002, RNF-010  
 
+**Incremento del Sprint 2:** el bloqueo de cuenta es obligatorio en este sprint. El consentimiento se verifica al dar de alta el pedido (US-008, mismo sprint) usando un **cliente de demostración** con `consentimiento_datos` verdadero o falso; no hay módulo de clientes todavía.
+
 **Redacción:**  
 Como Administrador del Sistema,  
 quiero bloquear cuentas tras 3 fallos y no persistir datos personales sin consentimiento,  
@@ -224,6 +226,8 @@ Entonces el sistema rechaza la operación y muestra “La placa ya se encuentra 
 **Épica Relacionada:** EP-02 Gestión de flota  
 **SP:** 3 · **MoSCoW:** Must · **Sprint objetivo:** 2  
 **RF/RNF:** RF-001  
+
+**Incremento del Sprint 2:** incluye el **menú de navegación** del operador (Flota, Conductores, Pedidos, Usuarios) para que la revisión no sea un conjunto de URLs sueltas. No incluye gráficos de sostenibilidad (US-014, Sprint 5).
 
 **Redacción:**  
 Como Gerente de Operaciones,  
@@ -307,8 +311,17 @@ Entonces el sistema inserta un descanso mínimo de 1 hora o rechaza la solución
 **ID:** US-008  
 **Título:** Registrar pedido de entrega en Lima Este  
 **Épica Relacionada:** EP-04 Pedidos y preferencias de clientes  
-**SP:** 8 · **MoSCoW:** Must · **Sprint objetivo:** 2–3  
+**SP:** 8 · **MoSCoW:** Must · **Sprint objetivo:** 2 (5 SP) / 3 (3 SP)  
 **RF/RNF:** RF-002, RN-004, RN-005  
+
+**Partición para no romper el tope de 26 SP**
+
+| Incremento | Sprint | SP | Alcance |
+|---|---|---|---|
+| **A — alta operativa** | 2 | 5 | Pedido con cliente de demostración (seed), peso > 0, ventana_inicio < ventana_fin, lat/lon y estado PENDIENTE. Si `consentimiento_datos = false`, se rechaza (US-003). |
+| **B — cobertura Lima Este** | 3 | 3 | Punto de referencia textual, bandera `georreferencia_aproximada`, rechazo fuera de SJL/El Agustino/Santa Anita/Ate o ventana inválida. |
+
+No existe historia de “CRUD de clientes” en el backlog. En el Sprint 2 se siembra al menos un cliente de demo (con y sin consentimiento) como subtarea de este incremento A.
 
 **Redacción:**  
 Como Operador de Logística,  
@@ -317,17 +330,17 @@ para alimentar el motor de ruteo aunque la dirección de SJL no tenga nomenclatu
 
 **Criterios de Aceptación**
 
-Escenario: Alta en cobertura  
+Escenario: Alta en cobertura *(incremento A, Sprint 2)*  
 Dado un Operador autenticado y un cliente con consentimiento  
 Cuando registra ID de cliente, coordenadas dentro de SJL/El Agustino/Santa Anita/Ate, peso > 0, ventana_inicio < ventana_fin y prioridad  
 Entonces el pedido queda en estado PENDIENTE.
 
-Escenario: Georreferencia aproximada  
+Escenario: Georreferencia aproximada *(incremento B, Sprint 3)*  
 Dado que la dirección no es estándar  
 Cuando el Operador ingresa el punto de referencia “frente a la bodega El Ahorro” y coordenadas aproximadas  
 Entonces el sistema acepta el pedido y marca `georreferencia_aproximada = true`.
 
-Escenario: Fuera de cobertura o ventana inválida  
+Escenario: Fuera de cobertura o ventana inválida *(incremento B, Sprint 3)*  
 Dado coordenadas fuera del área o ventana_inicio ≥ ventana_fin  
 Cuando se intenta guardar  
 Entonces el sistema rechaza y no crea el pedido.
@@ -669,6 +682,8 @@ Entonces PostgreSQL rechaza por UNIQUE.
 **ID:** ENB-004 · **SP:** 5 · **Sprint:** 2 (y transversal) · **RNF-002, RNF-010**  
 Como Administrador, quiero headers de seguridad, TLS 1.3 en Staging, sanitización y logs de 12 meses, para no introducir hallazgos Critical.
 
+**Incremento del Sprint 2 (lo demostrable):** un Conductor recibe 403 al crear usuarios o editar flota; los formularios de pedido/usuario rechazan inyección obvia; `log_auditoria` registra login, alta de vehículo, alta de conductor y alta de pedido. TLS 1.3 y retención de 12 meses quedan como deuda técnica si Staging aún es HTTP.
+
 Escenario: Inyección bloqueada  
 Dado un payload con SQL o XSS en un campo de pedido  
 Cuando se envía la petición  
@@ -756,7 +771,7 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 7 | US-003 | Consentimiento y bloqueo | US | EP-01 | 3 | 2 | Backend |
 | 8 | US-005 | Consultar / actualizar flota | US | EP-02 | 3 | 2 | Frontend |
 | 9 | US-006 | Registrar conductor | US | EP-03 | 5 | 2 | Backend / Frontend |
-| 10 | US-008 | Registrar pedido | US | EP-04 | 8 | 2–3 | Backend / Frontend |
+| 10 | US-008 | Registrar pedido | US | EP-04 | 8 | 2 (5 SP) / 3 (3 SP) | Backend / Frontend |
 | 11 | ENB-004 | Hardening OWASP y logs | Enabler | — | 5 | 2 | Backend |
 | 12 | US-007 | Jornada y descansos | US | EP-03 | 5 | 3 | Backend |
 | 13 | ENB-006 | Worker y cola Redis | Enabler | — | 5 | 3 | Backend |
@@ -775,7 +790,7 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 6 | API / Frontend |
 | | | **Total** | | | **156** | | |
 
-US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable.
+US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP).
 
 ---
 
@@ -798,17 +813,62 @@ US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas �
 
 Criterio de éxito del Sprint 1: un Operador de prueba inicia sesión en Staging, registra un vehículo con factor de CO₂ y el OpenAPI lista los endpoints; el Quality Gate está en verde.
 
-Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_0.md](./02%20Artefactos%20Jira%20V_1_0_0.md).
+Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_5.md](./02%20Artefactos%20Jira%20V_1_0_5.md).
 
 ---
 
-## 10. Historial de Control de Cambios
+## 10. Sprint 2 — planificación de referencia
+
+**Fechas:** 16/09/2026 – 29/09/2026 (2 semanas).  
+**Hito del Acta:** Hito 2 (29/09/2026) — identidad/acceso, flota, conductores y pedidos base.  
+**Capacidad académica:** 86 h/semana × 2 = **172 h**. Con 6–8 h/SP ≈ **21–28 SP**. Se comprometen **26 SP**.
+
+**Sprint Goal:** Un Administrador gestiona usuarios y roles, y un Operador ya autenticado registra conductores y pedidos sobre la flota del Sprint 1, con bloqueo de cuenta y menú de navegación.
+
+### 10.1 Compromiso (26 SP)
+
+| ID | Pantalla / resultado | SP | Responsable principal |
+|---|---|---|---|
+| US-002 | Usuarios: crear, desactivar y asignar rol (Admin, Operador, Conductor) | 5 | Estrada Flores, Axel Sebastian |
+| US-003 | Login: bloqueo a 3 intentos; pedido rechazado sin consentimiento | 3 | Estrada Flores, Axel Sebastian |
+| US-005 | Lista / editar flota + menú Flota · Conductores · Pedidos · Usuarios | 3 | Huaman Baldeon, Katheryn Elena |
+| US-006 | Alta de conductor (DNI, licencia, horario, punto de partida) | 5 | Leon Taza, Brayan Angel |
+| US-008 A | Alta de pedido (cliente demo, peso, ventana, coordenadas → PENDIENTE) | 5 | Huaman Baldeon, Katheryn Elena + Brayan |
+| ENB-004 | 403 por rol, sanitización de formularios y `log_auditoria` | 5 | Cruz Salazar, Jorge Luiz |
+| **Total** | | **26** | |
+
+Fuera de este sprint (quedan para el Sprint 3): US-008 B (3 SP: cobertura Lima Este y punto de referencia), US-007 (jornada de 8 h). No entra el dashboard de km/CO₂ ni el mapa de rutas.
+
+### 10.2 Cliente de demostración (sin historia nueva)
+
+US-008 necesita un cliente. No se abre un CRUD de clientes en el Sprint 2. Brayan siembra al menos dos filas:
+
+- Cliente **con** `consentimiento_datos = true` (pedido exitoso).
+- Cliente **sin** consentimiento (el alta de pedido se rechaza, US-003).
+
+### 10.3 Criterio de éxito (guion de la revisión de avance)
+
+En Staging, con el menú visible:
+
+1. Un **Admin** crea un usuario con rol CONDUCTOR.
+2. Un **Operador** lista un vehículo del Sprint 1 y lo pasa a MANTENIMIENTO (o cambia el factor de CO₂).
+3. El mismo Operador da de alta un **conductor** y un **pedido** al cliente de demo con consentimiento; el pedido queda PENDIENTE.
+4. El pedido al cliente sin consentimiento se rechaza.
+5. Tres contraseñas incorrectas bloquean una cuenta (respuesta 423 / mensaje de bloqueo).
+6. El usuario Conductor **no** puede entrar a Usuarios ni editar flota (403).
+
+Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_5.md](./02%20Artefactos%20Jira%20V_1_0_5.md).
+
+---
+
+## 11. Historial de Control de Cambios
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Transformación inicial RF/RNF → 7 épicas, 18 US, 8 enablers, DoD global y backlog de 156 SP. |
+| 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre. US-017 reasignada de Sprint 7 a Sprint 6. |
+| 1.0.3 | 29/09/2026 | Equipo EcoLogística Lima | Planificación del Sprint 2 (26 SP, Goal, responsables y guion de revisión). US-008 partido en incremento A (5 SP, Sprint 2) y B (3 SP, Sprint 3). Menú de navegación y cliente de demo como alcance explícito. |
 
-| 1.0.2 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre, en vez de 7 sprints/14 semanas. US-017 reasignada de Sprint 7 a Sprint 6. |
 ---
 
 [← Volver al README Principal](../../README.md)
