@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 11/09/2026  
-**Versión:** 1.0.4  
+**Fecha:** 29/09/2026  
+**Versión:** 1.0.5  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -18,7 +18,7 @@
 
 ## 1. Propósito
 
-Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_0.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_0.md).
+Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_3.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md).
 
 Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclusivamente** al panel de Jira (sin escritorio, barra de tareas, pestañas del navegador ni espacio sobrante). Las capturas viven en [`evidencias/`](./evidencias/). Este informe deja lista la parametrización (claves, SP, Sprint Goal, columnas y release) para cargarla en el sitio Jira del equipo; las PNG recortadas se añaden tras crear el proyecto `ECO` con el guion de la sección 8.
 
@@ -61,7 +61,7 @@ flowchart LR
     B --> A
 ```
 
-Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_0.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
+Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
 
 ---
 
@@ -175,6 +175,40 @@ Subtareas de ejemplo (≤ 8 h) para ECO-10: (1) extensión PostGIS, (2) tablas d
 
 **Captura requerida:** vista Sprint 1 con el *Sprint Goal* en la cabecera y los 5 ítems comprometidos; recorte al contenedor del sprint. ![Evidencia 3: Sprint Planning y Sprint Goal](./evidencias/evidencia-03-sprint-1.png) Archivo destino: `evidencias/evidencia-03-sprint-1.png`.
 
+### 5.1 Sprint 2 — planificación (revisión de avance)
+
+Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve para **crear `ECO Sprint 2` en Jira** y demostrar el Hito 2; no sustituye esas evidencias.
+
+**Sprint:** `ECO Sprint 2`  
+**Fechas:** 16/09/2026 – 29/09/2026 (2 semanas)  
+**Capacidad:** 172 h académicas · compromiso **26 SP**  
+**Fuente:** [01 Transformando a ágil V_1_0_3.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md) §10.
+
+#### Sprint Goal (texto a pegar en la cabecera de Jira)
+
+> Un Administrador gestiona usuarios y roles, y un Operador ya autenticado registra conductores y pedidos sobre la flota del Sprint 1, con bloqueo de cuenta y menú de navegación.
+
+| Ítem | Incremento | SP | Assignee |
+|---|---|---|---|
+| US-002 Usuarios y roles RBAC | Completo | 5 | Axel Estrada |
+| US-003 Consentimiento y bloqueo | Completo (bloqueo + check al pedido) | 3 | Axel Estrada |
+| US-005 Consultar / actualizar flota | Completo + menú de navegación | 3 | Katheryn Huaman |
+| US-006 Registrar conductor | Completo | 5 | Brayan Leon |
+| US-008 Registrar pedido | **Incremento A** (alta con cliente demo) | 5 | Katheryn Huaman |
+| ENB-004 Hardening OWASP y logs | 403, sanitización, `log_auditoria` | 5 | Jorge Cruz |
+| | **Compromiso** | **26** | |
+
+**Cómo cargarlo en Jira (10 min):**
+
+1. Backlog → **Crear sprint** → nombre `ECO Sprint 2`, fechas 16/09/2026 – 29/09/2026.
+2. Pegar el Sprint Goal en la cabecera **antes** de iniciar el sprint.
+3. Mover al sprint las tarjetas US-002, US-003, US-005, US-006, US-008 y ENB-004 (crear las que aún no existan).
+4. En US-008 dejar estimación **8** (tamaño de la historia) y anotar en la descripción: *Sprint 2 = incremento A (5 SP); Sprint 3 = incremento B (3 SP)*. El compromiso del sprint suma 26 porque solo se cuenta el incremento A.
+5. No meter US-007, US-009 ni el dashboard (US-014).
+6. Iniciar el sprint cuando el 1 esté cerrado o el docente pida tablero activo del 2.
+
+Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Conductores/Pedidos/Usuarios, (3) formulario conductor, (4) formulario pedido, (5) bloqueo 423, (6) prueba 403 de rol.
+
 ---
 
 ## 6. Evidencia 4 — Tablero Scrum activo
@@ -261,8 +295,7 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.3-MVP y protocolo de evidencias. |
-
----
-| 1.0.2 (corrección) | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
+| 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
+| 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
 
 [← Volver al README Principal](../../README.md)
