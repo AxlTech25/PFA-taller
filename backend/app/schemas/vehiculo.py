@@ -70,5 +70,20 @@ class VehiculoOut(BaseModel):
     estado: str
 
 
+class VehiculoUpdate(BaseModel):
+    estado: EstadoVehiculo | None = None
+    factor_emision_co2: float | None = None
+
+    @field_validator("factor_emision_co2")
+    @classmethod
+    def factor_positivo(cls, valor: float | None) -> float | None:
+        if valor is not None and valor <= 0:
+            raise ValueError("El factor de emisión debe ser mayor a cero")
+        return valor
+
+    def hay_cambios(self) -> bool:
+        return self.estado is not None or self.factor_emision_co2 is not None
+
+
 class VehiculoCreado(VehiculoOut):
     mensaje: str

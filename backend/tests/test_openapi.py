@@ -6,11 +6,11 @@ def test_openapi_y_swagger(client):
     especificacion = client.get("/openapi.json")
     assert especificacion.status_code == 200
     paths = especificacion.json()["paths"]
-    for ruta in ("/auth/login", "/vehiculos"):
+    for ruta in ("/auth/login", "/vehiculos", "/usuarios", "/conductores", "/pedidos", "/clientes"):
         assert ruta in paths
-    assert "/usuarios" not in paths
-    assert "/pedidos" not in paths
-    assert "/conductores" not in paths
+    assert "put" in paths["/vehiculos/{id_vehiculo}"]
+    assert "patch" in paths["/usuarios/{id_usuario}"]
+    assert "423" in paths["/auth/login"]["post"]["responses"]
     docs = client.get("/docs")
     assert docs.status_code == 200
     assert "swagger" in docs.text.lower()
