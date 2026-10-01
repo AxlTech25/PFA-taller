@@ -11,7 +11,9 @@ export function LoginPage() {
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
 
-  if (sesion) return <Navigate to="/flota" replace />;
+  if (sesion) {
+    return <Navigate to={sesion.rol === "CONDUCTOR" ? "/modo" : "/flota"} replace />;
+  }
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();

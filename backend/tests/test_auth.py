@@ -57,28 +57,62 @@ def test_credencial_invalida_incrementa_intentos_sin_revelar_existencia(client, 
     assert usuario.intentos_fallidos == 1
 
 
-def test_fallos_incrementan_intentos_sin_bloquear_la_cuenta(client, db):
+def test_tercer_fallo_bloquea_la_cuenta_quince_minutos(client, db):
     crear_usuario(db, email="bloqueo@distrirapido.example.com")
-    for _ in range(3):
+    for _ in range(2):
         respuesta = client.post(
             "/auth/login",
             json={"email": "bloqueo@distrirapido.example.com", "password": "incorrecta"},
         )
         assert respuesta.status_code == 401
+    tercero = client.post(
+        "/auth/login",
+        json={"email": "bloqueo@distrirapido.example.com", "password": "incorrecta"},
+    )
+    assert tercero.status_code == 423
+    assert "15 minutos" in tercero.json()["detail"]
+    assert tercero.headers.get("retry-after")
+    correcto = client.post(
+        "/auth/login",
+        json={"email": "bloqueo@distrirapido.example.com", "password": "clave-segura"},
+    )
+    assert correcto.status_code == 423
     db.expire_all()
     usuario = db.scalar(select(Usuario).where(Usuario.email == "bloqueo@distrirapido.example.com"))
     assert usuario.intentos_fallidos == 3
+    assert usuario.estado == "BLOQUEADO"
+    assert usuario.bloqueado_hasta is not None
+    evento = db.scalar(select(LogAuditoria).where(LogAuditoria.accion == "bloqueo_cuenta"))
+    assert evento is not None
+
+
+def test_bloqueo_vencido_permite_un_nuevo_ingreso(client, db):
+    from datetime import UTC, datetime, timedelta
+
+    usuario = crear_usuario(db, email="vence@distrirapido.example.com", estado="BLOQUEADO")
+    usuario.bloqueado_hasta = datetime.now(UTC) - timedelta(minutes=1)
+    usuario.intentos_fallidos = 3
+    db.commit()
+    respuesta = client.post(
+        "/auth/login",
+        json={"email": "vence@distrirapido.example.com", "password": "clave-segura"},
+    )
+    assert respuesta.status_code == 200
+    db.expire_all()
+    db.refresh(usuario)
     assert usuario.estado == "ACTIVO"
+    assert usuario.intentos_fallidos == 0
     assert usuario.bloqueado_hasta is None
 
 
-def test_cuenta_bloqueada_no_inicia_sesion(client, db):
+def test_cuenta_bloqueada_sin_vencimiento_responde_423(client, db):
     crear_usuario(db, email="ya.bloqueado@distrirapido.example.com", estado="BLOQUEADO")
     respuesta = client.post(
         "/auth/login",
         json={"email": "ya.bloqueado@distrirapido.example.com", "password": "clave-segura"},
     )
-    assert respuesta.status_code == 403
+    assert respuesta.status_code == 423
+    assert respuesta.json()["detail"] == "La cuenta está bloqueada"
 
 
 def test_cuenta_inactiva_responde_403(client, db):

@@ -4,10 +4,23 @@ import { defineConfig } from "vite";
 
 const destino = process.env.VITE_PROXY_TARGET || "http://localhost:8000";
 
+function api() {
+  return {
+    target: destino,
+    bypass(req: { headers: { accept?: string } }) {
+      if (req.headers.accept?.includes("text/html")) return "/index.html";
+    },
+  };
+}
+
 const proxy = {
-  "/auth": destino,
-  "/vehiculos": destino,
-  "/health": destino,
+  "/auth": api(),
+  "/usuarios": api(),
+  "/vehiculos": api(),
+  "/conductores": api(),
+  "/pedidos": api(),
+  "/clientes": api(),
+  "/health": api(),
   "/docs": destino,
   "/openapi.json": destino,
 };

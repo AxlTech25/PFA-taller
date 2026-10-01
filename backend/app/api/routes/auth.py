@@ -15,7 +15,8 @@ router = APIRouter(prefix="/auth", tags=["Autenticación"])
     response_model=TokenResponse,
     responses={
         401: {"description": "Credenciales inválidas"},
-        403: {"description": "Cuenta inactiva o bloqueada"},
+        403: {"description": "Cuenta inactiva"},
+        423: {"description": "Cuenta bloqueada temporalmente"},
     },
 )
 def login(datos: LoginRequest, request: Request, db: Session = Depends(get_db)) -> TokenResponse:

@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     database_url: str = (
         "postgresql+psycopg://ecologistica:ecologistica@localhost:5432/ecologistica"
     )
+    # El valor por defecto es 5432 (Postgres en el host o CI).
+    # Docker Compose publica el servicio en el puerto 5433 del host.
     jwt_secret: str = "cambie-esta-clave-en-local"
     jwt_expire_minutes: int = 480
     cors_origins: str = "http://localhost:5173"

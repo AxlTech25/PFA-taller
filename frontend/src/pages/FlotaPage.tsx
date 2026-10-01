@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
-import { puedeRegistrarFlota } from "../permissions";
+import { etiqueta, puedeEditarFlota, puedeRegistrarFlota } from "../permissions";
 import type { Vehiculo } from "../types";
 
 const TIPOS = [
@@ -27,18 +27,36 @@ const vacio = {
   anio_fabricacion: String(new Date().getFullYear()),
 };
 
+type Edicion = { estado: string; factor: string };
+
 export function FlotaPage() {
   const { llamar, sesion } = useAuth();
   const registrar = sesion ? puedeRegistrarFlota(sesion.rol) : false;
+  const editar = sesion ? puedeEditarFlota(sesion.rol) : false;
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+  const [edicion, setEdicion] = useState<Record<string, Edicion>>({});
   const [formulario, setFormulario] = useState(vacio);
   const [error, setError] = useState("");
   const [exito, setExito] = useState("");
 
+  function recordar(lista: Vehiculo[]) {
+    setEdicion(
+      Object.fromEntries(
+        lista.map((vehiculo) => [
+          vehiculo.id_vehiculo,
+          { estado: vehiculo.estado, factor: String(vehiculo.factor_emision_co2) },
+        ]),
+      ),
+    );
+  }
+
   useEffect(() => {
     document.title = "Flota · EcoLogística Lima";
     llamar<Vehiculo[]>("/vehiculos")
-      .then(setVehiculos)
+      .then((lista) => {
+        setVehiculos(lista);
+        recordar(lista);
+      })
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : "No se pudo cargar la flota."),
       );
@@ -65,11 +83,41 @@ export function FlotaPage() {
           anio_fabricacion: Number(formulario.anio_fabricacion),
         }),
       });
-      setVehiculos((actual) => [...actual, creado].sort((a, b) => a.placa.localeCompare(b.placa)));
+      setVehiculos((actual) => {
+        const lista = [...actual, creado].sort((a, b) => a.placa.localeCompare(b.placa));
+        recordar(lista);
+        return lista;
+      });
       setFormulario(vacio);
       setExito(creado.mensaje ?? "Vehículo registrado correctamente");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "No se pudo registrar el vehículo.");
+    }
+  }
+
+  async function guardar(id: string) {
+    const cambio = edicion[id];
+    if (!cambio) return;
+    setError("");
+    setExito("");
+    try {
+      const actualizado = await llamar<Vehiculo>(`/vehiculos/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          estado: cambio.estado,
+          factor_emision_co2: Number(cambio.factor),
+        }),
+      });
+      setVehiculos((actual) =>
+        actual.map((vehiculo) => (vehiculo.id_vehiculo === id ? actualizado : vehiculo)),
+      );
+      setEdicion((actual) => ({
+        ...actual,
+        [id]: { estado: actualizado.estado, factor: String(actualizado.factor_emision_co2) },
+      }));
+      setExito("Vehículo actualizado correctamente");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No se pudo actualizar el vehículo.");
     }
   }
 
@@ -78,7 +126,7 @@ export function FlotaPage() {
       <header>
         <h1>Flota</h1>
         <p className="ayuda">
-          Registre camionetas, furgones y motos con su capacidad y factor de emisión de CO₂.
+          Consulte la flota, retire unidades a mantenimiento y actualice el factor de emisión de CO₂.
         </p>
       </header>
       {error ? (
@@ -200,28 +248,71 @@ export function FlotaPage() {
                   <th>Año</th>
                   <th>Estado</th>
                   <th>Factor CO₂</th>
+                  {editar ? <th>Acciones</th> : null}
                 </tr>
               </thead>
               <tbody>
                 {vehiculos.map((vehiculo) => {
-                  const etiquetaTipo =
-                    TIPOS.find((tipo) => tipo.valor === vehiculo.tipo)?.etiqueta ?? vehiculo.tipo;
-                  const etiquetaEstado =
-                    ESTADOS.find((item) => item.valor === vehiculo.estado)?.etiqueta ??
-                    vehiculo.estado;
+                  const cambio = edicion[vehiculo.id_vehiculo];
                   return (
                     <tr key={vehiculo.id_vehiculo}>
                       <td>{vehiculo.placa}</td>
-                      <td>{etiquetaTipo}</td>
+                      <td>{etiqueta(vehiculo.tipo)}</td>
                       <td>
                         {vehiculo.capacidad_kg} kg / {vehiculo.capacidad_m3} m³
                       </td>
                       <td>{vehiculo.consumo_km_l} km/L</td>
                       <td>{vehiculo.anio_fabricacion}</td>
                       <td>
-                        <span className={`insignia ${vehiculo.estado}`}>{etiquetaEstado}</span>
+                        {editar && cambio ? (
+                          <select
+                            aria-label={`Estado de ${vehiculo.placa}`}
+                            value={cambio.estado}
+                            onChange={(event) =>
+                              setEdicion((actual) => ({
+                                ...actual,
+                                [vehiculo.id_vehiculo]: { ...cambio, estado: event.target.value },
+                              }))
+                            }
+                          >
+                            {ESTADOS.map((item) => (
+                              <option key={item.valor} value={item.valor}>
+                                {item.etiqueta}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span className={`insignia ${vehiculo.estado}`}>
+                            {etiqueta(vehiculo.estado)}
+                          </span>
+                        )}
                       </td>
-                      <td>{vehiculo.factor_emision_co2}</td>
+                      <td>
+                        {editar && cambio ? (
+                          <input
+                            aria-label={`Factor de emisión de ${vehiculo.placa}`}
+                            type="number"
+                            min="0.0001"
+                            step="0.0001"
+                            value={cambio.factor}
+                            onChange={(event) =>
+                              setEdicion((actual) => ({
+                                ...actual,
+                                [vehiculo.id_vehiculo]: { ...cambio, factor: event.target.value },
+                              }))
+                            }
+                          />
+                        ) : (
+                          vehiculo.factor_emision_co2
+                        )}
+                      </td>
+                      {editar ? (
+                        <td>
+                          <button type="button" onClick={() => guardar(vehiculo.id_vehiculo)}>
+                            Guardar
+                          </button>
+                        </td>
+                      ) : null}
                     </tr>
                   );
                 })}

@@ -60,3 +60,56 @@ def test_listado_muestra_la_flota_demo_y_un_conductor_no_registra(client, db):
         json=vehiculo_valido(placa="<script>"),
     )
     assert peligroso.status_code == 422
+
+
+def test_operador_actualiza_estado_y_factor_y_deja_auditoria(client, db):
+    operador = crear_usuario(db, email="op.edita@distrirapido.example.com")
+    headers = autenticar(client, operador.email)
+    listado = client.get("/vehiculos", headers=headers).json()
+    objetivo = next(item for item in listado if item["placa"] == "DMO-101")
+    respuesta = client.put(
+        f"/vehiculos/{objetivo['id_vehiculo']}",
+        headers=headers,
+        json={"estado": "MANTENIMIENTO", "factor_emision_co2": 0.31},
+    )
+    assert respuesta.status_code == 200
+    assert respuesta.json()["estado"] == "MANTENIMIENTO"
+    assert respuesta.json()["factor_emision_co2"] == 0.31
+    db.expire_all()
+    evento = db.scalar(select(LogAuditoria).where(LogAuditoria.accion == "actualizar_vehiculo"))
+    assert evento is not None
+    assert evento.datos_anteriores["estado"] == "ACTIVO"
+    assert evento.datos_nuevos["estado"] == "MANTENIMIENTO"
+    assert evento.ip_origen is None or evento.accion == "actualizar_vehiculo"
+
+
+def test_conductor_no_edita_flota_y_el_registro_no_cambia(client, db):
+    operador = crear_usuario(db, email="op.base@distrirapido.example.com")
+    conductor = crear_usuario(db, email="conductor.edita@distrirapido.example.com", rol="CONDUCTOR")
+    headers = autenticar(client, operador.email)
+    listado = client.get("/vehiculos", headers=headers).json()
+    objetivo = next(item for item in listado if item["placa"] == "DMO-102")
+    denegado = client.put(
+        f"/vehiculos/{objetivo['id_vehiculo']}",
+        headers=autenticar(client, conductor.email),
+        json={"estado": "INACTIVO"},
+    )
+    assert denegado.status_code == 403
+    despues = client.get(f"/vehiculos/{objetivo['id_vehiculo']}", headers=headers)
+    assert despues.json()["estado"] == "ACTIVO"
+
+
+def test_actualizacion_vacia_o_factor_invalido(client, db):
+    gerente = crear_usuario(db, email="gerente.flota@distrirapido.example.com", rol="GERENTE")
+    headers = autenticar(client, gerente.email)
+    listado = client.get("/vehiculos", headers=headers).json()
+    objetivo = next(item for item in listado if item["placa"] == "DMO-201")
+    vacio = client.put(f"/vehiculos/{objetivo['id_vehiculo']}", headers=headers, json={})
+    assert vacio.status_code == 422
+    invalido = client.put(
+        f"/vehiculos/{objetivo['id_vehiculo']}",
+        headers=headers,
+        json={"factor_emision_co2": 0},
+    )
+    assert invalido.status_code == 422
+    assert "factor" in invalido.json()["detail"].lower()

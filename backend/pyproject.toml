@@ -1,7 +1,7 @@
 [project]
 name = "ecologistica-api"
 version = "1.0.0"
-description = "API EcoLogística Lima — Sprint 1"
+description = "API EcoLogística Lima — Sprint 2"
 requires-python = ">=3.11"
 
 [tool.pytest.ini_options]

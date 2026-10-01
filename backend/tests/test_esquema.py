@@ -62,6 +62,21 @@ def test_placa_unica_en_postgresql(db):
     db.rollback()
 
 
+def test_clientes_de_demostracion(db):
+    filas = db.execute(text(
+        "SELECT nombre, consentimiento_datos FROM cliente ORDER BY nombre"
+    )).all()
+    por_nombre = {nombre: consentimiento for nombre, consentimiento in filas}
+    assert por_nombre["Bodega El Ahorro"] is True
+    assert por_nombre["Bodega Los Pinos"] is False
+
+
+def test_entrypoint_usa_saltos_lf():
+    contenido = open("entrypoint.sh", "rb").read()
+    assert b"\r" not in contenido
+    assert contenido.startswith(b"#!/bin/sh\n")
+
+
 def test_parametros_iniciales(db):
     claves = set(db.execute(text("SELECT clave FROM configuracion_sistema")).scalars())
     assert "tiempo_max_optimizacion_s" in claves

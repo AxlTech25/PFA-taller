@@ -26,6 +26,27 @@ def revisar_texto(valor: str | None, campo: str) -> str | None:
     return valor
 
 
+def exigir_textos_seguros(
+    db: Session,
+    *,
+    id_usuario,
+    ip: str | None,
+    tabla: str,
+    campos: list[tuple[str | None, str]],
+) -> None:
+    for valor, campo in campos:
+        try:
+            revisar_texto(valor, campo)
+        except EntradaRechazada as exc:
+            rechazar_entrada(
+                db,
+                id_usuario=id_usuario,
+                ip=ip,
+                campo=exc.campo,
+                tabla=tabla,
+            )
+
+
 def rechazar_entrada(
     db: Session,
     *,

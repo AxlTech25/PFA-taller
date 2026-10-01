@@ -70,19 +70,23 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 ---
 
-## Alcance implementado (Sprint 1)
+## Alcance implementado (Sprint 2)
 
-Esta entrega cubre el esquema de base de datos y el backlog del Sprint 1. El Sprint 2 (usuarios y roles, bloqueo de 15 minutos, edición de flota, conductores, pedidos y el endurecimiento completo de ENB-004) queda diferido, igual que el motor de optimización, el mapa y el dashboard.
+El Sprint 1 (esquema PostGIS, JWT, alta de vehículos, OpenAPI y CI) sigue vigente. Esta entrega suma el backlog de 26 SP del Sprint 2. Quedan fuera el incremento B de pedidos (cobertura Lima Este), la jornada de 8 horas, el motor de optimización, el mapa y el dashboard.
 
 | ID | Entrega |
 |---|---|
-| ENB-003 | Migraciones Alembic del modelo PostgreSQL 16 + PostGIS (tablas de seguridad y flota, índices espaciales) y cuatro vehículos de demostración (`DMO-101`, `DMO-102`, `DMO-201`, `DMO-301`) |
+| ENB-003 | Migraciones Alembic del modelo PostgreSQL 16 + PostGIS, cuatro vehículos de demostración y dos clientes de demostración (con y sin consentimiento) |
 | ENB-002 | GitHub Actions con Ruff, Pytest (cobertura mínima 80 %) y la compilación del frontend |
-| US-001 | `POST /auth/login` con JWT. Un intento fallido incrementa `intentos_fallidos` y deja un evento `login_fallido`; el éxito registra `login`. El bloqueo automático de 15 minutos (US-003) no está activo |
-| US-004 | Alta de vehículo para Administrador u Operador, con listado de la flota |
+| US-001 | `POST /auth/login` con JWT y evento `login` en `log_auditoria` |
+| US-002 | Alta, desactivación y cambio de rol. Solo el Administrador escribe; el Gerente consulta; el Operador recibe 403 |
+| US-003 | Al tercer intento fallido la cuenta pasa a `BLOQUEADO` por 15 minutos y el login responde 423. Un pedido sin `consentimiento_datos` se rechaza |
+| US-004 | Alta de vehículo para Administrador u Operador |
+| US-005 | Listado y actualización de estado o factor de CO₂, con menú Flota, Conductores, Pedidos y Usuarios |
+| US-006 | Alta de conductor con DNI único, licencia, horario y punto de partida |
+| US-008 A | Alta de pedido en estado `PENDIENTE` usando el cliente de demostración. Sin módulo de clientes |
+| ENB-004 | 403 por rol, rechazo de inyección obvia en formularios y auditoría de login, vehículo, conductor y pedido |
 | ENB-007 | OpenAPI en vivo en `/docs` |
-
-Las tablas de conductor, cliente, pedido, ruta y auditoría existen en el esquema porque el documento de base de datos las define. Sus pantallas y endpoints llegan en sprints posteriores.
 
 ## Cómo ejecutarlo
 
@@ -94,7 +98,7 @@ cp .env.example .env
 
 Edite `.env` y defina `JWT_SECRET` y las contraseñas `SEED_*` (mínimo 8 caracteres). Esas contraseñas solo sirven para la demostración en su máquina. Si una contraseña queda vacía, la carga inicial omite ese usuario. Use caracteres seguros para una URL en `POSTGRES_PASSWORD` si va a levantar Docker Compose.
 
-Los vehículos de demostración no dependen de esas contraseñas: la migración `002` los inserta al aplicar Alembic.
+Los vehículos de demostración no dependen de esas contraseñas: la migración `002` los inserta al aplicar Alembic. La migración `003` inserta los clientes `Bodega El Ahorro` (con consentimiento) y `Bodega Los Pinos` (sin consentimiento).
 
 ### 2. Con Docker Compose
 
@@ -106,7 +110,7 @@ docker compose up --build
 
 - Interfaz: http://localhost:5173
 - API y Swagger: http://localhost:8000/docs
-- PostgreSQL 16 + PostGIS: puerto 5432
+- PostgreSQL 16 + PostGIS en el host: puerto **5433** (el contenedor sigue escuchando 5432 por dentro). Así no choca con otro Postgres local en 5432.
 
 Compose aplica las migraciones y, si `SEED_ON_STARTUP=true`, carga los usuarios cuyas contraseñas estén definidas.
 
@@ -134,14 +138,20 @@ npm run dev
 
 El servidor de Vite reenvía las llamadas de la interfaz hacia `http://localhost:8000`.
 
+`backend/entrypoint.sh` está versionado con saltos de línea LF (`.gitattributes`). En Windows, conserve ese formato: un CRLF rompe el arranque del contenedor.
+
 ### 4. Recorrido de punta a punta
 
-1. Abra http://localhost:5173 e inicie sesión con `SEED_OPERADOR_EMAIL` y la contraseña que definió.
-2. En **Flota** aparecen las unidades de demostración `DMO-101`, `DMO-102`, `DMO-201` y `DMO-301`.
-3. Registre un vehículo. La API confirma el alta y la placa queda en el listado. Una placa repetida responde «La placa ya se encuentra registrada».
-4. Abra http://localhost:8000/docs para consultar el contrato OpenAPI de login y vehículos.
+1. Abra http://localhost:5173 e inicie sesión con `SEED_ADMIN_EMAIL`. En **Usuarios** cree una cuenta con rol Conductor.
+2. Cierre sesión e ingrese con `SEED_OPERADOR_EMAIL`. El menú muestra Flota, Conductores y Pedidos.
+3. En **Flota** pase `DMO-101` a Mantenimiento o cambie su factor de CO₂ y pulse Guardar.
+4. En **Conductores** registre DNI, licencia, horario y coordenadas de partida.
+5. En **Pedidos** elija Bodega El Ahorro y registre un pedido. Queda en Pendiente. Bodega Los Pinos se rechaza por falta de consentimiento.
+6. Tres contraseñas incorrectas bloquean la cuenta: la API responde 423 durante 15 minutos.
+7. El usuario Conductor ve Flota (solo consulta) y Modo conductor. No entra a Usuarios ni puede editar la flota (HTTP 403).
+8. Abra http://localhost:8000/docs para el contrato OpenAPI.
 
-Un conductor puede consultar la flota y recibe HTTP 403 si intenta registrarla. Una cuenta ya marcada como bloqueada o inactiva también recibe HTTP 403.
+Una cuenta inactiva responde HTTP 403. El Administrador no puede desactivar su propia cuenta.
 
 ### Pruebas
 
