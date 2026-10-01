@@ -2,13 +2,15 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+import { respuestaSpa } from "./src/proxy";
+
 const destino = process.env.VITE_PROXY_TARGET || "http://localhost:8000";
 
 function api() {
   return {
     target: destino,
-    bypass(req: { headers: { accept?: string } }) {
-      if (req.headers.accept?.includes("text/html")) return "/index.html";
+    bypass(req: { method?: string; headers: { accept?: string | string[] } }) {
+      return respuestaSpa(req.method, req.headers.accept);
     },
   };
 }

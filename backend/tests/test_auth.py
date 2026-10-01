@@ -1,6 +1,10 @@
+from app.core.security import hash_password
+from app.db.session import engine
+from app.main import app
 from app.models.entities import LogAuditoria, Usuario
 from app.services.auditoria import registrar
-from sqlalchemy import select
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, select, text
 from tests.conftest import autenticar, crear_usuario
 
 
@@ -84,6 +88,79 @@ def test_tercer_fallo_bloquea_la_cuenta_quince_minutos(client, db):
     assert usuario.bloqueado_hasta is not None
     evento = db.scalar(select(LogAuditoria).where(LogAuditoria.accion == "bloqueo_cuenta"))
     assert evento is not None
+
+
+def test_bloqueo_persiste_y_rechaza_la_clave_correcta():
+    """El bloqueo queda commiteado: otra conexión lo ve y la clave buena no entra."""
+    email = "bloqueo.conexion@distrirapido.example.com"
+    otro = create_engine(engine.url)
+    with engine.begin() as conexion:
+        conexion.execute(
+            text(
+                "DELETE FROM log_auditoria WHERE id_usuario IN "
+                "(SELECT id_usuario FROM usuario WHERE email = :email)"
+            ),
+            {"email": email},
+        )
+        conexion.execute(text("DELETE FROM usuario WHERE email = :email"), {"email": email})
+        conexion.execute(
+            text(
+                "INSERT INTO usuario (email, password_hash, rol, estado, intentos_fallidos) "
+                "VALUES (:email, :password, 'OPERADOR', 'ACTIVO', 0)"
+            ),
+            {"email": email, "password": hash_password("clave-segura")},
+        )
+    try:
+        with TestClient(app) as cliente:
+            for _ in range(2):
+                fallo = cliente.post(
+                    "/auth/login",
+                    json={"email": email, "password": "incorrecta"},
+                )
+                assert fallo.status_code == 401
+            tercero = cliente.post(
+                "/auth/login",
+                json={"email": email, "password": "incorrecta"},
+            )
+            assert tercero.status_code == 423
+            assert "15 minutos" in tercero.json()["detail"]
+            correcto = cliente.post(
+                "/auth/login",
+                json={"email": email, "password": "clave-segura"},
+            )
+            assert correcto.status_code == 423
+            assert correcto.json()["detail"] == tercero.json()["detail"]
+        with otro.connect() as conexion:
+            fila = conexion.execute(
+                text(
+                    "SELECT estado, intentos_fallidos, bloqueado_hasta "
+                    "FROM usuario WHERE email = :email"
+                ),
+                {"email": email},
+            ).one()
+            assert fila.estado == "BLOQUEADO"
+            assert fila.intentos_fallidos == 3
+            assert fila.bloqueado_hasta is not None
+            acciones = conexion.execute(
+                text(
+                    "SELECT accion FROM log_auditoria WHERE id_usuario = "
+                    "(SELECT id_usuario FROM usuario WHERE email = :email) "
+                    "ORDER BY creado_en"
+                ),
+                {"email": email},
+            ).scalars().all()
+        assert acciones == ["login_fallido", "login_fallido", "bloqueo_cuenta"]
+    finally:
+        with engine.begin() as conexion:
+            conexion.execute(
+                text(
+                    "DELETE FROM log_auditoria WHERE id_usuario IN "
+                    "(SELECT id_usuario FROM usuario WHERE email = :email)"
+                ),
+                {"email": email},
+            )
+            conexion.execute(text("DELETE FROM usuario WHERE email = :email"), {"email": email})
+        otro.dispose()
 
 
 def test_bloqueo_vencido_permite_un_nuevo_ingreso(client, db):
