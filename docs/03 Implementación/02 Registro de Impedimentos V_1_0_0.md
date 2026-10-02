@@ -2,24 +2,25 @@
 
 # Registro de impedimentos
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Sprint cubierto:** 1 (02/09/2026 – 15/09/2026; implementación fusionada el 30/09/2026)  
-**Fecha:** 02/10/2026  
-**Versión:** 1.0.0
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
 
-Los impedimentos se numeran `IMP-0n`. La prioridad usa la misma escala del registro de riesgos (Alto / Medio / Bajo). El estado es Abierto, En curso, Resuelto o Aceptado.
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
+
+**Versión:** 1.1.0 — Sprint 2 (16/09/2026 – 29/09/2026; implementación 01/10/2026)
+
+Se heredan los impedimentos abiertos del [Sprint 1](./Sprint%201/02%20Registro%20de%20Impedimentos%20V_1_0_0.md). Los nuevos del Sprint 2 empiezan en IMP-07.
 
 | Impedimento # | Fecha de Registro | Descripción del Impedimento así como el Impacto en el Proyecto | Prioridad | Reportado por | Fecha tope de Resolución | Estado | Fecha de Resolución | Resolución/Comentarios |
 |---|---|---|---|---|---|---|---|---|
-| IMP-01 | 30/09/2026 | El puerto **5432** del host ya tenía una instancia de PostgreSQL. Docker Compose no podía publicar la base PostGIS y el equipo no levantaba el esquema (ENB-003) ni los tests. Impacto: bloqueo total del Sprint 1 en máquinas con Postgres local. | Alta | Leon Taza, Brayan Angel | 30/09/2026 | Resuelto | 30/09/2026 | Se publicó el contenedor en el host como **5433:5432** (`docker-compose.yml`). `DATABASE_URL` de desarrollo apunta a `localhost:5433`. Documentado en el README. |
-| IMP-02 | 30/09/2026 | En Windows, `backend/entrypoint.sh` se guardaba con saltos **CRLF** y el contenedor de la API fallaba al arrancar (`$'\r': command not found`). Impacto: la demo con Compose no arrancaba en laptops del equipo. | Alta | Estrada Flores, Axel Sebastian | 30/09/2026 | Resuelto | 30/09/2026 | Se versionó `.gitattributes` con `eol=lf` para el entrypoint. El README advierte no convertir a CRLF. |
-| IMP-03 | 15/09/2026 | El Sprint 1 del Acta cerraba el **15/09/2026**; el código se fusionó el **30/09/2026** (PR #9). Causa: carga académica simultánea (RSK-05) y arranque tardío de la vertical slice. Impacto: el Hito 1 de software quedó 15 días detrás del cronograma, comprimiendo el Sprint 2. | Alta | Carhuapoma Fano, Eilene Elizabeth | 30/09/2026 | Aceptado | 30/09/2026 | Se aceptó el desfase y se priorizó completar los 26 SP antes de abrir alcance nuevo. Acción de retrospectiva: timebox de arranque en el día 1 del sprint siguiente. El Sprint 2 se fusionó el 01/10/2026 (PR #10) para recuperar ritmo. |
-| IMP-04 | 30/09/2026 | El DoD global exige **Staging en la nube** (D4) y **CodeQL/SonarQube** (D2). El CI actual solo corre Ruff, Pytest ≥ 80 % y el build de Vite. Impacto: el Quality Gate es real, pero no cubre el 100 % del DoD; un docente puede objetar “no está en Staging”. | Media | Cruz Salazar, Jorge Luiz | 27/10/2026 | En curso | — | Mitigación: Compose como Staging local reproducible. Contingencia: añadir CodeQL y un deploy a Railway/Render en un enabler de CI posterior, sin bloquear la aceptación de US-001 y US-004. |
-| IMP-05 | 11/09/2026 | El backlog de Jira no tenía las 26 historias; solo un subconjunto visible en las evidencias. Impacto: trazabilidad CMMI/ALM débil (RSK-11) y confusión sobre qué demostrar en el Sprint 1. | Media | Carhuapoma Fano, Eilene Elizabeth | 29/09/2026 | Resuelto | 29/09/2026 | Se planificó el Sprint 2 en el artefacto 01 V_1_0_3 / Jira V_1_0_5 y se listó explícitamente qué tarjetas van a cada sprint. El Sprint 1 en código se ancló a los cinco ítems del Goal, no al backlog incompleto de las capturas. |
-| IMP-06 | 30/09/2026 | `.env.example` deja `SEED_*_PASSWORD` vacío: si no se edita `.env`, no hay usuario Operador y el login de la demo “falla”. Impacto: falsa percepción de que US-001 no funciona. | Baja | Huaman Baldeon, Katheryn Elena | 30/09/2026 | Resuelto | 30/09/2026 | El README exige copiar `.env.example` y definir contraseñas de ≥ 8 caracteres. La flota demo (migración 002) no depende de esas claves. |
+| IMP-04 | 30/09/2026 | *(Arrastre Sprint 1)* No hay Staging en la nube ni CodeQL/Sonar en CI. Impacto: el DoD D2/D4 sigue incompleto al mostrar el Sprint 2. | Media | Cruz Salazar, Jorge Luiz | 27/10/2026 | En curso | — | Compose sigue siendo el ambiente de demo. A3/A4 de la retrospectiva S1 no se ejecutaron en este sprint (el equipo priorizó US de negocio). |
+| IMP-07 | 01/10/2026 | El bloqueo a 3 intentos **no se aplicaba** en algunos entornos: `bloqueado_hasta` se comparaba con un `datetime` de Python mal alineado con la zona de PostgreSQL. Impacto: US-003 fallaba en la demo (el tercer login no devolvía 423). | Alta | Estrada Flores, Axel Sebastian | 01/10/2026 | Resuelto | 01/10/2026 | Commit `74dac8b`: el vencimiento lo decide `clock_timestamp()` en PostgreSQL (`backend/app/services/auth.py`). Test `test_tercer_fallo_bloquea_la_cuenta_quince_minutos`. |
+| IMP-08 | 29/09/2026 | El Sprint 1 se fusionó el 30/09; el 2 quedó comprimido (plan 16–29/09, código 01/10). Impacto: no hubo Daily ni burndown del Sprint 2; el Hito 2 del Acta (29/09) se incumplió por 2 días. | Alta | Carhuapoma Fano, Eilene Elizabeth | 01/10/2026 | Aceptado | 01/10/2026 | Se aceptó entregar el software al día siguiente y no recortar US-002/US-006. El increment B de US-008 sí se dejó para el Sprint 3 para no inflar el 2. |
+| IMP-09 | 29/09/2026 | US-008 exige un cliente con consentimiento y **no hay historia de CRUD de clientes**. Impacto: el pedido no se podía demostrar sin inventar un módulo fuera de alcance. | Media | Leon Taza, Brayan Angel | 01/10/2026 | Resuelto | 01/10/2026 | Migración `003_clientes_demo.py`: Bodega El Ahorro (con consentimiento) y Bodega Los Pinos (sin). `GET /clientes` solo lista el seed; no hay altas de cliente en UI. |
+| IMP-10 | 01/10/2026 | Payload con `<script>` o SQL en nombre/dirección debe rechazarse (ENB-004) sin romper el alta válida. Impacto: riesgo de falso positivo que bloqueara la demo de pedidos. | Baja | Huaman Baldeon, Katheryn Elena | 01/10/2026 | Resuelto | 01/10/2026 | Sanitización en servicios de pedidos y conductores; tests `test_inyeccion_en_pedido_no_persiste` y DNI/nombre inválido en conductores. |
 
-**Resumen Sprint 1:** 6 impedimentos · 4 resueltos · 1 aceptado (calendario) · 1 en curso (Staging/CodeQL). Ninguno deja las historias US-001 / US-004 sin software demostrable.
+**Resumen Sprint 2:** 1 arrastre en curso (IMP-04) · 3 resueltos · 1 aceptado (calendario). US-003 quedó demostrable solo después de IMP-07.
+
+Informe del sprint: [01 Informe de estado del proyecto V_1_0_0.md](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md). Revisión: [03 Revisión del Sprint V_1_0_0.md](./03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md).
 
 ---
 
@@ -27,7 +28,8 @@ Los impedimentos se numeran `IMP-0n`. La prioridad usa la misma escala del regis
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
-| 1.0.0 | 02/10/2026 | Equipo EcoLogística Lima | Registro inicial de impedimentos del Sprint 1. |
+| 1.0.0 | 02/10/2026 | Equipo EcoLogística Lima | Impedimentos del Sprint 1 (IMP-01 a IMP-06). |
+| 1.1.0 | 02/10/2026 | Equipo EcoLogística Lima | Sprint 2: IMP-07 a IMP-10 y arrastre de IMP-04. |
 
 ---
 

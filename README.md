@@ -59,9 +59,11 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 ## Fase 03: Implementación
 
-Informes de estado, impedimentos, Sprint Review y retrospectiva. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/). El Sprint 1 quedó en `V_1_0_0`; el Sprint 2 incrementa a `V_1_1_0` (semver) para no sobrescribir el entregable anterior.
+Informes de estado, impedimentos, Sprint Review y retrospectiva. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-### Sprint 1
+La consigna exige el nombre exacto `V_1_0_0.md` en esa carpeta. Los cuatro archivos de abajo son el **Sprint 2**. El Sprint 1 se conservó en [`Sprint 1/`](./docs/03%20Implementaci%C3%B3n/Sprint%201/). El encabezado de cada documento del Sprint 2 registra la versión **1.1.0**.
+
+### Sprint 2 (vigente)
 
 | # | Artefacto | Archivo |
 |---|---|---|
@@ -70,14 +72,14 @@ Informes de estado, impedimentos, Sprint Review y retrospectiva. Carpeta: [`docs
 | 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
 | 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 
-### Sprint 2
+### Sprint 1 (histórico)
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_1_0.md](./docs/03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_1_0.md) |
-| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_1_0.md](./docs/03%20Implementaci%C3%B3n/02%20Registro%20de%20Impedimentos%20V_1_1_0.md) |
-| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_1_0.md](./docs/03%20Implementaci%C3%B3n/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_1_0.md) |
-| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_1_0.md](./docs/03%20Implementaci%C3%B3n/04%20Retrospectiva%20del%20Sprint%20V_1_1_0.md) |
+| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%201/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md) |
+| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%201/02%20Registro%20de%20Impedimentos%20V_1_0_0.md) |
+| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%201/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%201/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 
 ---
 
@@ -188,4 +190,4 @@ cd frontend && npm test && npm run build
 
 ## Convención de versionado
 
-Los artefactos documentales usan versionado semántico en el nombre de archivo: `Nombre V_X_Y_Z.md`. El Sprint 1 de la Fase 03 quedó en `V_1_0_0`; el Sprint 2 incrementa a `V_1_1_0` para no sobrescribir el entregable anterior.
+Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 la consigna fija el nombre de archivo `V_1_0_0.md`; el Sprint 2 se distingue por la versión **1.1.0** dentro del documento.
