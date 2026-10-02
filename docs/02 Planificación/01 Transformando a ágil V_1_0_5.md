@@ -861,7 +861,7 @@ En Staging, con el menú visible:
 
 Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_6.md](./02%20Artefactos%20Jira%20V_1_0_6.md).
 
-**Cierre en código (01/10/2026):** el compromiso de 26 SP (incremento A de US-008, no el B) está en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). El bloqueo 423 se corrigió el mismo día ([74dac8b](https://github.com/AxlTech25/PFA-taller/commit/74dac8b): `clock_timestamp()` en PostgreSQL). Clientes de demostración en migración `003_clientes_demo.py`. Staging cloud y CodeQL siguen como deuda (IMP-04). El Hito 2 del Acta (29/09/2026) se incumplió por 2 días (IMP-08). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+**Cierre en código (01/10/2026):** el compromiso de 26 SP (incremento A de US-008, no el B) está en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). El bloqueo 423 se corrigió el mismo día ([74dac8b](https://github.com/AxlTech25/PFA-taller/commit/74dac8b): `clock_timestamp()` en PostgreSQL). Clientes de demostración en migración `003_clientes_demo.py`. Staging cloud y CodeQL siguen como deuda (IMP-04). El Hito 2 del Acta (29/09/2026) se incumplió por 2 días (IMP-08). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 

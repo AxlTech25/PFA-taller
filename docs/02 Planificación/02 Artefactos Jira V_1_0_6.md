@@ -209,7 +209,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 
 Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Conductores/Pedidos/Usuarios, (3) formulario conductor, (4) formulario pedido, (5) bloqueo 423, (6) prueba 403 de rol.
 
-**Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+**Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 

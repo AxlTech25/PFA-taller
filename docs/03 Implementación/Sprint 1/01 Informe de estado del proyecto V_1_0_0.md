@@ -76,7 +76,7 @@ Pendientes **del Sprint 1** (no del producto completo):
 | Automatizar escenarios Gherkin además de Pytest (DoD D6) | Calidad | Transversal |
 | Impedimento IMP-03 (desfase de calendario) | Proceso | Retrospectiva: arrancar el sprint en la fecha del Acta |
 
-Alcance de producto que **no** pertenecía al Sprint 1: US-002, US-003, US-005, US-006, US-008 A y ENB-004 se cerraron en el Sprint 2 ([informe vigente](../01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md)). El motor VRPTW sigue en Sprints 3–4.
+Alcance de producto que **no** pertenecía al Sprint 1: US-002, US-003, US-005, US-006, US-008 A y ENB-004 se cerraron en el Sprint 2 ([informe del Sprint 2](../Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md)). El motor VRPTW sigue en Sprints 3–4.
 
 ---
 
