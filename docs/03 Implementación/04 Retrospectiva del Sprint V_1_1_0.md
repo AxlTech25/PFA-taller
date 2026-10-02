@@ -2,11 +2,11 @@
 
 # Retrospectiva del sprint
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Sprint:** 2  
-**Fecha:** 02/10/2026  
-**Versión:** 1.1.0
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
+
+**Versión:** 1.1.0 — Sprint 2 (02/10/2026)
 
 Se revisan también las acciones A1–A6 de la retrospectiva del Sprint 1.
 

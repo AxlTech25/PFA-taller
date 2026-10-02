@@ -2,11 +2,11 @@
 
 # Revisión del sprint
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Sprint:** 2 — Acceso, flota, conductores y pedidos  
-**Fecha de la revisión:** 01/10/2026 (merge PR #10) / informe 02/10/2026  
-**Versión:** 1.1.0
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
+
+**Versión:** 1.1.0 — Sprint 2 (revisión 01/10/2026, merge [PR #10](https://github.com/AxlTech25/PFA-taller/pull/10); informe 02/10/2026)
 
 ---
 

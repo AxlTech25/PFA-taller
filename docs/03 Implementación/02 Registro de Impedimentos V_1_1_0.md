@@ -2,11 +2,11 @@
 
 # Registro de impedimentos
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Sprint cubierto:** 2 (16/09/2026 – 29/09/2026; implementación 01/10/2026)  
-**Fecha:** 02/10/2026  
-**Versión:** 1.1.0
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
+
+**Versión:** 1.1.0 — Sprint 2 (16/09/2026 – 29/09/2026; implementación 01/10/2026)
 
 Se heredan los impedimentos abiertos del Sprint 1 (`V_1_0_0`). Los nuevos del Sprint 2 empiezan en IMP-07.
 
