@@ -49,11 +49,24 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 | # | Artefacto | Archivo | Puntaje |
 |---|---|---|---|
-| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_3.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md) | 5.0 |
+| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_4.md) | 5.0 |
 | 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_5.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_5.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
 | — | Evidencias Jira (capturas recortadas) | [evidencias/](./docs/02%20Planificaci%C3%B3n/evidencias/) | — |
+
+---
+
+## Fase 03: Implementación (Sprint 1)
+
+Informe de estado, impedimentos, Sprint Review y retrospectiva del Sprint 1. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md) |
+| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/02%20Registro%20de%20Impedimentos%20V_1_0_0.md) |
+| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 
 ---
 

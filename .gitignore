@@ -1,14 +1,37 @@
+# Secretos y entorno local
 .env
+.env.*
+!.env.example
+
+# Python
 .venv/
 venv/
 __pycache__/
 *.py[cod]
+*$py.class
+*.egg-info/
 .pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+
+# Node / frontend
 node_modules/
 dist/
+frontend/coverage/
+.vite/
+
+# IDE y SO
+.idea/
+.vscode/
 *.log
+*.swp
 .DS_Store
+Thumbs.db
+
+# Artefactos locales
+*.sqlite3
+*.pem
+.cache/

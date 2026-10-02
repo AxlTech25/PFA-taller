@@ -6,8 +6,8 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 29/09/2026  
-**Versión:** 1.0.3  
+**Fecha:** 02/10/2026  
+**Versión:** 1.0.4  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -813,6 +813,8 @@ US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas �
 
 Criterio de éxito del Sprint 1: un Operador de prueba inicia sesión en Staging, registra un vehículo con factor de CO₂ y el OpenAPI lista los endpoints; el Quality Gate está en verde.
 
+**Cierre en código (30/09/2026):** el compromiso de 26 SP está en `main` (PR #9). La API y la SPA viven en `backend/` y `frontend/` (Compose). El Quality Gate de CI es Ruff + Pytest ≥ 80 % + build Vite; CodeQL/Sonar y Staging en la nube quedan como deuda del DoD (IMP-04 del registro de impedimentos). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+
 Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_5.md](./02%20Artefactos%20Jira%20V_1_0_5.md).
 
 ---
@@ -868,6 +870,7 @@ Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_5.md](./02%
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Transformación inicial RF/RNF → 7 épicas, 18 US, 8 enablers, DoD global y backlog de 156 SP. |
 | 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Cronograma confirmado: 6 sprints (02/09–24/11/2026) + 3 días de cierre. US-017 reasignada de Sprint 7 a Sprint 6. |
 | 1.0.3 | 29/09/2026 | Equipo EcoLogística Lima | Planificación del Sprint 2 (26 SP, Goal, responsables y guion de revisión). US-008 partido en incremento A (5 SP, Sprint 2) y B (3 SP, Sprint 3). Menú de navegación y cliente de demo como alcance explícito. |
+| 1.0.4 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 1 en código (PR #9, 26/26 SP). Se registra deuda de Staging cloud y CodeQL. Enlace al informe de estado de la Fase 03. |
 
 ---
 
