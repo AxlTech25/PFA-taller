@@ -29,7 +29,7 @@ El repositorio ya contiene además el Sprint 2 (PR #10, 01/10/2026). **Este info
 
 ## Historias de Usuario completadas en este Sprint
 
-Compromiso del artefacto [01 Transformando a ágil V_1_0_4.md](../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_4.md), sección 9.
+Compromiso del artefacto [01 Transformando a ágil V_1_0_5.md](../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md), sección 9.
 
 | ID | Título | SP | Estado | Evidencia en el repositorio |
 |---|---|---|---|---|
@@ -71,12 +71,12 @@ Pendientes **del Sprint 1** (no del producto completo):
 
 | Ítem | Tipo | Destino |
 |---|---|---|
-| Despliegue a Staging en la nube (DoD D4) | Técnico | Sprint 2 o 3 (ENB-002 ampliación) |
-| CodeQL o SonarQube en el Quality Gate (DoD D2) | Técnico | Siguiente mejora de CI |
+| Despliegue a Staging en la nube (DoD D4) | Técnico | Sigue abierto al cierre del Sprint 2 (IMP-04; destino Sprint 3 / Hito 3) |
+| CodeQL o SonarQube en el Quality Gate (DoD D2) | Técnico | Sigue abierto (IMP-04) |
 | Automatizar escenarios Gherkin además de Pytest (DoD D6) | Calidad | Transversal |
 | Impedimento IMP-03 (desfase de calendario) | Proceso | Retrospectiva: arrancar el sprint en la fecha del Acta |
 
-Alcance de producto que **no** pertenecía al Sprint 1 y no se trata como atraso de esta iteración: US-002, US-003, US-005, US-006, US-008, ENB-004 (Sprint 2) y el motor VRPTW (Sprint 3–4).
+Alcance de producto que **no** pertenecía al Sprint 1: US-002, US-003, US-005, US-006, US-008 A y ENB-004 se cerraron en el Sprint 2 ([informe V_1_1_0](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_1_0.md)). El motor VRPTW sigue en Sprints 3–4.
 
 ---
 

@@ -51,8 +51,8 @@ Demostración a los stakeholders de las funcionalidades implementadas.
 
 | Pendiente | Dueño | Sprint destino |
 |---|---|---|
-| Staging cloud y CodeQL/Sonar (cierre de DoD D2/D4) | Jorge / Axel | Mejora de ENB-002, no reabre el Sprint 1 |
-| Historias de usuarios, bloqueo, conductores y pedidos | Equipo | Sprint 2 (plan sección 10 del artefacto 01) |
+| Staging cloud y CodeQL/Sonar (cierre de DoD D2/D4) | Jorge / Axel | Sigue abierto al cierre del Sprint 2 (IMP-04) |
+| Historias de usuarios, bloqueo, conductores y pedidos | Equipo | Cerradas en el Sprint 2 ([informe V_1_1_0](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_1_0.md)) |
 | Motor VRPTW, mapa, dashboard | Jorge / Katheryn | Sprints 3–5 |
 | Recuperar el desfase de 15 días del calendario | Eilene (PM) | Ritual de arranque en el próximo sprint |
 
