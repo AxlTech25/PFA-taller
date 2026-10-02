@@ -1,4 +1,4 @@
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)
 
 # Revisión del sprint
 
@@ -71,4 +71,4 @@ Guion detallado y métricas: [01 Informe de estado del proyecto V_1_0_0.md](./01
 
 ---
 
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)

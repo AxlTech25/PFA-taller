@@ -1,4 +1,4 @@
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)
 
 # Informe de estado del proyecto
 
@@ -12,7 +12,7 @@
 
 **Versión:** 1.1.0
 
-Este archivo usa el **nombre exacto** que pide la consigna (`V_1_0_0`). El encabezado registra **1.1.0** porque es el informe del Sprint 2. El Sprint 1 quedó en [`Sprint 1/`](./Sprint%201/).
+Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 Implementación/Sprint 2/` para no mezclarlo con el Sprint 1. El encabezado registra **1.1.0**. El Sprint 1 está en [`../Sprint 1/`](../Sprint%201/).
 
 ---
 
@@ -25,7 +25,7 @@ Este archivo usa el **nombre exacto** que pide la consigna (`V_1_0_0`). El encab
 | **Costos** | Línea base **S/ 13,000**. Plan de caja Mes 1 (Sprints 1–2): S/ 4,500 (RR. HH. S/ 3,334 + hardware/software S/ 1,000 + cloud S/ 166). Ejecutado al 02/10: RR. HH. prorrateado S/ 3,334; hardware de laboratorio en uso ≈ S/ 730 (el dominio de S/ 70 no se compró); **cloud S/ 0** porque no hay Staging (IMP-04). Contingencia S/ 1,500 **intacta**. No se sobrepasa el techo; el gasto cloud queda diferido al Sprint 3. |
 | **Calidad** | 1 defecto crítico de demo (IMP-07: el bloqueo 423 no se aplicaba por desfase de reloj Python/PostgreSQL) **cerrado el mismo 01/10** (`74dac8b`). CI verde: Ruff, Pytest cobertura ≥ 80 %, build Vite. Actividades: pruebas Gherkin de 403 por rol, DNI duplicado, pedido sin consentimiento y rechazo de `<script>`. Deuda: DoD D2/D4 (CodeQL/Sonar y Staging cloud) sigue abierta. |
 
-Detalle del compromiso (fuente: [01 Transformando a ágil V_1_0_5.md](../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md) §10):
+Detalle del compromiso (fuente: [01 Transformando a ágil V_1_0_5.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md) §10):
 
 | ID | Título | SP | Estado |
 |---|---|---|---|
@@ -84,4 +84,4 @@ No se abrirá un módulo de CRUD de clientes. El mapa Leaflet y el dashboard de 
 
 ---
 
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)

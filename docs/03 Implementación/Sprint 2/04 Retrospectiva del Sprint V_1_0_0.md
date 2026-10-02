@@ -1,4 +1,4 @@
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)
 
 # Retrospectiva del sprint
 
@@ -79,4 +79,4 @@ Revisión de esta iteración: [03 Revisión del Sprint V_1_0_0.md](./03%20Revisi
 
 ---
 
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)

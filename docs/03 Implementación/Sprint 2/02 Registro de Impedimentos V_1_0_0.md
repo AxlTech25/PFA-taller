@@ -1,4 +1,4 @@
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)
 
 # Registro de impedimentos
 
@@ -8,7 +8,7 @@
 
 **Versión:** 1.1.0 — Sprint 2 (16/09/2026 – 29/09/2026; implementación 01/10/2026)
 
-Se heredan los impedimentos abiertos del [Sprint 1](./Sprint%201/02%20Registro%20de%20Impedimentos%20V_1_0_0.md). Los nuevos del Sprint 2 empiezan en IMP-07.
+Se heredan los impedimentos abiertos del [Sprint 1](../Sprint%201/02%20Registro%20de%20Impedimentos%20V_1_0_0.md). Los nuevos del Sprint 2 empiezan en IMP-07.
 
 | Impedimento # | Fecha de Registro | Descripción del Impedimento así como el Impacto en el Proyecto | Prioridad | Reportado por | Fecha tope de Resolución | Estado | Fecha de Resolución | Resolución/Comentarios |
 |---|---|---|---|---|---|---|---|---|
@@ -33,4 +33,4 @@ Informe del sprint: [01 Informe de estado del proyecto V_1_0_0.md](./01%20Inform
 
 ---
 
-[← Volver al README Principal](../../README.md)
+[← Volver al README Principal](../../../README.md)
