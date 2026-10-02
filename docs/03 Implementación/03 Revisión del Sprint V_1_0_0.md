@@ -2,29 +2,28 @@
 
 # Revisión del sprint
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Sprint:** 1 — Plataforma base  
-**Fecha de la revisión:** 30/09/2026 (merge del PR #9) / informe 02/10/2026  
-**Versión:** 1.0.0
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
+
+**Versión:** 1.1.0 — Sprint 2 (revisión 01/10/2026, merge [PR #10](https://github.com/AxlTech25/PFA-taller/pull/10); informe 02/10/2026)
 
 ---
 
 ## Historias de Usuario completadas en este Sprint
 
-El Sprint Goal era: *dejar operativa la plataforma base: esquema de datos, autenticación JWT y registro de vehículos*.
+Sprint Goal: *un Administrador gestiona usuarios y roles, y un Operador ya autenticado registra conductores y pedidos sobre la flota del Sprint 1, con bloqueo de cuenta y menú de navegación.*
 
-| ID | Historia / Enabler | SP | MoSCoW | ¿Done según DoD? | Comentario de la Review |
-|---|---|---|---|---|---|
-| ENB-003 | Esquema PostgreSQL + PostGIS | 8 | Must | Sí, con evidencia de prueba | Migración 001 crea extensiones, tablas 3FN y GIST de `zona_restriccion`. `test_postgis_y_tablas_del_modelo` y unicidad de placa en PostgreSQL. |
-| ENB-002 | Pipeline CI/CD y Quality Gate | 5 | Must | Parcial | CI en GitHub Actions (Ruff + Pytest ≥ 80 % + build frontend). Falta CodeQL/Sonar y deploy a Staging cloud. Se acepta el incremento para no bloquear el Goal; la deuda es IMP-04. |
-| US-001 | Iniciar sesión con correo y JWT | 5 | Must | Sí | Login 200 + Bearer; 401 en credencial inválida; evento `login` en `log_auditoria`. Pantalla `LoginPage`. |
-| US-004 | Registrar vehículo | 5 | Must | Sí | Alta 201, placa duplicada 409, capacidad inválida 422. El Conductor no registra (403) — anticipo de RBAC que el Sprint 2 endurece. |
-| ENB-007 | OpenAPI / Swagger vivo | 3 | Must | Sí | `/docs` y `/openapi.json` listan `/auth/login` y `/vehiculos`. |
+| ID | Historia / Enabler | SP | ¿Done? | Comentario de la Review |
+|---|---|---|---|---|
+| US-002 | Usuarios y roles RBAC | 5 | Sí | Admin crea Conductor; Operador no crea Admin (403). Contraseña no viaja en el JSON de respuesta. |
+| US-003 | Bloqueo 3 intentos + consentimiento | 3 | Sí | 423 + Retry-After. Pedido sin consentimiento 422 y evento `pedido_sin_consentimiento`. Corregido el reloj (IMP-07) el mismo día del merge. |
+| US-005 | Lista / editar flota + menú | 3 | Sí | PUT estado/factor. Shell con módulos según rol. Conductor no ve Usuarios. |
+| US-006 | Alta de conductor | 5 | Sí | Punto de partida lat/lon; DNI único. No se listó/edición completa (no estaba en el compromiso). |
+| US-008 A | Alta de pedido con cliente demo | 5 | Sí | Estado PENDIENTE. Incremento B (cobertura y “frente a la bodega”) **fuera** de esta Review. |
+| ENB-004 | 403, sanitización, auditoría | 5 | Sí (S2) | Headers `X-Content-Type-Options` en health. TLS de Staging cloud no aplica. |
 
-**Resultado de la Review:** 26 SP de compromiso **aceptados** para el incremento de producto. ENB-002 se marca Completado-con-deuda (no se rechaza el sprint).
-
-No se mostraron ni se dieron por hechas las historias del Sprint 2 (US-002, US-003, US-005, US-006, US-008, ENB-004), aunque a la fecha de este documento ya existen en `main`.
+**Resultado:** 26 SP aceptados. No se aceptó US-008 B ni US-007.
 
 ---
 
@@ -32,18 +31,20 @@ No se mostraron ni se dieron por hechas las historias del Sprint 2 (US-002, US-0
 
 Demostración a los stakeholders de las funcionalidades implementadas.
 
-**Audiencia:** docente (interesado I-04) y el equipo. **Ambiente:** `docker compose up --build` (API :8000, web :5173, PostGIS :5433).
+**Audiencia:** docente (I-04) y el equipo. **Ambiente:** `docker compose up --build`.
 
 | Paso | Qué se vio | Historia |
 |---|---|---|
-| 1 | Arranque de db + api + web sin error de `entrypoint.sh` | ENB-003 / IMP-02 |
-| 2 | Login Operador en http://localhost:5173/login | US-001 |
-| 3 | Alta de un vehículo (placa nueva, factor de CO₂ > 0) y persistencia al recargar | US-004 |
-| 4 | Intento de placa repetida → mensaje “La placa ya se encuentra registrada” | US-004 (Gherkin infeliz) |
-| 5 | http://localhost:8000/docs con `POST /auth/login` y `POST /vehiculos` | ENB-007 |
-| 6 | Check de CI del PR #9 (Pytest con `--cov-fail-under=80`) | ENB-002 |
+| 1 | Login Admin → **Usuarios** → alta de un Conductor | US-002 |
+| 2 | Login Operador → menú Flota, Conductores, Pedidos (sin Usuarios) | US-005 |
+| 3 | Flota: `DMO-101` a Mantenimiento o cambio de CO₂ | US-005 |
+| 4 | Conductores: alta con DNI y punto de partida | US-006 |
+| 5 | Pedidos: Bodega El Ahorro → Pendiente; Los Pinos → rechazo Ley 29733 | US-008 A + US-003 |
+| 6 | Tres passwords malos → bloqueo 15 min | US-003 |
+| 7 | Login Conductor: no entra a Usuarios; no edita flota | US-002 / ENB-004 |
+| 8 | `/docs` lista `/usuarios`, `/conductores`, `/pedidos`, `/clientes` | ENB-007 vigente |
 
-**Feedback de stakeholders (equipo + criterio académico):** el Goal es visible sin explicar JWT ni PostGIS: “entro, grabo un vehículo, sigue ahí, Swagger lista la API”. Se pidió dejar documentado que Staging no es un URL público (IMP-04).
+**Feedback:** el Goal se entiende en pantallas. Se pidió no vender el seed de clientes como “módulo de clientes”. Se dejó explícito que el mapa y el ruteo no existen aún.
 
 ---
 
@@ -51,12 +52,13 @@ Demostración a los stakeholders de las funcionalidades implementadas.
 
 | Pendiente | Dueño | Sprint destino |
 |---|---|---|
-| Staging cloud y CodeQL/Sonar (cierre de DoD D2/D4) | Jorge / Axel | Sigue abierto al cierre del Sprint 2 (IMP-04) |
-| Historias de usuarios, bloqueo, conductores y pedidos | Equipo | Cerradas en el Sprint 2 ([informe V_1_1_0](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_1_0.md)) |
-| Motor VRPTW, mapa, dashboard | Jorge / Katheryn | Sprints 3–5 |
-| Recuperar el desfase de 15 días del calendario | Eilene (PM) | Ritual de arranque en el próximo sprint |
+| US-008 B (3 SP): distritos de cobertura y georreferencia aproximada | Katheryn / Brayan | 3 |
+| US-007 jornada 8 h | Jorge | 3 |
+| ENB-006, ENB-001, US-010 (motor; partir 13+13 SP) | Jorge | 3–4 |
+| IMP-04 Staging + CodeQL | Axel / Jorge | 3 (Hito 3: 27/10) |
+| Actualizar Jira a Done el día del merge (acción A5, retro S1) | Eilene | Inmediato |
 
-**Incremento B no pedido en esta Review:** cobertura geográfica de pedidos, jornada de 8 h, Leaflet, PDF.
+Guion detallado y métricas: [01 Informe de estado del proyecto V_1_0_0.md](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md). Impedimentos: [02 Registro de Impedimentos V_1_0_0.md](./02%20Registro%20de%20Impedimentos%20V_1_0_0.md).
 
 ---
 
@@ -64,7 +66,8 @@ Demostración a los stakeholders de las funcionalidades implementadas.
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
-| 1.0.0 | 02/10/2026 | Equipo EcoLogística Lima | Review del Sprint 1 alineada al PR #9 y al Goal de 26 SP. |
+| 1.0.0 | 02/10/2026 | Equipo EcoLogística Lima | Review del Sprint 1. |
+| 1.1.0 | 02/10/2026 | Equipo EcoLogística Lima | Review del Sprint 2 alineada al PR #10 y al Goal de 26 SP. |
 
 ---
 

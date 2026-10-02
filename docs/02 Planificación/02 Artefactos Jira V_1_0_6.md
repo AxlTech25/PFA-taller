@@ -209,7 +209,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 
 Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Conductores/Pedidos/Usuarios, (3) formulario conductor, (4) formulario pedido, (5) bloqueo 423, (6) prueba 403 de rol.
 
-**Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_1_0.md](../03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_1_0.md).
+**Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
@@ -299,6 +299,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Parametrización ECO Scrum, backlog 156 SP, Sprint 1 (26 SP), release v1.0.3-MVP y protocolo de evidencias. |
 | 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 | 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
-| 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe V_1_1_0. Recuerda mover las tarjetas a Done (A5). |
+| 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
 
 [← Volver al README Principal](../../README.md)
