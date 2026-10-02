@@ -35,3 +35,7 @@ Thumbs.db
 *.sqlite3
 *.pem
 .cache/
+vendor/
+Desktop.ini
+*.egg
+build/
