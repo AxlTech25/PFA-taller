@@ -18,7 +18,7 @@
 
 ## 1. Propósito
 
-Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_3.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md).
+Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_4.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_4.md).
 
 Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclusivamente** al panel de Jira (sin escritorio, barra de tareas, pestañas del navegador ni espacio sobrante). Las capturas viven en [`evidencias/`](./evidencias/). Este informe deja lista la parametrización (claves, SP, Sprint Goal, columnas y release) para cargarla en el sitio Jira del equipo; las PNG recortadas se añaden tras crear el proyecto `ECO` con el guion de la sección 8.
 
@@ -61,7 +61,7 @@ flowchart LR
     B --> A
 ```
 
-Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
+Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_4.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
 
 ---
 
@@ -182,7 +182,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 **Sprint:** `ECO Sprint 2`  
 **Fechas:** 16/09/2026 – 29/09/2026 (2 semanas)  
 **Capacidad:** 172 h académicas · compromiso **26 SP**  
-**Fuente:** [01 Transformando a ágil V_1_0_3.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_3.md) §10.
+**Fuente:** [01 Transformando a ágil V_1_0_4.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_4.md) §10.
 
 #### Sprint Goal (texto a pegar en la cabecera de Jira)
 
