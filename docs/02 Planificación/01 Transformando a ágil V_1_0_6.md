@@ -6,15 +6,15 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 02/10/2026  
-**Versión:** 1.0.5  
+**Fecha:** 16/10/2026  
+**Versión:** 1.0.6  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
 
 ## 1. Propósito
 
-Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_6.md)) y se estima en Story Points Fibonacci.
+Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_7.md)) y se estima en Story Points Fibonacci.
 
 No se reescriben los requisitos: se descomponen. Cualquier omisión detectada se registra en el historial de control de cambios.
 
@@ -792,6 +792,22 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 
 US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP).
 
+### 8.1 Cronograma de sprints (fechas)
+
+Calendario canónico: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+
+| Sprint | Inicio | Fin | Hito del Acta |
+|---|---|---|---|
+| 1 | 02/09/2026 | 15/09/2026 | Hito 1 — 02/09/2026 |
+| 2 | 16/09/2026 | 29/09/2026 | Hito 2 — 29/09/2026 |
+| 3 | 30/09/2026 | 13/10/2026 | — |
+| 4 | 14/10/2026 | 27/10/2026 | Hito 3 — 27/10/2026 |
+| 5 | 28/10/2026 | 10/11/2026 | — |
+| 6 | 11/11/2026 | 24/11/2026 | — |
+| Cierre | 25/11/2026 | 27/11/2026 | Hito 4 — 27/11/2026 |
+
+Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10). El Sprint 3 arranca el **16/10/2026**.
+
 ---
 
 ## 9. Sprint 1 — planificación de referencia
@@ -815,7 +831,7 @@ Criterio de éxito del Sprint 1: un Operador de prueba inicia sesión en Staging
 
 **Cierre en código (30/09/2026):** el compromiso de 26 SP está en `main` (PR #9). La API y la SPA viven en `backend/` y `frontend/` (Compose). El Quality Gate de CI es Ruff + Pytest ≥ 80 % + build Vite; CodeQL/Sonar y Staging en la nube quedan como deuda del DoD (IMP-04 del registro de impedimentos). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%201/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
-Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_6.md](./02%20Artefactos%20Jira%20V_1_0_6.md).
+Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_7.md](./02%20Artefactos%20Jira%20V_1_0_7.md).
 
 ---
 
@@ -859,13 +875,51 @@ En Staging, con el menú visible:
 5. Tres contraseñas incorrectas bloquean una cuenta (respuesta 423 / mensaje de bloqueo).
 6. El usuario Conductor **no** puede entrar a Usuarios ni editar flota (403).
 
-Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_6.md](./02%20Artefactos%20Jira%20V_1_0_6.md).
+Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_7.md](./02%20Artefactos%20Jira%20V_1_0_7.md).
 
 **Cierre en código (01/10/2026):** el compromiso de 26 SP (incremento A de US-008, no el B) está en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). El bloqueo 423 se corrigió el mismo día ([74dac8b](https://github.com/AxlTech25/PFA-taller/commit/74dac8b): `clock_timestamp()` en PostgreSQL). Clientes de demostración en migración `003_clientes_demo.py`. Staging cloud y CodeQL siguen como deuda (IMP-04). El Hito 2 del Acta (29/09/2026) se incumplió por 2 días (IMP-08). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
-## 11. Historial de Control de Cambios
+## 11. Sprint 3 — fechas y alcance de referencia
+
+**Fechas plan:** 30/09/2026 – 13/10/2026.  
+**Arranque real:** 16/10/2026. **Ventana Jira:** 16/10/2026 – 29/10/2026 (`ECO Sprint 3`).  
+**Hito:** ninguno al cierre; alimenta el Hito 3 (27/10, fin del Sprint 4).
+
+**Sprint Goal (borrador):** un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema respeta la jornada de 8 h; queda un worker listo y una heurística de rutas demostrable (aunque no sea el GA final).
+
+Compromiso de referencia: US-008 B (3 SP), US-007 (5 SP), ENB-006 (5 SP) e inicio de ENB-001 / US-010 (partidos). IMP-04 (Staging + CodeQL) sigue abierto.
+
+---
+
+## 12. Sprint 4 — fechas y alcance de referencia
+
+**Fechas:** 14/10/2026 – 27/10/2026.  
+**Nombre Jira:** `ECO Sprint 4`.  
+**Hito 3 del Acta:** 27/10/2026 — motor, mapa y dashboard integrados (el dashboard puede quedar iniciado si RSK-03 se materializa).
+
+Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM).
+
+---
+
+## 13. Sprint 5 — fechas y alcance de referencia
+
+**Fechas:** 28/10/2026 – 10/11/2026.  
+**Nombre Jira:** `ECO Sprint 5`.
+
+US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
+
+---
+
+## 14. Sprint 6 y cierre — fechas y alcance de referencia
+
+**Sprint 6:** 11/11/2026 – 24/11/2026 (`ECO Sprint 6`). US-011, US-016, US-018, US-017.  
+**Cierre / presentación:** 25/11/2026 – 27/11/2026. **Hito 4:** 27/11/2026. Release `v1.0.3-MVP`.
+
+---
+
+## 15. Historial de Control de Cambios
 
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
@@ -874,6 +928,7 @@ Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_6.md](./02%
 | 1.0.3 | 29/09/2026 | Equipo EcoLogística Lima | Planificación del Sprint 2 (26 SP, Goal, responsables y guion de revisión). US-008 partido en incremento A (5 SP, Sprint 2) y B (3 SP, Sprint 3). Menú de navegación y cliente de demo como alcance explícito. |
 | 1.0.4 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 1 en código (PR #9, 26/26 SP). Se registra deuda de Staging cloud y CodeQL. Enlace al informe de estado de la Fase 03. |
 | 1.0.5 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10, 26 SP: US-002, US-003, US-005, US-006, US-008 A, ENB-004). Incremento B de US-008 y US-007 quedan para el Sprint 3. IMP-04 sigue abierto. |
+| 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito de Sprints 1–6 y cierre (fechas plan + arranque real del Sprint 3 el 16/10/2026). Enlace al artefacto 05. |
 
 ---
 

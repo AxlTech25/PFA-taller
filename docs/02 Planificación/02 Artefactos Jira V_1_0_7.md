@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 02/10/2026  
-**Versión:** 1.0.6  
+**Fecha:** 16/10/2026  
+**Versión:** 1.0.7  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -18,7 +18,7 @@
 
 ## 1. Propósito
 
-Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_5.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md).
+Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_6.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md).
 
 Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclusivamente** al panel de Jira (sin escritorio, barra de tareas, pestañas del navegador ni espacio sobrante). Las capturas viven en [`evidencias/`](./evidencias/). Este informe deja lista la parametrización (claves, SP, Sprint Goal, columnas y release) para cargarla en el sitio Jira del equipo; las PNG recortadas se añaden tras crear el proyecto `ECO` con el guion de la sección 8.
 
@@ -61,13 +61,25 @@ flowchart LR
     B --> A
 ```
 
-Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
+Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
 
 ---
 
 ## 3. Evidencia 1 — Roadmap del proyecto
 
-Épicas alineadas a 6 sprints de 2 semanas (02/09/2026 – 24/11/2026) más 3 días de cierre y presentación (25/11 – 27/11/2026), según el cronograma corregido del Acta.
+Épicas alineadas a 6 sprints de 2 semanas (02/09/2026 – 24/11/2026) más 3 días de cierre y presentación (25/11 – 27/11/2026), según el cronograma corregido del Acta. Fechas de cada sprint: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+
+| Sprint Jira | Inicio | Fin |
+|---|---|---|
+| `ECO Sprint 1` | 02/09/2026 | 15/09/2026 |
+| `ECO Sprint 2` | 16/09/2026 | 29/09/2026 |
+| `ECO Sprint 3` | 30/09/2026 | 13/10/2026 |
+| `ECO Sprint 4` | 14/10/2026 | 27/10/2026 |
+| `ECO Sprint 5` | 28/10/2026 | 10/11/2026 |
+| `ECO Sprint 6` | 11/11/2026 | 24/11/2026 |
+| Cierre / Release | 25/11/2026 | 27/11/2026 |
+
+Al crear `ECO Sprint 3` en Jira use **16/10/2026 – 29/10/2026** (arranque real). El plan del Acta no se mueve.
 
 | Épica | S1 | S2 | S3 | S4 | S5 | S6 |
 |---|---|---|---|---|---|---|
@@ -182,7 +194,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 **Sprint:** `ECO Sprint 2`  
 **Fechas:** 16/09/2026 – 29/09/2026 (2 semanas)  
 **Capacidad:** 172 h académicas · compromiso **26 SP**  
-**Fuente:** [01 Transformando a ágil V_1_0_5.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md) §10.
+**Fuente:** [01 Transformando a ágil V_1_0_6.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md) §10.
 
 #### Sprint Goal (texto a pegar en la cabecera de Jira)
 
@@ -210,6 +222,17 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Conductores/Pedidos/Usuarios, (3) formulario conductor, (4) formulario pedido, (5) bloqueo 423, (6) prueba 403 de rol.
 
 **Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+
+### 5.2 Sprints 3 a 6 — fechas a cargar en Jira
+
+| Sprint | Fechas (plan Acta) | Fechas al crear el sprint | Compromiso de referencia |
+|---|---|---|---|
+| `ECO Sprint 3` | 30/09/2026 – 13/10/2026 | **16/10/2026 – 29/10/2026** | US-008 B, US-007, ENB-006, inicio ENB-001 / US-010 |
+| `ECO Sprint 4` | 14/10/2026 – 27/10/2026 | 14/10/2026 – 27/10/2026 | Cierre motor + inicio US-012. Hito 3 el 27/10. |
+| `ECO Sprint 5` | 28/10/2026 – 10/11/2026 | 28/10/2026 – 10/11/2026 | Mapa, dashboard, modo conductor, WCAG |
+| `ECO Sprint 6` | 11/11/2026 – 24/11/2026 | 11/11/2026 – 24/11/2026 | Re-opt, PDF, confirmar entrega, compensación |
+
+Al crear el Sprint 3: Backlog → **Crear sprint** → nombre `ECO Sprint 3` → fechas **16/10/2026 – 29/10/2026** (arranque real). Pegar el Goal antes de iniciarlo.
 
 ---
 
@@ -300,5 +323,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 | 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
 | 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
+| 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas explícitas de `ECO Sprint 1` a `ECO Sprint 6` y cierre. Ventana de tablero del Sprint 3: 16/10–29/10. |
 
 [← Volver al README Principal](../../README.md)

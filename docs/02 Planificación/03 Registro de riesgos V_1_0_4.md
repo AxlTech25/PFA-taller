@@ -17,7 +17,7 @@
 
 Este registro consolida la línea base de gestión de riesgos del PFA. Cada amenaza se evalúa de forma cuantitativa, se clasifica por severidad y cuenta con un plan preventivo (mitigación) y un plan reactivo (contingencia), de modo que el equipo pueda actuar antes y después de la materialización del evento.
 
-El análisis parte de los riesgos macro del [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_5.md), de las restricciones del [documento 13](../01%20Inicio/13.%20Restricciones%20V_1_0_2.md) y de los supuestos del [documento 04](../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_2.md).
+El análisis parte de los riesgos macro del [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_6.md), de las restricciones del [documento 13](../01%20Inicio/13.%20Restricciones%20V_1_0_2.md) y de los supuestos del [documento 04](../01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_2.md).
 
 ---
 

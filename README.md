@@ -7,6 +7,22 @@ Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para Di
 **Duración del MVP:** 12.4 semanas / 6 sprints + cierre (02/09/2026 – 27/11/2026)  
 **Versión objetivo:** `v1.0.0-MVP`
 
+### Cronograma de sprints
+
+Calendario oficial: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+
+| Sprint | Inicio | Fin | Hito |
+|---|---|---|---|
+| 1 | 02/09/2026 | 15/09/2026 | Hito 1 (02/09) |
+| 2 | 16/09/2026 | 29/09/2026 | Hito 2 (29/09) |
+| 3 | 30/09/2026 | 13/10/2026 | — |
+| 4 | 14/10/2026 | 27/10/2026 | Hito 3 (27/10) |
+| 5 | 28/10/2026 | 10/11/2026 | — |
+| 6 | 11/11/2026 | 24/11/2026 | — |
+| Cierre | 25/11/2026 | 27/11/2026 | Hito 4 (27/11) |
+
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026. El Sprint 3 arranca el **16/10/2026**.
+
 ---
 
 ## Equipo
@@ -28,7 +44,7 @@ Documentos de constitución, visión, requisitos, arquitectura y restricciones. 
 | # | Artefacto | Archivo |
 |---|---|---|
 | 01 | Selección del enfoque | [01. Selección del enfoque del proyecto V_1_0_2.md](./docs/01%20Inicio/01.%20Selecci%C3%B3n%20del%20enfoque%20del%20proyecto%20V_1_0_2.md) |
-| 02 | Acta de constitución | [02. Acta de constitución V_1_0_5.md](./docs/01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_5.md) |
+| 02 | Acta de constitución | [02. Acta de constitución V_1_0_6.md](./docs/01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_6.md) |
 | 03 | Declaración de la visión | [03. Declaración de la visión V_1_0_1.md](./docs/01%20Inicio/03.%20Declaraci%C3%B3n%20de%20la%20visi%C3%B3n%20V_1_0_1.md) |
 | 04 | Supuestos y restricciones | [04. Registro de supuestos y restricciones V_1_0_2.md](./docs/01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_2.md) |
 | 05 | Registro de interesados | [05. Registro de interesados V_1_0_1.md](./docs/01%20Inicio/05.%20Registro%20de%20interesados%20V_1_0_1.md) |
@@ -49,10 +65,11 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 | # | Artefacto | Archivo | Puntaje |
 |---|---|---|---|
-| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_5.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_5.md) | 5.0 |
-| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_6.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_6.md) | 5.0 |
+| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_6.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md) | 5.0 |
+| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_7.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_7.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
+| 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md) | — |
 | — | Evidencias Jira (capturas recortadas) | [evidencias/](./docs/02%20Planificaci%C3%B3n/evidencias/) | — |
 
 ---
@@ -61,7 +78,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Cada sprint tiene los cuatro archivos con el nombre `V_1_0_0.md` que pide la consigna. El Sprint 2 (vigente) registra versión **1.1.0** en el encabezado.
+Cada sprint tiene los cuatro archivos con el nombre `V_1_0_0.md` que pide la consigna. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md).
 
 ### Sprint 2
 
