@@ -55,7 +55,7 @@ Demostración a los stakeholders de las funcionalidades implementadas.
 | US-008 B (3 SP): distritos de cobertura y georreferencia aproximada | Katheryn / Brayan | 3 |
 | US-007 jornada 8 h | Jorge | 3 |
 | ENB-006, ENB-001, US-010 (motor; partir 13+13 SP) | Jorge | 3–4 |
-| IMP-04 Staging + CodeQL | Axel / Jorge | 3 (Hito 3: 27/10) |
+| IMP-04 Staging + CodeQL | Axel / Jorge | 3–4 (Hito 3: 12/11) |
 | Actualizar Jira a Done el día del merge (acción A5, retro S1) | Eilene | Inmediato |
 
 Guion detallado y métricas: [01 Informe de estado del proyecto V_1_0_0.md](./01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md). Impedimentos: [02 Registro de Impedimentos V_1_0_0.md](./02%20Registro%20de%20Impedimentos%20V_1_0_0.md).

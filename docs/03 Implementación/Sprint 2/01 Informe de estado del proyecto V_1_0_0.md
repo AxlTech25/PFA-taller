@@ -21,7 +21,7 @@ Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 I
 | Variables de control | Descripción del estado |
 | --- | --- |
 | **Alcance** | Compromiso del Sprint 2: **26 / 26 SP** demostrables (US-002, US-003, US-005, US-006, US-008 A, ENB-004). Código en `main` desde el [PR #10](https://github.com/AxlTech25/PFA-taller/pull/10). US-008 B (cobertura Lima Este, 3 SP) **no** entra: queda para el Sprint 3. Del MVP Must (RF-001 a RF-007 del Acta) siguen fuera jornada 8 h, motor VRPTW, mapa y dashboard. El Sprint 1 (login, flota, PostGIS, CI, OpenAPI) permanece vigente. |
-| **Cronograma** | **Atrasados.** El Hito 2 del Acta cerraba el 29/09/2026; el merge ocurrió el 01/10/2026 (**2 días**). El Sprint 1 ya venía 15 días tarde (IMP-03), así que el 2 no tuvo Daily de calendario: todo el incremento se implementó el 01/10 (IMP-08). Avance de sprints: **2 de 6** (33 %). Sprints restantes hasta el Hito 4 (27/11/2026): 4. |
+| **Cronograma** | **Atrasados.** El Hito 2 del Acta cerraba el 29/09/2026; el merge ocurrió el 01/10/2026 (**2 días**). El Sprint 1 ya venía 15 días tarde (IMP-03), así que el 2 no tuvo Daily de calendario: todo el incremento se implementó el 01/10 (IMP-08). Avance de sprints: **2 de 6**. El Sprint 3 arranca el 16/10/2026; Hito 4 el 13/12/2026. |
 | **Costos** | Línea base **S/ 13,000**. Plan de caja Mes 1 (Sprints 1–2): S/ 4,500 (RR. HH. S/ 3,334 + hardware/software S/ 1,000 + cloud S/ 166). Ejecutado al 02/10: RR. HH. prorrateado S/ 3,334; hardware de laboratorio en uso ≈ S/ 730 (el dominio de S/ 70 no se compró); **cloud S/ 0** porque no hay Staging (IMP-04). Contingencia S/ 1,500 **intacta**. No se sobrepasa el techo; el gasto cloud queda diferido al Sprint 3. |
 | **Calidad** | 1 defecto crítico de demo (IMP-07: el bloqueo 423 no se aplicaba por desfase de reloj Python/PostgreSQL) **cerrado el mismo 01/10** (`74dac8b`). CI verde: Ruff, Pytest cobertura ≥ 80 %, build Vite. Actividades: pruebas Gherkin de 403 por rol, DNI duplicado, pedido sin consentimiento y rechazo de `<script>`. Deuda: DoD D2/D4 (CodeQL/Sonar y Staging cloud) sigue abierta. |
 
@@ -43,8 +43,8 @@ Detalle del compromiso (fuente: [01 Transformando a ágil V_1_0_6.md](../../02%2
 
 | **Riesgo** | **Responsable** | **Mitigación** |
 | --- | --- | --- |
-| RSK-05 — El desfase de calendario se materializó (Hito 2 +2 días; Sprint 2 comprimido a un día de código). Si el Sprint 3 se implementa igual, el Hito 3 (27/10) no llega con motor + mapa. | Carhuapoma Fano, Eilene Elizabeth | Daily real desde el 02/10. Partir ENB-001/US-010 en subtareas ≤ 8 h. Recorte MoSCoW (RF-006, RF-009, RF-010) si al cierre del Sprint 4 no hay heurística demostrable. |
-| RSK-08 — TLS 1.3 y CodeQL no están (IMP-04). El bloqueo y el consentimiento sí se demostraron, pero el DoD de seguridad queda incompleto. | Estrada Flores, Axel Sebastian | Job CodeQL en `ci.yml` y URL de Staging (Railway/Render) antes del 27/10. No promover a Staging con secretos de `.env.example`. |
+| RSK-05 — El desfase de calendario se materializó (Hito 2 +2 días; Sprint 2 comprimido a un día de código). Si el Sprint 3 se implementa igual, el Hito 3 (12/11) no llega con motor + mapa. | Carhuapoma Fano, Eilene Elizabeth | Daily real desde el 02/10. Partir ENB-001/US-010 en subtareas ≤ 8 h. Recorte MoSCoW (RF-006, RF-009, RF-010) si al cierre del Sprint 4 no hay heurística demostrable. |
+| RSK-08 — TLS 1.3 y CodeQL no están (IMP-04). El bloqueo y el consentimiento sí se demostraron, pero el DoD de seguridad queda incompleto. | Estrada Flores, Axel Sebastian | Job CodeQL en `ci.yml` y URL de Staging (Railway/Render) antes del 12/11. No promover a Staging con secretos de `.env.example`. |
 | RSK-11 — Jira no se actualizó a Done el día del merge (A5). El tablero puede contradecir el software en `main`. | Carhuapoma Fano, Eilene Elizabeth | Mover US-002, US-003, US-005, US-006, US-008 A y ENB-004 a Done con enlace al PR #10 en esta misma semana. |
 | RSK-07 — US-008 B exige cobertura SJL/El Agustino/Santa Anita/Ate y punto de referencia; el alta actual usa el seed sin validar distrito. | Huaman Baldeon, Katheryn Elena / Leon Taza, Brayan Angel | Incremento B (3 SP) en el Sprint 3: distrito de cobertura + georreferencia aproximada, sin abrir CRUD de clientes. |
 | RSK-03 — El motor VRPTW entra en Sprints 3–4 (13+13 SP). Sigue siendo el riesgo High no ejecutado. | Cruz Salazar, Jorge Luiz | Heurística constructiva demostrable al cierre del Sprint 3; no esperar el GA completo para tener algo que enseñar. |
@@ -53,7 +53,7 @@ Detalle del compromiso (fuente: [01 Transformando a ágil V_1_0_6.md](../../02%2
 
 ### **Próximos avances**
 
-Sprint 3 (plan 30/09/2026 – 13/10/2026; arranque real 02/10/2026):
+Sprint 3 (16/10/2026 – 29/10/2026):
 
 1. US-008 B (3 SP): distritos de Lima Este y punto de referencia.
 2. US-007 (5 SP): jornada de 8 h y descansos (Ley N.º 30224).

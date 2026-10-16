@@ -800,13 +800,13 @@ Calendario canónico: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20
 |---|---|---|---|
 | 1 | 02/09/2026 | 15/09/2026 | Hito 1 — 02/09/2026 |
 | 2 | 16/09/2026 | 29/09/2026 | Hito 2 — 29/09/2026 |
-| 3 | 30/09/2026 | 13/10/2026 | — |
-| 4 | 14/10/2026 | 27/10/2026 | Hito 3 — 27/10/2026 |
-| 5 | 28/10/2026 | 10/11/2026 | — |
-| 6 | 11/11/2026 | 24/11/2026 | — |
-| Cierre | 25/11/2026 | 27/11/2026 | Hito 4 — 27/11/2026 |
+| 3 | 16/10/2026 | 29/10/2026 | — |
+| 4 | 30/10/2026 | 12/11/2026 | Hito 3 — 12/11/2026 |
+| 5 | 13/11/2026 | 26/11/2026 | — |
+| 6 | 27/11/2026 | 10/12/2026 | — |
+| Cierre | 11/12/2026 | 13/12/2026 | Hito 4 — 13/12/2026 |
 
-Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10). El Sprint 3 arranca el **16/10/2026**.
+Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10). El Sprint 3 arranca el **16/10/2026** (calendario rebaselinado).
 
 ---
 
@@ -883,9 +883,9 @@ Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_7.md](./02%
 
 ## 11. Sprint 3 — fechas y alcance de referencia
 
-**Fechas plan:** 30/09/2026 – 13/10/2026.  
-**Arranque real:** 16/10/2026. **Ventana Jira:** 16/10/2026 – 29/10/2026 (`ECO Sprint 3`).  
-**Hito:** ninguno al cierre; alimenta el Hito 3 (27/10, fin del Sprint 4).
+**Fechas:** 16/10/2026 – 29/10/2026.  
+**Nombre Jira:** `ECO Sprint 3`.  
+**Hito:** ninguno al cierre; alimenta el Hito 3 (12/11/2026, fin del Sprint 4).
 
 **Sprint Goal (borrador):** un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema respeta la jornada de 8 h; queda un worker listo y una heurística de rutas demostrable (aunque no sea el GA final).
 
@@ -895,9 +895,9 @@ Compromiso de referencia: US-008 B (3 SP), US-007 (5 SP), ENB-006 (5 SP) e inici
 
 ## 12. Sprint 4 — fechas y alcance de referencia
 
-**Fechas:** 14/10/2026 – 27/10/2026.  
+**Fechas:** 30/10/2026 – 12/11/2026.  
 **Nombre Jira:** `ECO Sprint 4`.  
-**Hito 3 del Acta:** 27/10/2026 — motor, mapa y dashboard integrados (el dashboard puede quedar iniciado si RSK-03 se materializa).
+**Hito 3 del Acta:** 12/11/2026 — motor, mapa y dashboard integrados (el dashboard puede quedar iniciado si RSK-03 se materializa).
 
 Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM).
 
@@ -905,7 +905,7 @@ Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM).
 
 ## 13. Sprint 5 — fechas y alcance de referencia
 
-**Fechas:** 28/10/2026 – 10/11/2026.  
+**Fechas:** 13/11/2026 – 26/11/2026.  
 **Nombre Jira:** `ECO Sprint 5`.
 
 US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
@@ -914,8 +914,8 @@ US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
 
 ## 14. Sprint 6 y cierre — fechas y alcance de referencia
 
-**Sprint 6:** 11/11/2026 – 24/11/2026 (`ECO Sprint 6`). US-011, US-016, US-018, US-017.  
-**Cierre / presentación:** 25/11/2026 – 27/11/2026. **Hito 4:** 27/11/2026. Release `v1.0.3-MVP`.
+**Sprint 6:** 27/11/2026 – 10/12/2026 (`ECO Sprint 6`). US-011, US-016, US-018, US-017.  
+**Cierre / presentación:** 11/12/2026 – 13/12/2026. **Hito 4:** 13/12/2026. Release `v1.0.3-MVP`.
 
 ---
 
@@ -928,7 +928,7 @@ US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
 | 1.0.3 | 29/09/2026 | Equipo EcoLogística Lima | Planificación del Sprint 2 (26 SP, Goal, responsables y guion de revisión). US-008 partido en incremento A (5 SP, Sprint 2) y B (3 SP, Sprint 3). Menú de navegación y cliente de demo como alcance explícito. |
 | 1.0.4 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 1 en código (PR #9, 26/26 SP). Se registra deuda de Staging cloud y CodeQL. Enlace al informe de estado de la Fase 03. |
 | 1.0.5 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10, 26 SP: US-002, US-003, US-005, US-006, US-008 A, ENB-004). Incremento B de US-008 y US-007 quedan para el Sprint 3. IMP-04 sigue abierto. |
-| 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito de Sprints 1–6 y cierre (fechas plan + arranque real del Sprint 3 el 16/10/2026). Enlace al artefacto 05. |
+| 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito. Sprint 3 = 16/10/2026 – 29/10/2026; Hito 3 = 12/11/2026; Hito 4 = 13/12/2026. Enlace al artefacto 05. |
 
 ---
 

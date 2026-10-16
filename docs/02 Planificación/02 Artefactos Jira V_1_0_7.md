@@ -36,7 +36,7 @@ Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclus
 | Estimación | Story Points (secuencia 1, 2, 3, 5, 8, 13) |
 | Sprint duration | 2 semanas |
 | Working days | Lun–Sáb (carga académica) |
-| Release | `v1.0.3-MVP` (fecha objetivo 27/11/2026, hito 4 del Acta) |
+| Release | `v1.0.3-MVP` (fecha objetivo 13/12/2026, hito 4 del Acta) |
 | Idioma de issues | Español peruano |
 | Componentes | Backend, Frontend, Optimizer, DB, DevOps |
 
@@ -67,19 +67,17 @@ Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformand
 
 ## 3. Evidencia 1 — Roadmap del proyecto
 
-Épicas alineadas a 6 sprints de 2 semanas (02/09/2026 – 24/11/2026) más 3 días de cierre y presentación (25/11 – 27/11/2026), según el cronograma corregido del Acta. Fechas de cada sprint: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Épicas alineadas a 6 sprints de 2 semanas. El Sprint 3 arranca el **16/10/2026**; el cierre es el **13/12/2026**. Fechas: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
 
 | Sprint Jira | Inicio | Fin |
 |---|---|---|
 | `ECO Sprint 1` | 02/09/2026 | 15/09/2026 |
 | `ECO Sprint 2` | 16/09/2026 | 29/09/2026 |
-| `ECO Sprint 3` | 30/09/2026 | 13/10/2026 |
-| `ECO Sprint 4` | 14/10/2026 | 27/10/2026 |
-| `ECO Sprint 5` | 28/10/2026 | 10/11/2026 |
-| `ECO Sprint 6` | 11/11/2026 | 24/11/2026 |
-| Cierre / Release | 25/11/2026 | 27/11/2026 |
-
-Al crear `ECO Sprint 3` en Jira use **16/10/2026 – 29/10/2026** (arranque real). El plan del Acta no se mueve.
+| `ECO Sprint 3` | 16/10/2026 | 29/10/2026 |
+| `ECO Sprint 4` | 30/10/2026 | 12/11/2026 |
+| `ECO Sprint 5` | 13/11/2026 | 26/11/2026 |
+| `ECO Sprint 6` | 27/11/2026 | 10/12/2026 |
+| Cierre / Release | 11/12/2026 | 13/12/2026 |
 
 | Épica | S1 | S2 | S3 | S4 | S5 | S6 |
 |---|---|---|---|---|---|---|
@@ -105,13 +103,13 @@ gantt
     EP-03 Conductores        :epic3, 2026-09-16, 28d
     EP-04 Pedidos            :epic4, 2026-09-16, 42d
     section Sprints 3–4
-    EP-05 Optimización       :epic5, 2026-09-30, 28d
+    EP-05 Optimización       :epic5, 2026-10-16, 28d
     section Sprints 4–5
-    EP-06 Mapa               :epic6, 2026-10-14, 28d
+    EP-06 Mapa               :epic6, 2026-10-30, 28d
     section Sprints 5–6
-    EP-07 Dashboard          :epic7, 2026-10-28, 28d
-    Re-opt + PDF + UAT       :cierre, 2026-11-11, 17d
-    Release v1.0.0-MVP       :milestone, 2026-11-27, 1d
+    EP-07 Dashboard          :epic7, 2026-11-13, 28d
+    Re-opt + PDF + UAT       :cierre, 2026-11-27, 17d
+    Release v1.0.0-MVP       :milestone, 2026-12-13, 1d
 ```
 
 **Captura requerida:** Timeline / Roadmap de Jira Cloud con las 7 épicas en el eje de tiempo, recorte al panel Timeline (sin chrome del SO). ![Evidencia 1: Roadmap del proyecto](./evidencias/evidencia-01-roadmap.png)Archivo destino: `evidencias/evidencia-01-roadmap.png`.
@@ -227,12 +225,12 @@ Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Co
 
 | Sprint | Fechas (plan Acta) | Fechas al crear el sprint | Compromiso de referencia |
 |---|---|---|---|
-| `ECO Sprint 3` | 30/09/2026 – 13/10/2026 | **16/10/2026 – 29/10/2026** | US-008 B, US-007, ENB-006, inicio ENB-001 / US-010 |
-| `ECO Sprint 4` | 14/10/2026 – 27/10/2026 | 14/10/2026 – 27/10/2026 | Cierre motor + inicio US-012. Hito 3 el 27/10. |
-| `ECO Sprint 5` | 28/10/2026 – 10/11/2026 | 28/10/2026 – 10/11/2026 | Mapa, dashboard, modo conductor, WCAG |
-| `ECO Sprint 6` | 11/11/2026 – 24/11/2026 | 11/11/2026 – 24/11/2026 | Re-opt, PDF, confirmar entrega, compensación |
+| `ECO Sprint 3` | 16/10/2026 – 29/10/2026 | 16/10/2026 – 29/10/2026 | US-008 B, US-007, ENB-006, inicio ENB-001 / US-010 |
+| `ECO Sprint 4` | 30/10/2026 – 12/11/2026 | 30/10/2026 – 12/11/2026 | Cierre motor + inicio US-012. Hito 3 el 12/11. |
+| `ECO Sprint 5` | 13/11/2026 – 26/11/2026 | 13/11/2026 – 26/11/2026 | Mapa, dashboard, modo conductor, WCAG |
+| `ECO Sprint 6` | 27/11/2026 – 10/12/2026 | 27/11/2026 – 10/12/2026 | Re-opt, PDF, confirmar entrega, compensación |
 
-Al crear el Sprint 3: Backlog → **Crear sprint** → nombre `ECO Sprint 3` → fechas **16/10/2026 – 29/10/2026** (arranque real). Pegar el Goal antes de iniciarlo.
+Al crear el Sprint 3: Backlog → **Crear sprint** → nombre `ECO Sprint 3` → fechas **16/10/2026 – 29/10/2026**. Pegar el Goal antes de iniciarlo.
 
 ---
 
@@ -278,7 +276,7 @@ WIP sugerido: máximo 3 issues en *In Progress* (mitiga RSK-05).
 | Campo | Valor |
 |---|---|
 | Nombre | `v1.0.3-MVP` |
-| Fecha de lanzamiento | 27/11/2026 |
+| Fecha de lanzamiento | 13/12/2026 |
 | Descripción | MVP EcoLogística Lima: flota, pedidos, ruteo VRPTW/Green VRP, mapa, dashboard y re-optimización. Umbral de aceptación: ≥ 70 % de RF de prioridad Alta. |
 | Issues asociados | ECO-1 a ECO-7 (épicas) y todas las Stories/Tasks Must + Should del backlog |
 | Estado | Unreleased hasta el Hito 4 |
@@ -323,6 +321,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.2 | 11/09/2026 | Equipo EcoLogística Lima | Roadmap y Release recalculados a 6 sprints (02/09–24/11/2026), release 27/11/2026 en vez de 14/12/2026. |
 | 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
 | 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
-| 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas explícitas de `ECO Sprint 1` a `ECO Sprint 6` y cierre. Ventana de tablero del Sprint 3: 16/10–29/10. |
+| 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas vigentes: Sprint 3 = 16/10–29/10; Hito 3 = 12/11; Hito 4 / release = 13/12. |
 
 [← Volver al README Principal](../../README.md)

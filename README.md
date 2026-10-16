@@ -4,24 +4,24 @@ Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para Di
 
 **Repositorio:** [AxlTech25/PFA-taller](https://github.com/AxlTech25/PFA-taller)  
 **Enfoque de gestión:** Híbrido (predictivo + ágil)  
-**Duración del MVP:** 12.4 semanas / 6 sprints + cierre (02/09/2026 – 27/11/2026)  
+**Duración del MVP:** 6 sprints + cierre (02/09/2026 – 13/12/2026)  
 **Versión objetivo:** `v1.0.0-MVP`
 
 ### Cronograma de sprints
 
-Calendario oficial: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Calendario vigente: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md). El Sprint 3 arranca el **16/10/2026**.
 
 | Sprint | Inicio | Fin | Hito |
 |---|---|---|---|
 | 1 | 02/09/2026 | 15/09/2026 | Hito 1 (02/09) |
 | 2 | 16/09/2026 | 29/09/2026 | Hito 2 (29/09) |
-| 3 | 30/09/2026 | 13/10/2026 | — |
-| 4 | 14/10/2026 | 27/10/2026 | Hito 3 (27/10) |
-| 5 | 28/10/2026 | 10/11/2026 | — |
-| 6 | 11/11/2026 | 24/11/2026 | — |
-| Cierre | 25/11/2026 | 27/11/2026 | Hito 4 (27/11) |
+| 3 | 16/10/2026 | 29/10/2026 | — |
+| 4 | 30/10/2026 | 12/11/2026 | Hito 3 (12/11) |
+| 5 | 13/11/2026 | 26/11/2026 | — |
+| 6 | 27/11/2026 | 10/12/2026 | — |
+| Cierre | 11/12/2026 | 13/12/2026 | Hito 4 (13/12) |
 
-Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026. El Sprint 3 arranca el **16/10/2026**.
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026.
 
 ---
 

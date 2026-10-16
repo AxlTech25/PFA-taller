@@ -57,14 +57,14 @@ No se revisó el plan de acción S1 al planning del 2: IMP-04 sigue igual.
 | # | Acción | Eje | Dueño | Fecha | Estado S1 |
 |---|---|---|---|---|---|
 | A1 | OpenAPI del Sprint 3 (worker/rutas aunque sea 501) el día 1 | Personas | Jorge | Día 1 Sprint 3 | Reiterada |
-| A3 | Job CodeQL en `ci.yml` | Herramientas | Axel | Antes del 27/10/2026 | **Incumplida en S2** |
-| A4 | URL de Staging (Railway/Render) en el README | Herramientas | Jorge | 27/10/2026 | **Incumplida en S2** |
+| A3 | Job CodeQL en `ci.yml` | Herramientas | Axel | Antes del 12/11/2026 | **Incumplida en S2** |
+| A4 | URL de Staging (Railway/Render) en el README | Herramientas | Jorge | 12/11/2026 | **Incumplida en S2** |
 | A5 | Jira Done + enlace al PR el día del merge | Relaciones | Eilene | Sprint 3, cada merge | **Incumplida en S2** |
 | A7 | En Planning del Sprint 3, meter US-008 B (3 SP) + US-007 (5) y **partir** ENB-001/US-010 en subtareas ≤ 8 h | Procesos | Eilene + Jorge | Día 1 Sprint 3 | Nueva |
 | A8 | Añadir descripción OpenAPI a `GET /clientes`: “catálogo de demostración, sin altas” | Herramientas | Axel | Sprint 3 | Nueva |
 | A9 | Test de bloqueo que avance el reloj en PostgreSQL (`clock_timestamp`) en el mismo PR que el login | Procesos | Axel | Hecho en 74dac8b; no revertir | Nueva |
 
-Sin A3 y A4, el Hito 3 (27/10) llegará otra vez con DoD a medias.
+Sin A3 y A4, el Hito 3 (12/11) llegará otra vez con DoD a medias.
 
 Revisión de esta iteración: [03 Revisión del Sprint V_1_0_0.md](./03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md). Impedimentos: [02 Registro de Impedimentos V_1_0_0.md](./02%20Registro%20de%20Impedimentos%20V_1_0_0.md).
 

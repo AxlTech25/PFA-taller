@@ -6,11 +6,11 @@
 # 04. Presupuesto del Proyecto
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 25/09/2026  
-**Versión:** 1.0.2  
+**Fecha:** 16/10/2026  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Moneda de costeo:** PEN (soles)  
-**Horizonte:** 12.4 semanas (6 sprints + 3 días de cierre), 02/09/2026 – 27/11/2026.
+**Horizonte:** 6 sprints + 3 días de cierre, 02/09/2026 – 13/12/2026 (rebaseline del Sprint 3 el 16/10/2026).
 
 ---
 
@@ -24,7 +24,7 @@ Todas las cifras están en **soles**. El techo original de la consigna (S/ 500,0
 
 | Premisa | Valor | Fuente |
 |---|---|---|
-| Duración del MVP | 12.4 semanas / 6 sprints + cierre | Acta de Constitución |
+| Duración del MVP | 6 sprints + cierre (esfuerzo 12.4 semanas; calendario 02/09/2026 – 13/12/2026) | Acta de Constitución |
 | Costeo de RR. HH. | S/ 2,000 por integrante para **todo** el proyecto (5 personas) | Acuerdo del equipo / Acta §6 |
 | Hardware / Software | ≈ S/ 1,000 | Acta §6 |
 | Servicios externos | S/ 500 | Acta §6 |
@@ -149,8 +149,8 @@ pie showData
 | Mes | RR. HH. | Hardware / Software | Cloud | Total mes |
 |---|---|---|---|---|
 | Mes 1 – Septiembre (Sprints 1–2) | 3,334.00 | 1,000.00 | 166.00 | 4,500.00 |
-| Mes 2 – Octubre (Sprints 3–4) | 3,333.00 | 0.00 | 167.00 | 3,500.00 |
-| Mes 3 – Noviembre + cierre (Sprints 5–6) | 3,333.00 | 0.00 | 167.00 | 3,500.00 |
+| Mes 2 – Octubre–noviembre (Sprints 3–4) | 3,333.00 | 0.00 | 167.00 | 3,500.00 |
+| Mes 3 – Noviembre–diciembre + cierre (Sprints 5–6) | 3,333.00 | 0.00 | 167.00 | 3,500.00 |
 | **Suma 3 meses** | **10,000.00** | **1,000.00** | **500.00** | **11,500.00** |
 
 La reserva de S/ 1,500 no se calendariza: permanece retenida hasta que un riesgo High o Medium se materialice.
@@ -164,6 +164,7 @@ La reserva de S/ 1,500 no se calendariza: permanece retenida hasta que un riesgo
 | 1.0.0 | 11/09/2026 | Equipo EcoLogística Lima | Línea base de ejecución USD 105,593.60 (S/ 390,696.32), contingencia 12 %, reconciliación con techo del Acta S/ 500,000. |
 | 1.0.1 | 11/09/2026 | Equipo EcoLogística Lima | Cronograma corregido a 6 sprints + 3 días de cierre (02/09/2026 – 27/11/2026, 12.4 semanas). Recalculo a tarifas de mercado: RR. HH. USD 78,061.00, total USD 93,861.32 (S/ 347,286.89). |
 | 1.0.2 | 25/09/2026 | Equipo EcoLogística Lima | Rebaseline académico **en soles**: S/ 2,000 × 5 integrantes = S/ 10,000; Hardware/Software S/ 1,000; Servicios externos S/ 500; Contingencia S/ 1,500. **Total S/ 13,000.** Se elimina el costeo en USD. |
+| 1.0.3 | 16/10/2026 | Equipo EcoLogística Lima | Horizonte 02/09/2026 – 13/12/2026 (Sprint 3 rebaselinado el 16/10). Etiquetas de caja: Mes 2 = Sprints 3–4; Mes 3 = Sprints 5–6 + cierre. Montos sin cambio. |
 
 ---
 

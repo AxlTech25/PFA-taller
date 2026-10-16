@@ -14,7 +14,7 @@ Colocar aquí **cinco PNG recortados** al panel de Jira (sin escritorio ni pesta
 
 1. Crear proyecto Scrum company-managed, key `ECO`, tablero con las cuatro columnas de la consigna.
 2. Crear las 7 épicas EP-01 a EP-07 y los componentes Backend, Frontend, Optimizer, DB, DevOps.
-3. Crear versión `v1.0.0-MVP` con fecha 14/12/2026.
+3. Crear versión `v1.0.0-MVP` con fecha 13/12/2026.
 4. Cargar Stories/Tasks del backlog (ECO-10 en adelante) con SP Fibonacci y assignee.
 5. Crear `ECO Sprint 1` (2 semanas), pegar el Sprint Goal del artefacto 02 y mover ECO-10 a ECO-14.
 6. Arrancar el sprint. Mover al menos una tarjeta a cada columna (demo del tablero activo).

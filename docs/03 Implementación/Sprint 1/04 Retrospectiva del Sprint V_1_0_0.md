@@ -59,7 +59,7 @@ No hubo Daily con inspección del burndown real (el trabajo ocurrió en un bloqu
 | A1 | En el día 1 de cada sprint, publicar el contrato OpenAPI (aunque el endpoint sea 501) para desbloquear frontend | Personas / procesos | Jorge Cruz | Sprint 3, día 1 |
 | A2 | Timebox de 2 h de “máquina en verde” (Compose + `.env` + login) el primer día del sprint | Procesos | Axel Estrada | Cada sprint, día 1 |
 | A3 | Añadir job CodeQL (o SonarCloud) al workflow `ci.yml` | Herramientas | Axel Estrada | Antes del cierre Sprint 3 |
-| A4 | Decidir URL de Staging (Railway o Render) y documentarla en el README | Herramientas | Jorge Cruz | 27/10/2026 (Hito 3) |
+| A4 | Decidir URL de Staging (Railway o Render) y documentarla en el README | Herramientas | Jorge Cruz | 12/11/2026 (Hito 3) |
 | A5 | Actualizar Jira a Done el mismo día del merge a `main`, con enlace al PR | Relaciones | Eilene Carhuapoma | Inmediato, Sprint 2 en adelante |
 | A6 | Mantener en el README el puerto **5433** y el aviso CRLF/LF | Herramientas | Brayan Leon | Hecho en README actual; revisar si alguien vuelve a 5432 |
 
