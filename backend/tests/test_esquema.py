@@ -25,6 +25,9 @@ def test_postgis_y_tablas_del_modelo(db):
         "incidencia",
         "configuracion_sistema",
         "log_auditoria",
+        "distrito_cobertura",
+        "job_optimizacion",
+        "descanso_ruta",
     }
     assert esperadas <= tablas
 
@@ -77,9 +80,40 @@ def test_entrypoint_usa_saltos_lf():
     assert contenido.startswith(b"#!/bin/sh\n")
 
 
+def test_distritos_de_lima_este(db):
+    nombres = set(db.execute(text("SELECT nombre FROM distrito_cobertura")).scalars())
+    assert nombres == {"San Juan de Lurigancho", "El Agustino", "Santa Anita", "Ate"}
+    dentro = db.execute(
+        text(
+            """
+            SELECT nombre FROM distrito_cobertura
+            WHERE ST_Covers(
+                geometria,
+                ST_SetSRID(ST_MakePoint(-76.9901, -12.0025), 4326)
+            )
+            """
+        )
+    ).scalar_one()
+    assert dentro == "San Juan de Lurigancho"
+    fuera = db.execute(
+        text(
+            """
+            SELECT COUNT(*) FROM distrito_cobertura
+            WHERE ST_Covers(
+                geometria,
+                ST_SetSRID(ST_MakePoint(-77.0300, -12.1219), 4326)
+            )
+            """
+        )
+    ).scalar_one()
+    assert fuera == 0
+
+
 def test_parametros_iniciales(db):
     claves = set(db.execute(text("SELECT clave FROM configuracion_sistema")).scalars())
     assert "tiempo_max_optimizacion_s" in claves
     assert "tiempo_max_reoptimizacion_s" in claves
     assert "precio_diesel_galon" in claves
     assert "costo_mantenimiento_km" in claves
+    assert "velocidad_urbana_km_h" in claves
+    assert "factor_congestion" in claves

@@ -232,9 +232,13 @@ th { font-size: 0.92rem; }
   font-weight: 700;
 }
 
-.ACTIVO, .PENDIENTE { background: #e7f6ee; color: var(--ok); }
-.MANTENIMIENTO, .ESTANDAR, .ECONOMICO { background: #fff6df; color: var(--aviso); }
-.INACTIVO, .BLOQUEADO, .EXPRESS { background: #fdecec; color: var(--peligro); }
+.ACTIVO, .PENDIENTE, .CONFIRMADA, .COMPLETADO { background: #e7f6ee; color: var(--ok); }
+.MANTENIMIENTO, .ESTANDAR, .ECONOMICO, .ENCOLADO, .EN_PROCESO, .BORRADOR {
+  background: #fff6df;
+  color: var(--aviso);
+}
+.INACTIVO, .BLOQUEADO, .EXPRESS, .FALLIDO { background: #fdecec; color: var(--peligro); }
+.ASIGNADO { background: #e7f0fa; color: #0b3a66; }
 
 td input, td select { min-height: 36px; width: 100%; }
 

@@ -94,6 +94,8 @@ class PedidoOut(BaseModel):
     prioridad: str
     tipo_producto: str
     estado: str
+    georreferencia_aproximada: bool = False
+    distrito: str | None = None
 
 
 class PedidoCreado(PedidoOut):

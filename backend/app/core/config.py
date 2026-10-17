@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "cambie-esta-clave-en-local"
     jwt_expire_minutes: int = 480
     cors_origins: str = "http://localhost:5173"
+    redis_url: str = "redis://localhost:6379/0"
     seed_on_startup: bool = False
     seed_admin_email: str = "admin@distrirapido.example.com"
     seed_admin_password: str = ""

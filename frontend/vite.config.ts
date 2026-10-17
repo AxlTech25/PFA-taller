@@ -22,6 +22,8 @@ const proxy = {
   "/conductores": api(),
   "/pedidos": api(),
   "/clientes": api(),
+  "/optimizaciones": api(),
+  "/rutas": api(),
   "/health": api(),
   "/docs": destino,
   "/openapi.json": destino,
