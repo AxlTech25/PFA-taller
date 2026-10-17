@@ -11,17 +11,17 @@ Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para Di
 
 Calendario vigente: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md). El Sprint 3 arranca el **16/10/2026**.
 
-| Sprint | Inicio | Fin | Hito |
-|---|---|---|---|
-| 1 | 02/09/2026 | 15/09/2026 | Hito 1 (02/09) |
-| 2 | 16/09/2026 | 29/09/2026 | Hito 2 (29/09) |
-| 3 | 16/10/2026 | 29/10/2026 | — |
-| 4 | 30/10/2026 | 12/11/2026 | Hito 3 (12/11) |
-| 5 | 13/11/2026 | 26/11/2026 | — |
-| 6 | 27/11/2026 | 10/12/2026 | — |
-| Cierre | 11/12/2026 | 13/12/2026 | Hito 4 (13/12) |
+| Sprint | Inicio | Fin | Hito | Compromiso (26 SP) |
+|---|---|---|---|---|
+| 1 | 02/09/2026 | 15/09/2026 | Hito 1 (02/09) | ENB-003, ENB-002, US-001, US-004, ENB-007 |
+| 2 | 16/09/2026 | 29/09/2026 | Hito 2 (29/09) | US-002, US-003, US-005, US-006, US-008 A, ENB-004 |
+| 3 | 16/10/2026 | 29/10/2026 | — | US-008 B, US-007, ENB-006, ENB-001 A, US-010 A |
+| 4 | 30/10/2026 | 12/11/2026 | Hito 3 (12/11) | ENB-001 B, US-010 B, US-012, US-014 A |
+| 5 | 13/11/2026 | 26/11/2026 | — | US-014 B, US-013, US-015, ENB-005, ENB-008 |
+| 6 | 27/11/2026 | 10/12/2026 | — | US-011, US-016, US-018, US-017, US-009 |
+| Cierre | 11/12/2026 | 13/12/2026 | Hito 4 (13/12) | UAT, documentación y presentación (sin US nuevas) |
 
-Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026.
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026. Tablas con SP y responsables: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md) §3.
 
 ---
 
@@ -65,8 +65,8 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 | # | Artefacto | Archivo | Puntaje |
 |---|---|---|---|
-| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_6.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md) | 5.0 |
-| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_7.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_7.md) | 5.0 |
+| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_7.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) | 5.0 |
+| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_8.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_8.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
 | 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md) | — |
