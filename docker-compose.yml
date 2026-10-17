@@ -23,6 +23,7 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ecologistica}:${POSTGRES_PASSWORD:-ecologistica}@db:5432/${POSTGRES_DB:-ecologistica}
+      REDIS_URL: redis://redis:6379/0
       SEED_ON_STARTUP: "true"
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
     ports:
@@ -30,6 +31,35 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Proceso aparte del request de FastAPI (C4: motor de optimización).
+  worker:
+    build: ./backend
+    entrypoint: ["python", "-m", "app.worker"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ecologistica}:${POSTGRES_PASSWORD:-ecologistica}@db:5432/${POSTGRES_DB:-ecologistica}
+      REDIS_URL: redis://redis:6379/0
+      SEED_ON_STARTUP: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      # Solo para depurar desde el host. La API y el worker usan el nombre redis.
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
 
   web:
     build: ./frontend
