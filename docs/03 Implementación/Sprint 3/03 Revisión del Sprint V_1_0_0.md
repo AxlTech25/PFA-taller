@@ -6,7 +6,7 @@
 
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
 
-**Versión:** 1.2.0 — Sprint 3 (revisión 17/10/2026)
+**Versión:** 1.2.0 — Sprint 3 (revisión 17/10/2026, [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15))
 
 ---
 

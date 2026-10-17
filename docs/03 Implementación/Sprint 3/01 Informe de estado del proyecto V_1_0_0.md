@@ -21,7 +21,7 @@ Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 I
 | Variables de control | Descripción del estado |
 | --- | --- |
 | **Alcance** | Compromiso cerrado del Sprint 3: **US-008 B (3 SP), US-007 (5 SP) y ENB-006 (5 SP)**. Inicio demostrable de ENB-001 / US-010: heurística del vecino más cercano, rutas en `BORRADOR` y confirmación. No se cierra el GA ni el bench de 150×15. El mapa y el dashboard siguen fuera. IMP-04: CodeQL entra en CI; la URL de Staging sigue pendiente. |
-| **Cronograma** | **Dentro de ventana.** El Sprint 3 va del 16/10/2026 al 29/10/2026. El código se entrega el 17/10/2026 (día 2). Avance de sprints con software en `main` pendiente de merge: 2 cerrados y el 3 en revisión. Hito 3 el 12/11/2026; Hito 4 el 13/12/2026. |
+| **Cronograma** | **Dentro de ventana.** El Sprint 3 va del 16/10/2026 al 29/10/2026. El código se entrega el 17/10/2026 (día 2) en el [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15). Avance: 2 sprints ya en `main` y el 3 en revisión. Hito 3 el 12/11/2026; Hito 4 el 13/12/2026. |
 | **Costos** | Línea base **S/ 13,000**. Cloud sigue en **S/ 0**: no hay Staging (IMP-04, parte de hosting). Contingencia S/ 1,500 intacta. No se compra infraestructura nueva en este sprint. |
 | **Calidad** | CI de producto: Ruff, Pytest con cobertura ≥ 80 % y build de Vite. Se añade el workflow CodeQL (`.github/workflows/codeql.yml`) para el Quality Gate D2. Pruebas del Gherkin de cobertura, georreferencia aproximada, jornada de 8 h, descanso de 1 h, cola 202 y Redis caído (503 sin job huérfano). |
 

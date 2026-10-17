@@ -44,7 +44,7 @@ Entre el fin planificado del Sprint 2 (29/09) y el arranque del 3 (16/10) hay un
 |---|---|---|---|---|
 | 1 | 02/09/2026 – 15/09/2026 | 30/09/2026 | +15 días | [PR #9](https://github.com/AxlTech25/PFA-taller/pull/9) · [Sprint 1](../03%20Implementaci%C3%B3n/Sprint%201/) |
 | 2 | 16/09/2026 – 29/09/2026 | 01/10/2026 | +2 días | [PR #10](https://github.com/AxlTech25/PFA-taller/pull/10) · [Sprint 2](../03%20Implementaci%C3%B3n/Sprint%202/) |
-| 3 | 16/10/2026 – 29/10/2026 | 17/10/2026 | Dentro de ventana (día 2 de 14) | [Sprint 3](../03%20Implementaci%C3%B3n/Sprint%203/) · PR del Sprint 3 |
+| 3 | 16/10/2026 – 29/10/2026 | 17/10/2026 | Dentro de ventana (día 2 de 14) | [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15) · [Sprint 3](../03%20Implementaci%C3%B3n/Sprint%203/) |
 | 4 | 30/10/2026 – 12/11/2026 | — | — | Planificado |
 | 5 | 13/11/2026 – 26/11/2026 | — | — | Planificado |
 | 6 | 27/11/2026 – 10/12/2026 | — | — | Planificado |
