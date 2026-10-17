@@ -6,8 +6,8 @@
 # 05. Cronograma de sprints
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 16/10/2026  
-**Versión:** 1.0.2  
+**Fecha:** 17/10/2026  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md).
@@ -52,7 +52,49 @@ Entre el fin planificado del Sprint 2 (29/09) y el arranque del 3 (16/10) hay un
 
 ---
 
-## 3. Compromiso por sprint (26 SP)
+## 3. Actividades por sprint
+
+Una fila por actividad. El detalle de SP y responsables está en la sección 4.
+
+| Sprint | Fechas | Actividad | ID | SP |
+|---|---|---|---|---|
+| **1** | 02/09/2026 – 15/09/2026 | Desplegar el esquema PostgreSQL + PostGIS | ENB-003 | 8 |
+| | | Configurar el pipeline CI/CD y el Quality Gate | ENB-002 | 5 |
+| | | Implementar autenticación JWT (login) | US-001 | 5 |
+| | | Registrar vehículos de la flota | US-004 | 5 |
+| | | Publicar OpenAPI / Swagger vivo | ENB-007 | 3 |
+| **2** | 16/09/2026 – 29/09/2026 | Gestionar usuarios y roles (RBAC) | US-002 | 5 |
+| | | Bloquear la cuenta a 3 intentos y exigir consentimiento | US-003 | 3 |
+| | | Consultar / actualizar flota y armar el menú de navegación | US-005 | 3 |
+| | | Registrar conductores | US-006 | 5 |
+| | | Dar de alta pedidos con cliente de demostración | US-008 A | 5 |
+| | | Hardening OWASP y bitácora `log_auditoria` | ENB-004 | 5 |
+| **3** | 16/10/2026 – 29/10/2026 | Validar cobertura Lima Este y punto de referencia en el pedido | US-008 B | 3 |
+| | | Validar jornada de 8 h y descansos (Ley N.º 30224) | US-007 | 5 |
+| | | Montar worker y cola Redis (API 202 + `job_id`) | ENB-006 | 5 |
+| | | Implementar heurística constructiva Sweep/NN | ENB-001 A | 8 |
+| | | Generar rutas asíncronas en escenario ≤ 50 pedidos | US-010 A | 5 |
+| **4** | 30/10/2026 – 12/11/2026 | Completar metaheurística GA/Tabú (P95 ≤ 45 s, 150×15) | ENB-001 B | 5 |
+| | | Cerrar generación de rutas: persistir BORRADOR, pico y placa | US-010 B | 8 |
+| | | Visualizar la ruta en mapa Leaflet/OSM | US-012 | 8 |
+| | | Mostrar km, kg CO₂ y litros de la última ruta | US-014 A | 5 |
+| **5** | 13/11/2026 – 26/11/2026 | Completar dashboard: % ventanas, soles y árboles | US-014 B | 3 |
+| | | Marcar zonas de riesgo y ofrecer ruta alternativa | US-013 | 5 |
+| | | Implementar modo conductor (secuencia, ETA, alertas) | US-015 | 8 |
+| | | Cumplir WCAG 2.1 AA (contraste, labels, teclado) | ENB-005 | 5 |
+| | | Ajustar payload de sesión ≤ 150 KB en 2G/3G | ENB-008 | 5 |
+| **6** | 27/11/2026 – 10/12/2026 | Re-optimizar solo las rutas afectadas por un incidente | US-011 | 8 |
+| | | Generar reporte PDF de sostenibilidad | US-016 | 5 |
+| | | Confirmar entrega ENTREGADO / FALLIDO | US-018 | 3 |
+| | | Calcular compensación de carbono (Could) | US-017 | 5 |
+| | | Registrar preferencias de horario del cliente (Could, recortable) | US-009 | 5 |
+| **Cierre** | 11/12/2026 – 13/12/2026 | UAT, documentación, presentación y release `v1.0.3-MVP` | — | — |
+
+Cada sprint suma **26 SP** (el cierre no suma historias). Recorte MoSCoW en el Sprint 6: US-009 → US-017 → US-016.
+
+---
+
+## 4. Compromiso por sprint (26 SP)
 
 Velocidad: **26 SP / sprint**. Total **156 SP**. Los ítems de 13 SP se parten 8+5; los de 8 que cruzan sprint se parten 5+3. Detalle BDD: [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §§9–14.
 
@@ -147,6 +189,7 @@ Sin historias nuevas. UAT, documentación, presentación y release `v1.0.3-MVP`.
 | 1.0.0 | 16/10/2026 | Equipo EcoLogística Lima | Calendario explícito de los 6 sprints. |
 | 1.0.1 | 16/10/2026 | Equipo EcoLogística Lima | Rebaseline: Sprint 3 = 16/10/2026 – 29/10/2026. S4–S6 y cierre se recorren 16 días. Hito 3 = 12/11/2026. Hito 4 = 13/12/2026. |
 | 1.0.2 | 17/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP por sprint (S3–S6 partidos: ENB-001 8+5, US-010 5+8, US-014 5+3; US-009 al Sprint 6). |
+| 1.0.3 | 17/10/2026 | Equipo EcoLogística Lima | Tabla única de actividades por sprint (sección 3). |
 
 ---
 
