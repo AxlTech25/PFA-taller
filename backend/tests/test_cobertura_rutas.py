@@ -172,7 +172,11 @@ def test_job_asincrono_y_heuristica_en_borrador(client, db, cola):
     assert listo.status_code == 200
     plan = listo.json()
     assert plan["estado"] == "COMPLETADO"
+    assert "algoritmo genético" in plan["mensaje"]
     assert "vecino más cercano" in plan["mensaje"]
+    assert plan["algoritmo"] == "algoritmo_genetico"
+    assert plan["comparacion"]["linea_base"] == "vecino_mas_cercano"
+    assert plan["comparacion"]["mejora_porcentaje"] >= 0
     assert len(plan["rutas"]) == 1
     ruta = plan["rutas"][0]
     assert ruta["estado"] == "BORRADOR"

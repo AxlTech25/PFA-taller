@@ -12,6 +12,8 @@ class ParadaOut(BaseModel):
     latitud: float | None = None
     longitud: float | None = None
     punto_referencia: str | None = None
+    minutos_tramo: float | None = None
+    nivel_congestion: str | None = None
 
 
 class DescansoOut(BaseModel):
@@ -32,8 +34,11 @@ class RutaOut(BaseModel):
     placa: str | None = None
     conductor: str | None = None
     id_conductor: uuid.UUID | None = None
+    origen_lat: float | None = None
+    origen_lon: float | None = None
     descansos: list[DescansoOut]
     paradas: list[ParadaOut]
+    comparacion: dict | None = None
     mensaje: str | None = None
 
 
@@ -46,4 +51,24 @@ class JobOut(BaseModel):
     estado: str
     fecha: date
     mensaje: str | None = None
+    algoritmo: str | None = None
+    comparacion: dict | None = None
     rutas: list[RutaOut]
+
+
+class IndicadoresOut(BaseModel):
+    fecha: date
+    hay_datos: bool
+    mensaje: str | None = None
+    rutas: int = 0
+    km: float = 0
+    co2_kg: float = 0
+    combustible_l: float = 0
+    soles_combustible: float = 0
+    soles_mantenimiento: float = 0
+    soles_ahorrados: float = 0
+    co2_ahorrado_kg: float = 0
+    arboles: float | None = None
+    nota_arboles: str | None = None
+    cumplimiento_ventanas_pct: float = 0
+    mejora_porcentaje: float | None = None

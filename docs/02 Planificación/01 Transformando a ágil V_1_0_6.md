@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 16/10/2026  
-**Versión:** 1.0.6  
+**Versión:** 1.0.7  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -899,7 +899,9 @@ Compromiso de referencia: US-008 B (3 SP), US-007 (5 SP), ENB-006 (5 SP) e inici
 **Nombre Jira:** `ECO Sprint 4`.  
 **Hito 3 del Acta:** 12/11/2026 — motor, mapa y dashboard integrados (el dashboard puede quedar iniciado si RSK-03 se materializa).
 
-Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM).
+Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM). El Hito 3 también nombra el dashboard: puede quedar iniciado.
+
+**Cierre en código (18/10/2026):** el genético VRPTW + Green VRP corre en el worker y se compara con el vecino más cercano. El mapa Leaflet/OSM y el tablero quedan iniciados, no cerrados. IMP-04 (Staging) sigue pendiente al 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
@@ -929,6 +931,7 @@ US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
 | 1.0.4 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 1 en código (PR #9, 26/26 SP). Se registra deuda de Staging cloud y CodeQL. Enlace al informe de estado de la Fase 03. |
 | 1.0.5 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10, 26 SP: US-002, US-003, US-005, US-006, US-008 A, ENB-004). Incremento B de US-008 y US-007 quedan para el Sprint 3. IMP-04 sigue abierto. |
 | 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito. Sprint 3 = 16/10/2026 – 29/10/2026; Hito 3 = 12/11/2026; Hito 4 = 13/12/2026. Enlace al artefacto 05. |
+| 1.0.7 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4: ENB-001 / US-010 con algoritmo genético, inicio de US-012 y tablero iniciado. Staging (IMP-04) sigue abierto al 12/11/2026. |
 
 ---
 

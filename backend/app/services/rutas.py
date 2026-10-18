@@ -20,6 +20,9 @@ from app.models.entities import (
     Vehiculo,
 )
 from app.optimizacion import cola
+from app.optimizacion.congestion import nivel_congestion
+from app.optimizacion.evaluacion import DEPOSITO_SJL, distancia_km
+from app.optimizacion.heuristica import _parametro
 from app.optimizacion.jornada import MENSAJE_JORNADA, descansos_requeridos
 from app.services.auditoria import registrar
 
@@ -75,7 +78,18 @@ def _float(valor) -> float | None:
     return float(valor)
 
 
-def salida_ruta(db: Session, ruta: Ruta, rol: str) -> dict:
+def _mapa(db: Session) -> tuple[float, float]:
+    velocidad = max(_parametro(db, "velocidad_urbana_km_h", 25), 1)
+    congestion = max(_parametro(db, "factor_congestion", 1), 0.1)
+    return velocidad, congestion
+
+
+def salida_ruta(
+    db: Session,
+    ruta: Ruta,
+    rol: str,
+    mapa: tuple[float, float] | None = None,
+) -> dict:
     asignacion = db.scalar(select(AsignacionRuta).where(AsignacionRuta.id_ruta == ruta.id_ruta))
     vehiculo = db.get(Vehiculo, asignacion.id_vehiculo) if asignacion else None
     conductor = db.get(Conductor, asignacion.id_conductor) if asignacion else None
@@ -94,21 +108,46 @@ def salida_ruta(db: Session, ruta: Ruta, rol: str) -> dict:
             .order_by(DescansoRuta.despues_de_secuencia)
         ).all()
     )
+    velocidad, congestion = mapa or _mapa(db)
+    origen_lat = None
+    origen_lon = None
+    if conductor is not None and not anonimo:
+        if conductor.lat_punto_partida is not None and conductor.lon_punto_partida is not None:
+            origen_lat = _float(conductor.lat_punto_partida)
+            origen_lon = _float(conductor.lon_punto_partida)
+        else:
+            origen_lat, origen_lon = DEPOSITO_SJL
+    previo = (origen_lat, origen_lon)
     paradas = []
     for detalle in detalles:
         pedido = db.get(Pedido, detalle.id_pedido)
         cliente = db.get(Cliente, pedido.id_cliente) if pedido else None
+        latitud = None if anonimo or pedido is None else _float(pedido.latitud)
+        longitud = None if anonimo or pedido is None else _float(pedido.longitud)
+        minutos = None
+        hay_tramo = None not in (previo[0], previo[1], latitud, longitud)
+        if hay_tramo:
+            km = distancia_km(previo[0], previo[1], latitud, longitud)
+            minutos = round((km / velocidad) * 60.0 * congestion, 2)
+            previo = (latitud, longitud)
         paradas.append(
             {
                 "secuencia": detalle.secuencia,
                 "id_pedido": detalle.id_pedido,
                 "nombre_cliente": cliente.nombre if cliente else None,
                 "eta": detalle.eta,
-                "latitud": None if anonimo or pedido is None else _float(pedido.latitud),
-                "longitud": None if anonimo or pedido is None else _float(pedido.longitud),
+                "latitud": latitud,
+                "longitud": longitud,
                 "punto_referencia": None if anonimo or pedido is None else pedido.punto_referencia,
+                "minutos_tramo": minutos,
+                "nivel_congestion": nivel_congestion(congestion, detalle.eta),
             }
         )
+    comparacion = None
+    if ruta.id_job is not None:
+        job = db.get(JobOptimizacion, ruta.id_job)
+        if job is not None and job.resultado:
+            comparacion = job.resultado.get("comparacion")
     return {
         "id_ruta": ruta.id_ruta,
         "fecha": ruta.fecha,
@@ -121,6 +160,9 @@ def salida_ruta(db: Session, ruta: Ruta, rol: str) -> dict:
         "placa": vehiculo.placa if vehiculo else None,
         "conductor": conductor.nombre if conductor else None,
         "id_conductor": conductor.id_conductor if conductor else None,
+        "origen_lat": origen_lat,
+        "origen_lon": origen_lon,
+        "comparacion": comparacion,
         "descansos": [
             {
                 "despues_de_secuencia": descanso.despues_de_secuencia,
@@ -137,12 +179,20 @@ def salida_job(db: Session, job: JobOptimizacion, rol: str) -> dict:
     rutas = list(
         db.scalars(select(Ruta).where(Ruta.id_job == job.id_job).order_by(Ruta.generada_en)).all()
     )
+    mapa = _mapa(db)
+    comparacion = None
+    algoritmo = None
+    if job.resultado:
+        comparacion = job.resultado.get("comparacion")
+        algoritmo = job.resultado.get("algoritmo")
     return {
         "id_job": job.id_job,
         "estado": job.estado,
         "fecha": job.fecha,
         "mensaje": job.mensaje,
-        "rutas": [salida_ruta(db, ruta, rol) for ruta in rutas],
+        "algoritmo": algoritmo,
+        "comparacion": comparacion,
+        "rutas": [salida_ruta(db, ruta, rol, mapa) for ruta in rutas],
     }
 
 
@@ -151,7 +201,8 @@ def listar_rutas(db: Session, actor: Usuario, fecha: date | None) -> list[dict]:
     if fecha is not None:
         consulta = consulta.where(Ruta.fecha == fecha)
     filas = list(db.scalars(consulta.limit(100)).all())
-    return [salida_ruta(db, fila, actor.rol) for fila in filas]
+    mapa = _mapa(db)
+    return [salida_ruta(db, fila, actor.rol, mapa) for fila in filas]
 
 
 def confirmar(db: Session, id_ruta: uuid.UUID, actor: Usuario, ip: str | None) -> dict:

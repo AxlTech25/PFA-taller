@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal, engine
 from app.models.entities import JobOptimizacion
 from app.optimizacion.cola import ColaNoDisponible, tomar
-from app.optimizacion.heuristica import generar_plan
+from app.optimizacion.metaheuristica import generar_plan
 from app.optimizacion.persistencia import persistir_plan
 from app.seed import wait_for_db
 
@@ -35,6 +35,8 @@ def procesar_job(db: Session, id_job: uuid.UUID) -> None:
             job.resultado = {
                 "id_rutas": identificadores,
                 "pedidos_sin_asignar": [str(item) for item in plan.sin_asignar],
+                "algoritmo": plan.algoritmo,
+                "comparacion": plan.comparacion,
             }
         else:
             job.estado = "FALLIDO"
