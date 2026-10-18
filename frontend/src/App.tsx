@@ -7,6 +7,7 @@ import { FlotaPage } from "./pages/FlotaPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ModoConductorPage } from "./pages/ModoConductorPage";
 import { PedidosPage } from "./pages/PedidosPage";
+import { RutasPage } from "./pages/RutasPage";
 import { Shell } from "./pages/Shell";
 import { UsuariosPage } from "./pages/UsuariosPage";
 import { modulosVisibles, type Modulo } from "./permissions";
@@ -56,6 +57,14 @@ export function App() {
           element={
             <Modulo modulo="pedidos">
               <PedidosPage />
+            </Modulo>
+          }
+        />
+        <Route
+          path="/rutas"
+          element={
+            <Modulo modulo="rutas">
+              <RutasPage />
             </Modulo>
           }
         />

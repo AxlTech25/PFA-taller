@@ -32,6 +32,7 @@ frontend/coverage/
 Thumbs.db
 
 # Artefactos locales
+dump.rdb
 *.sqlite3
 *.pem
 .cache/

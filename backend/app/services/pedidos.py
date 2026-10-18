@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.entities import Cliente, Pedido, Usuario
+from app.optimizacion.cobertura import MENSAJE_FUERA_COBERTURA, distrito_en
 from app.schemas.pedido import PedidoCreate
 from app.services.auditoria import registrar
 from app.services.integridad import mensaje_integridad
@@ -64,6 +65,10 @@ def salida_pedido(db: Session, pedido: Pedido, rol: str) -> dict:
         "prioridad": pedido.prioridad,
         "tipo_producto": pedido.tipo_producto,
         "estado": pedido.estado,
+        "georreferencia_aproximada": pedido.georreferencia_aproximada,
+        "distrito": None
+        if anonimo
+        else distrito_en(db, float(pedido.latitud), float(pedido.longitud)),
     }
 
 
@@ -103,6 +108,21 @@ def crear_pedido(db: Session, datos: PedidoCreate, actor: Usuario, ip: str | Non
         db.commit()
         raise HTTPException(status_code=422, detail=MENSAJE_CONSENTIMIENTO)
 
+    distrito = distrito_en(db, datos.latitud, datos.longitud)
+    if distrito is None:
+        registrar(
+            db,
+            id_usuario=actor.id_usuario,
+            accion="pedido_fuera_cobertura",
+            tabla="pedido",
+            registro_id=None,
+            ip=ip,
+            nuevos={"latitud": datos.latitud, "longitud": datos.longitud},
+        )
+        db.commit()
+        raise HTTPException(status_code=422, detail=MENSAJE_FUERA_COBERTURA)
+
+    aproximada = datos.punto_referencia is not None
     pedido = Pedido(
         id_cliente=datos.id_cliente,
         direccion=datos.direccion,
@@ -116,6 +136,7 @@ def crear_pedido(db: Session, datos: PedidoCreate, actor: Usuario, ip: str | Non
         prioridad=datos.prioridad,
         tipo_producto=datos.tipo_producto,
         estado="PENDIENTE",
+        georreferencia_aproximada=aproximada,
     )
     db.add(pedido)
     try:
@@ -136,6 +157,8 @@ def crear_pedido(db: Session, datos: PedidoCreate, actor: Usuario, ip: str | Non
             "id_cliente": str(pedido.id_cliente),
             "estado": pedido.estado,
             "peso_kg": float(pedido.peso_kg),
+            "distrito": distrito,
+            "georreferencia_aproximada": pedido.georreferencia_aproximada,
         },
     )
     db.commit()

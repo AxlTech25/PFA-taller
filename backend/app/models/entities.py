@@ -1,8 +1,19 @@
 import uuid
-from datetime import datetime, time
+from datetime import date, datetime, time
 from decimal import Decimal
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Time, text
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    Time,
+    text,
+)
 from sqlalchemy.dialects.postgresql import INET, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -106,6 +117,9 @@ class Pedido(Base):
     prioridad: Mapped[str] = mapped_column(String(20), nullable=False, default="ESTANDAR")
     tipo_producto: Mapped[str] = mapped_column(String(30), nullable=False)
     estado: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDIENTE")
+    georreferencia_aproximada: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=text("false")
+    )
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
@@ -129,3 +143,96 @@ class LogAuditoria(Base):
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class JobOptimizacion(Base):
+    __tablename__ = "job_optimizacion"
+
+    id_job: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    estado: Mapped[str] = mapped_column(String(20), nullable=False, default="ENCOLADO")
+    id_usuario: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("usuario.id_usuario")
+    )
+    fecha: Mapped[date] = mapped_column(Date, nullable=False)
+    mensaje: Mapped[str | None] = mapped_column(Text)
+    resultado: Mapped[dict | None] = mapped_column(JSONB)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class Ruta(Base):
+    __tablename__ = "ruta"
+
+    id_ruta: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    fecha: Mapped[date] = mapped_column(Date, nullable=False)
+    estado: Mapped[str] = mapped_column(String(20), nullable=False, default="BORRADOR")
+    distancia_total_km: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    tiempo_total_min: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    combustible_estimado_l: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    co2_estimado_kg: Mapped[Decimal | None] = mapped_column(Numeric(10, 3))
+    minutos_conduccion: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    id_job: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("job_optimizacion.id_job")
+    )
+    generada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class AsignacionRuta(Base):
+    __tablename__ = "asignacion_ruta"
+
+    id_asignacion: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    id_ruta: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), unique=True, nullable=False
+    )
+    id_vehiculo: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("vehiculo.id_vehiculo"), nullable=False
+    )
+    id_conductor: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("conductor.id_conductor"), nullable=False
+    )
+    asignada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class DetalleRuta(Base):
+    __tablename__ = "detalle_ruta"
+
+    id_detalle: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    id_ruta: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), nullable=False
+    )
+    id_pedido: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("pedido.id_pedido"), nullable=False
+    )
+    secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
+    eta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    estado_entrega: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDIENTE")
+
+
+class DescansoRuta(Base):
+    __tablename__ = "descanso_ruta"
+
+    id_descanso: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    id_ruta: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), nullable=False
+    )
+    despues_de_secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
+    duracion_min: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
+    motivo: Mapped[str] = mapped_column(String(80), nullable=False, default="LEY_30224")

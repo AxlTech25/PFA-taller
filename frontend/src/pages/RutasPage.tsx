@@ -1,0 +1,187 @@
+import { FormEvent, useEffect, useState } from "react";
+
+import { ApiError } from "../api";
+import { useAuth } from "../auth";
+import { etiqueta, puedeGenerarRutas } from "../permissions";
+import type { JobOptimizacion, Ruta } from "../types";
+
+function fechaHoy(): string {
+  const fecha = new Date();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  return `${fecha.getFullYear()}-${mes}-${dia}`;
+}
+
+function esperar(ms: number): Promise<void> {
+  return new Promise((resolver) => {
+    window.setTimeout(resolver, ms);
+  });
+}
+
+export function RutasPage() {
+  const { llamar, sesion } = useAuth();
+  const generar = sesion ? puedeGenerarRutas(sesion.rol) : false;
+  const [fecha, setFecha] = useState(fechaHoy);
+  const [rutas, setRutas] = useState<Ruta[]>([]);
+  const [error, setError] = useState("");
+  const [aviso, setAviso] = useState("");
+  const [ocupado, setOcupado] = useState(false);
+
+  async function cargar(dia: string) {
+    const lista = await llamar<Ruta[]>(`/rutas?fecha=${dia}`);
+    setRutas(lista);
+  }
+
+  useEffect(() => {
+    document.title = "Rutas · EcoLogística Lima";
+    cargar(fecha).catch((err: unknown) =>
+      setError(err instanceof ApiError ? err.message : "No se pudo cargar las rutas."),
+    );
+  }, [llamar, fecha]);
+
+  async function solicitar(event: FormEvent) {
+    event.preventDefault();
+    setError("");
+    setAviso("");
+    setOcupado(true);
+    try {
+      const job = await llamar<JobOptimizacion>("/optimizaciones", {
+        method: "POST",
+        body: JSON.stringify({ fecha }),
+      });
+      setAviso(job.mensaje ?? "Trabajo en cola.");
+      let ultimo = job;
+      for (let intento = 0; intento < 20 && (ultimo.estado === "ENCOLADO" || ultimo.estado === "EN_PROCESO"); intento += 1) {
+        await esperar(1000);
+        ultimo = await llamar<JobOptimizacion>(`/optimizaciones/${job.id_job}`);
+      }
+      setAviso(ultimo.mensaje ?? "");
+      if (ultimo.estado === "FALLIDO") {
+        setError(ultimo.mensaje ?? "No se pudo generar el plan.");
+      }
+      if (ultimo.estado === "ENCOLADO") {
+        setError(
+          "El trabajo sigue en cola. Verifique que el worker de optimización esté en ejecución.",
+        );
+      }
+      await cargar(fecha);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No se pudo encolar la optimización.");
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function confirmar(idRuta: string) {
+    setError("");
+    setAviso("");
+    try {
+      const ruta = await llamar<Ruta>(`/rutas/${idRuta}/confirmar`, { method: "POST" });
+      setAviso(ruta.mensaje ?? "Ruta confirmada.");
+      await cargar(fecha);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No se pudo confirmar la ruta.");
+    }
+  }
+
+  return (
+    <>
+      <header>
+        <h1>Rutas</h1>
+        <p className="ayuda">
+          El operador encola el plan del día. Un worker aparte calcula una heurística del vecino
+          más cercano (aún no es el algoritmo genético). La confirmación rechaza jornadas de más
+          de 8 horas e inserta un descanso de 1 hora cada 4 horas de conducción (Ley N.º 30224).
+          Los vehículos con el último dígito restringido ese día no entran al plan.
+        </p>
+      </header>
+      {error ? (
+        <p className="alerta" role="alert">
+          {error}
+        </p>
+      ) : null}
+      {aviso ? (
+        <p className="exito" role="status">
+          {aviso}
+        </p>
+      ) : null}
+      {generar ? (
+        <section className="panel">
+          <h2>Generar plan del día</h2>
+          <form className="grilla" onSubmit={solicitar}>
+            <label htmlFor="fecha">
+              Fecha de reparto
+              <input
+                id="fecha"
+                type="date"
+                required
+                value={fecha}
+                onChange={(event) => setFecha(event.target.value)}
+              />
+            </label>
+            <button type="submit" disabled={ocupado}>
+              {ocupado ? "En cola…" : "Generar rutas"}
+            </button>
+          </form>
+        </section>
+      ) : null}
+      <section className="panel">
+        <h2>Plan generado</h2>
+        {rutas.length === 0 ? (
+          <p>No hay rutas para la fecha seleccionada.</p>
+        ) : (
+          rutas.map((ruta) => (
+            <article key={ruta.id_ruta} className="panel">
+              <h3>
+                {ruta.placa ?? "Vehículo"} · {ruta.conductor ?? "Conductor"}{" "}
+                <span className={`insignia ${ruta.estado}`}>{etiqueta(ruta.estado)}</span>
+              </h3>
+              <p>
+                {ruta.distancia_total_km ?? 0} km · {ruta.minutos_conduccion ?? 0} min de conducción
+                · {ruta.combustible_estimado_l ?? 0} L · {ruta.co2_estimado_kg ?? 0} kg CO₂
+              </p>
+              {ruta.descansos.length > 0 ? (
+                <p>
+                  Descansos:{" "}
+                  {ruta.descansos
+                    .map((descanso) => `${descanso.duracion_min} min (Ley N.º 30224)`)
+                    .join(", ")}
+                </p>
+              ) : (
+                <p className="muted">Sin descanso insertado: la conducción continua es menor a 4 horas.</p>
+              )}
+              <div className="tabla-contenedor">
+                <table>
+                  <caption className="muted">Secuencia de entregas</caption>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Cliente</th>
+                      <th>Referencia</th>
+                      <th>ETA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ruta.paradas.map((parada) => (
+                      <tr key={`${ruta.id_ruta}-${parada.secuencia}`}>
+                        <td>{parada.secuencia}</td>
+                        <td>{parada.nombre_cliente ?? "Cliente"}</td>
+                        <td>{parada.punto_referencia ?? "—"}</td>
+                        <td>{parada.eta ? parada.eta.slice(0, 16).replace("T", " ") : "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {generar && ruta.estado === "BORRADOR" ? (
+                <button type="button" onClick={() => confirmar(ruta.id_ruta)}>
+                  Confirmar ruta
+                </button>
+              ) : null}
+            </article>
+          ))
+        )}
+      </section>
+    </>
+  );
+}
