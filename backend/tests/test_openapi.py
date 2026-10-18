@@ -15,6 +15,7 @@ def test_openapi_y_swagger(client):
         "/clientes",
         "/optimizaciones",
         "/rutas",
+        "/indicadores",
     ):
         assert ruta in paths
     assert "demostración" in paths["/clientes"]["get"]["description"].lower()

@@ -21,7 +21,7 @@ Calendario vigente: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planific
 | 6 | 27/11/2026 | 10/12/2026 | — |
 | Cierre | 11/12/2026 | 13/12/2026 | Hito 4 (13/12) |
 
-Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10).
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10); Sprint 4 el 18/10/2026 (antes de la ventana 30/10–12/11; el Hito 3 sigue el 12/11).
 
 ---
 
@@ -80,6 +80,17 @@ Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementaci
 
 Cada sprint tiene los cuatro archivos con el nombre `V_1_0_0.md` que pide la consigna. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md).
 
+### Sprint 4
+
+Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/Sprint%204/).
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md) |
+| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Registro%20de%20Impedimentos%20V_1_0_0.md) |
+| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+
 ### Sprint 3
 
 Carpeta: [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implementaci%C3%B3n/Sprint%203/).
@@ -122,16 +133,16 @@ Carpeta: [`docs/03 Implementación/Sprint 1/`](./docs/03%20Implementaci%C3%B3n/S
 | Backend | Python 3.11+ / FastAPI |
 | Frontend | React 18 + TypeScript + Vite |
 | Base de datos | PostgreSQL 16 + PostGIS |
-| Optimización | Worker Python aparte de la API (heurística en el Sprint 3; DEAP / OR-Tools en el Sprint 4) |
+| Optimización | Worker Python aparte de la API. Sprint 4: algoritmo genético con DEAP, comparado con el vecino más cercano |
 | Cola | Redis 7 |
 | Mapas | Leaflet + OpenStreetMap |
 | ALM | Jira Software + GitHub |
 
 ---
 
-## Alcance implementado (Sprint 3)
+## Alcance implementado (Sprint 4)
 
-El Sprint 1 (esquema PostGIS, JWT, alta de vehículos, OpenAPI y CI) y el Sprint 2 (usuarios, bloqueo, conductores y alta de pedido) siguen vigentes. Esta entrega cierra US-008 B, US-007 y ENB-006, y deja una heurística de rutas demostrable. No es el algoritmo genético final. El mapa y el dashboard siguen fuera. No hay URL de Staging.
+Los sprints 1 a 3 siguen vigentes. Esta entrega cierra en código el motor (algoritmo genético VRPTW + Green VRP en el worker, comparado con el vecino más cercano) e inicia el mapa Leaflet/OSM y el tablero. US-012 y US-014 no se dan por cerradas. No hay URL de Staging.
 
 | ID | Entrega |
 |---|---|
@@ -147,7 +158,9 @@ El Sprint 1 (esquema PostGIS, JWT, alta de vehículos, OpenAPI y CI) y el Sprint
 | US-008 B | Cobertura de San Juan de Lurigancho, El Agustino, Santa Anita y Ate; punto de referencia y `georreferencia_aproximada` |
 | US-007 | Confirmación de ruta: rechazo si la conducción del día supera 8 h (Ley N.º 30224) y descanso de 1 h cada 4 h |
 | ENB-006 | `POST /optimizaciones` responde 202. El worker (`python -m app.worker`) calcula fuera del request. Redis caído → 503, sin job huérfano |
-| ENB-001 / US-010 | Inicio: heurística del vecino más cercano, rutas en borrador, pico y placa por último dígito. Falta el GA y el bench de 150×15 |
+| ENB-001 / US-010 | Algoritmo genético (DEAP) en el worker, rutas en borrador, pico y placa, congestión y comparación con el vecino más cercano. Bench 150×15 en CI. La corrida en Staging sigue pendiente |
+| US-012 | Inicio: mapa Leaflet/OSM con trazado, paradas, ETA por tramo y semáforo. Si las teselas fallan, queda la tabla |
+| US-014 | Inicio del tablero (km, CO₂, combustible, soles, % de ventanas). El factor de árboles (RN-018) no está ratificado |
 | ENB-004 | 403 por rol, rechazo de inyección obvia en formularios y auditoría de login, vehículo, conductor y pedido |
 | ENB-007 | OpenAPI en vivo en `/docs`. `GET /clientes` es catálogo de demostración, sin altas |
 | IMP-04 | Workflow CodeQL. **Staging en la nube sigue pendiente** (no hay secreto de Railway/Render) |
@@ -217,14 +230,15 @@ El servidor de Vite reenvía las llamadas de la interfaz hacia `http://localhost
 ### 4. Recorrido de punta a punta
 
 1. Abra http://localhost:5173 e inicie sesión con `SEED_ADMIN_EMAIL`. En **Usuarios** cree una cuenta con rol Conductor.
-2. Cierre sesión e ingrese con `SEED_OPERADOR_EMAIL`. El menú muestra Flota, Conductores, Pedidos y Rutas.
+2. Cierre sesión e ingrese con `SEED_OPERADOR_EMAIL`. El menú muestra Flota, Conductores, Pedidos, Rutas y Tablero.
 3. En **Flota** pase `DMO-101` a Mantenimiento o cambie su factor de CO₂ y pulse Guardar.
 4. En **Conductores** registre DNI, licencia, horario y coordenadas de partida.
 5. En **Pedidos** elija Bodega El Ahorro, escriba el punto de referencia `frente a la bodega El Ahorro` y registre. Queda en Pendiente, en San Juan de Lurigancho, con georreferencia aproximada. Bodega Los Pinos se rechaza por falta de consentimiento. Una coordenada fuera de Lima Este (por ejemplo latitud `-12.1219`, longitud `-77.0300`) no crea el pedido.
-6. En **Rutas** elija la fecha del pedido y pulse **Generar rutas**. La API responde enseguida; el worker deja el plan en Borrador. **Confirmar ruta** asigna los pedidos si la conducción no pasa de 8 horas.
-7. Tres contraseñas incorrectas bloquean la cuenta: la API responde 423 durante 15 minutos.
-8. El usuario Conductor ve Flota (solo consulta) y Modo conductor. No entra a Usuarios, ni a Rutas, ni puede editar la flota (HTTP 403).
-9. Abra http://localhost:8000/docs para el contrato OpenAPI. `GET /clientes` es solo el catálogo de demostración.
+6. En **Rutas** elija la fecha del pedido y pulse **Generar rutas**. La API responde enseguida; el worker, en otro proceso, corre el algoritmo genético y compara el costo verde con el vecino más cercano. El plan queda en Borrador. El mapa dibuja la partida y las paradas; si OpenStreetMap no carga, queda la tabla. **Confirmar ruta** asigna los pedidos si la conducción no pasa de 8 horas.
+7. En **Tablero**, la misma fecha muestra km, CO₂, combustible, soles y el porcentaje de ventanas. Un día sin rutas dice «Sin datos de operación para el período seleccionado». Los árboles equivalentes quedan en blanco hasta ratificar el factor de RN-018.
+8. Tres contraseñas incorrectas bloquean la cuenta: la API responde 423 durante 15 minutos.
+9. El usuario Conductor ve Flota (solo consulta) y Modo conductor. No entra a Usuarios, ni a Rutas, ni al Tablero, ni puede editar la flota (HTTP 403).
+10. Abra http://localhost:8000/docs para el contrato OpenAPI. `GET /clientes` es solo el catálogo de demostración.
 
 No hay dirección pública de Staging. El análisis CodeQL corre en GitHub Actions (`.github/workflows/codeql.yml`).
 

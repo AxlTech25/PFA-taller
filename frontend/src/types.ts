@@ -81,7 +81,24 @@ export type ParadaRuta = {
   id_pedido: string;
   nombre_cliente?: string | null;
   eta?: string | null;
+  latitud?: number | null;
+  longitud?: number | null;
   punto_referencia?: string | null;
+  minutos_tramo?: number | null;
+  nivel_congestion?: string | null;
+};
+
+export type ComparacionRuta = {
+  algoritmo?: string;
+  linea_base?: string;
+  distancia_km?: number;
+  distancia_base_km?: number;
+  combustible_l?: number;
+  combustible_base_l?: number;
+  co2_kg?: number;
+  co2_base_kg?: number;
+  mejora_porcentaje?: number;
+  segundos?: number;
 };
 
 export type Ruta = {
@@ -95,9 +112,30 @@ export type Ruta = {
   co2_estimado_kg: number | null;
   placa: string | null;
   conductor: string | null;
+  origen_lat?: number | null;
+  origen_lon?: number | null;
   descansos: DescansoRuta[];
   paradas: ParadaRuta[];
+  comparacion?: ComparacionRuta | null;
   mensaje?: string;
+};
+
+export type Indicadores = {
+  fecha: string;
+  hay_datos: boolean;
+  mensaje?: string | null;
+  rutas: number;
+  km: number;
+  co2_kg: number;
+  combustible_l: number;
+  soles_combustible: number;
+  soles_mantenimiento: number;
+  soles_ahorrados: number;
+  co2_ahorrado_kg: number;
+  arboles: number | null;
+  nota_arboles?: string | null;
+  cumplimiento_ventanas_pct: number;
+  mejora_porcentaje?: number | null;
 };
 
 export type JobOptimizacion = {
@@ -105,5 +143,7 @@ export type JobOptimizacion = {
   estado: string;
   fecha: string;
   mensaje?: string | null;
+  algoritmo?: string | null;
+  comparacion?: ComparacionRuta | null;
   rutas: Ruta[];
 };

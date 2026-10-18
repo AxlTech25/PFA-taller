@@ -6,8 +6,8 @@
 # 05. Cronograma de sprints
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 16/10/2026  
-**Versión:** 1.0.2  
+**Fecha:** 18/10/2026  
+**Versión:** 1.0.3  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_6.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md).
@@ -45,7 +45,7 @@ Entre el fin planificado del Sprint 2 (29/09) y el arranque del 3 (16/10) hay un
 | 1 | 02/09/2026 – 15/09/2026 | 30/09/2026 | +15 días | [PR #9](https://github.com/AxlTech25/PFA-taller/pull/9) · [Sprint 1](../03%20Implementaci%C3%B3n/Sprint%201/) |
 | 2 | 16/09/2026 – 29/09/2026 | 01/10/2026 | +2 días | [PR #10](https://github.com/AxlTech25/PFA-taller/pull/10) · [Sprint 2](../03%20Implementaci%C3%B3n/Sprint%202/) |
 | 3 | 16/10/2026 – 29/10/2026 | 17/10/2026 | Dentro de ventana (día 2 de 14) | [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15) · [Sprint 3](../03%20Implementaci%C3%B3n/Sprint%203/) |
-| 4 | 30/10/2026 – 12/11/2026 | — | — | Planificado |
+| 4 | 30/10/2026 – 12/11/2026 | 18/10/2026 | Adelantado: el código entra antes de abrir la ventana. El Hito 3 sigue el 12/11/2026 | [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16) · [Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/) |
 | 5 | 13/11/2026 – 26/11/2026 | — | — | Planificado |
 | 6 | 27/11/2026 – 10/12/2026 | — | — | Planificado |
 | Cierre | 11/12/2026 – 13/12/2026 | — | — | Planificado |
@@ -74,6 +74,7 @@ Detalle de historias: artefacto 01, sección 8.
 | 1.0.0 | 16/10/2026 | Equipo EcoLogística Lima | Calendario explícito de los 6 sprints. |
 | 1.0.1 | 16/10/2026 | Equipo EcoLogística Lima | Rebaseline: Sprint 3 = 16/10/2026 – 29/10/2026. S4–S6 y cierre se recorren 16 días. Hito 3 = 12/11/2026. Hito 4 = 13/12/2026. |
 | 1.0.2 | 17/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 3 el 17/10/2026, dentro de la ventana. US-008 B, US-007, ENB-006 e inicio de ENB-001 / US-010. |
+| 1.0.3 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4 el 18/10/2026, antes de la ventana 30/10–12/11. Genético, mapa iniciado y tablero iniciado. Staging sigue pendiente al 12/11. |
 
 ---
 

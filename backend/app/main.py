@@ -8,6 +8,7 @@ from app.api.routes import (
     clientes,
     conductores,
     health,
+    indicadores,
     optimizaciones,
     pedidos,
     rutas,
@@ -22,8 +23,8 @@ app = FastAPI(
     title="EcoLogística Lima",
     version="1.0.0-MVP",
     description=(
-        "API del Sprint 3: cobertura de Lima Este, jornada de 8 horas, "
-        "worker de optimización y heurística de rutas sobre PostgreSQL + PostGIS."
+        "API del Sprint 4: algoritmo genético VRPTW + Green VRP en el worker, "
+        "comparación con el vecino más cercano, mapa de rutas y tablero iniciado."
     ),
 )
 
@@ -45,6 +46,7 @@ app.include_router(clientes.router)
 app.include_router(pedidos.router)
 app.include_router(optimizaciones.router)
 app.include_router(rutas.router)
+app.include_router(indicadores.router)
 
 
 @app.exception_handler(RequestValidationError)

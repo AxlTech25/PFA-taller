@@ -19,7 +19,7 @@ router = APIRouter(prefix="/optimizaciones", tags=["Optimización"])
     summary="Encolar generación de rutas",
     description=(
         "Encola un trabajo para el worker de optimización y responde de inmediato. "
-        "La heurística no corre en esta petición. Consulte GET /optimizaciones/{id_job}."
+        "El algoritmo genético no corre en esta petición. Consulte GET /optimizaciones/{id_job}."
     ),
     responses={503: {"description": "Redis no está disponible"}},
 )

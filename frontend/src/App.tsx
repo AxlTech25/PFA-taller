@@ -6,6 +6,7 @@ import { ConductoresPage } from "./pages/ConductoresPage";
 import { FlotaPage } from "./pages/FlotaPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ModoConductorPage } from "./pages/ModoConductorPage";
+import { DashboardPage } from "./pages/DashboardPage";
 import { PedidosPage } from "./pages/PedidosPage";
 import { RutasPage } from "./pages/RutasPage";
 import { Shell } from "./pages/Shell";
@@ -65,6 +66,14 @@ export function App() {
           element={
             <Modulo modulo="rutas">
               <RutasPage />
+            </Modulo>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <Modulo modulo="dashboard">
+              <DashboardPage />
             </Modulo>
           }
         />

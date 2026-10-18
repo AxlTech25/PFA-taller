@@ -255,3 +255,30 @@ td input, td select { min-height: 36px; width: 100%; }
 
 h1 { margin: 0 0 0.3rem; font-size: 1.5rem; }
 h2 { margin: 0 0 0.8rem; font-size: 1.15rem; }
+
+.mapa {
+  height: 28rem;
+  border-radius: 12px;
+  border: 1px solid var(--linea);
+}
+
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.8rem;
+}
+
+.metrica span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.metrica strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.35rem;
+}
+
+.semaforo.VERDE { background: #e7f6ee; color: var(--ok); }
+.semaforo.AMARILLO { background: #fff6df; color: var(--aviso); }
+.semaforo.ROJO { background: #fdecec; color: var(--peligro); }

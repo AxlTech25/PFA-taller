@@ -1,6 +1,6 @@
 export type Rol = "ADMIN" | "GERENTE" | "OPERADOR" | "CONDUCTOR" | "AUDITOR";
 
-export type Modulo = "flota" | "conductores" | "pedidos" | "rutas" | "usuarios" | "modo";
+export type Modulo = "flota" | "conductores" | "pedidos" | "rutas" | "dashboard" | "usuarios" | "modo";
 
 const ETIQUETAS: Record<string, string> = {
   ADMIN: "Administrador",
@@ -69,9 +69,11 @@ export function puedeGenerarRutas(rol: string): boolean {
 }
 
 export function modulosVisibles(rol: string): Modulo[] {
-  if (rol === "ADMIN") return ["flota", "conductores", "pedidos", "rutas", "usuarios"];
-  if (rol === "GERENTE") return ["flota", "conductores", "pedidos", "rutas", "usuarios"];
-  if (rol === "OPERADOR" || rol === "AUDITOR") return ["flota", "conductores", "pedidos", "rutas"];
+  if (rol === "ADMIN") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];
+  if (rol === "GERENTE") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];
+  if (rol === "OPERADOR" || rol === "AUDITOR") {
+    return ["flota", "conductores", "pedidos", "rutas", "dashboard"];
+  }
   if (rol === "CONDUCTOR") return ["flota", "modo"];
   return ["flota"];
 }

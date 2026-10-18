@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 16/10/2026  
-**Versión:** 1.0.7  
+**Fecha:** 18/10/2026  
+**Versión:** 1.0.8  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -226,7 +226,7 @@ Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Co
 | Sprint | Fechas (plan Acta) | Fechas al crear el sprint | Compromiso de referencia |
 |---|---|---|---|
 | `ECO Sprint 3` | 16/10/2026 – 29/10/2026 | 16/10/2026 – 29/10/2026 | US-008 B, US-007, ENB-006, inicio ENB-001 / US-010 |
-| `ECO Sprint 4` | 30/10/2026 – 12/11/2026 | 30/10/2026 – 12/11/2026 | Cierre motor + inicio US-012. Hito 3 el 12/11. |
+| `ECO Sprint 4` | 30/10/2026 – 12/11/2026 | 30/10/2026 – 12/11/2026 | Cierre motor + inicio US-012. Hito 3 el 12/11. Código el 18/10/2026, antes de la ventana. |
 | `ECO Sprint 5` | 13/11/2026 – 26/11/2026 | 13/11/2026 – 26/11/2026 | Mapa, dashboard, modo conductor, WCAG |
 | `ECO Sprint 6` | 27/11/2026 – 10/12/2026 | 27/11/2026 – 10/12/2026 | Re-opt, PDF, confirmar entrega, compensación |
 
@@ -322,5 +322,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
 | 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
 | 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas vigentes: Sprint 3 = 16/10–29/10; Hito 3 = 12/11; Hito 4 / release = 13/12. |
+| 1.0.8 | 18/10/2026 | Equipo EcoLogística Lima | El código del Sprint 4 entra el 18/10, antes de abrir `ECO Sprint 4`. En Jira las tarjetas del motor pasan a Done el día del merge (A5). Staging sigue fuera. |
 
 [← Volver al README Principal](../../README.md)

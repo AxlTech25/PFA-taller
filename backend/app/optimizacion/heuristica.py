@@ -1,24 +1,29 @@
-"""Heurística constructiva del vecino más cercano (inicio de ENB-001 / US-010).
+"""Carga del día y heurística del vecino más cercano (inicio de ENB-001 / US-010).
 
-No es el algoritmo genético ni Tabú del enabler completo. Arma un plan factible
-de demostración: capacidad, ventana, pico y placa, punto de partida del
-conductor, jornada de 8 h y descanso de 1 h cada 4 h de conducción.
+El algoritmo genético del Sprint 4 reutiliza esta carga y esta heurística como
+línea base. La construcción sigue siendo: capacidad, ventana, pico y placa,
+punto de partida, jornada de 8 h y descanso de 1 h cada 4 h de conducción.
 """
 
+import hashlib
 import time
-from dataclasses import dataclass, field
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 from uuid import UUID
 
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from app.models.entities import Conductor, Pedido, Vehiculo
-from app.optimizacion.jornada import EstadoJornada
+from app.optimizacion.evaluacion import (
+    DEPOSITO_SJL,
+    LITROS_POR_GALON,
+    Instancia,
+    PedidoNodo,
+    Plan,
+    Recurso,
+    vecino_mas_cercano,
+)
 from app.optimizacion.pico_placa import placa_restringida
-
-SERVICIO_MIN = 10
-DEPOSITO_SJL = (-12.0100, -76.9800)
 
 MENSAJE_SIN_PEDIDOS = (
     "No hay pedidos pendientes para esa fecha. "
@@ -46,37 +51,6 @@ MENSAJE_PLAN = (
 )
 
 
-@dataclass
-class ParadaPlan:
-    id_pedido: UUID
-    lat: float
-    lon: float
-    minutos_conduccion: float
-    eta: datetime
-    km: float
-
-
-@dataclass
-class RutaPlan:
-    id_vehiculo: UUID
-    id_conductor: UUID
-    paradas: list[ParadaPlan]
-    descansos: list
-    distancia_km: float
-    minutos_conduccion: float
-    minutos_reloj: float
-    combustible_l: float
-    co2_kg: float
-
-
-@dataclass
-class Plan:
-    factible: bool
-    mensaje: str
-    rutas: list[RutaPlan] = field(default_factory=list)
-    sin_asignar: list[UUID] = field(default_factory=list)
-
-
 def _parametro(db: Session, clave: str, defecto: float) -> float:
     valor = db.execute(
         text("SELECT valor FROM configuracion_sistema WHERE clave = :clave"),
@@ -93,20 +67,7 @@ def _origen(conductor: Conductor) -> tuple[float, float]:
     return DEPOSITO_SJL
 
 
-def distancia_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    from math import asin, cos, radians, sin, sqrt
-
-    radio = 6371.0
-    phi1, phi2 = radians(lat1), radians(lat2)
-    d_phi = radians(lat2 - lat1)
-    d_lon = radians(lon2 - lon1)
-    a = sin(d_phi / 2) ** 2 + cos(phi1) * cos(phi2) * sin(d_lon / 2) ** 2
-    return 2 * radio * asin(sqrt(a))
-
-
 def pedidos_del_dia(db: Session, fecha: date) -> list[Pedido]:
-    from sqlalchemy import func
-
     ocupados = set(
         db.execute(
             text(
@@ -156,148 +117,12 @@ def _conductores_libres(db: Session, fecha: date) -> list[Conductor]:
     return [fila for fila in filas if fila.id_conductor not in ocupados]
 
 
-def _armar_ruta(
-    vehiculo: Vehiculo,
-    conductor: Conductor,
-    candidatos: list[Pedido],
-    fecha: date,
-    velocidad: float,
-    congestion: float,
-    limite: float,
-) -> tuple[RutaPlan | None, bool]:
-    jornada = EstadoJornada()
-    lat, lon = _origen(conductor)
-    reloj = datetime.combine(fecha, conductor.disponibilidad_inicio, tzinfo=UTC)
-    fin = datetime.combine(fecha, conductor.disponibilidad_fin, tzinfo=UTC)
-    carga_kg = 0.0
-    carga_m3 = 0.0
-    paradas: list[ParadaPlan] = []
-    distancia = 0.0
-    pendientes = list(candidatos)
-    cortado = False
-    reloj_inicial = reloj
-
-    while pendientes:
-        if time.perf_counter() >= limite:
-            cortado = True
-            break
-        elegido: tuple | None = None
-        for pedido in pendientes:
-            peso = float(pedido.peso_kg)
-            volumen = float(pedido.volumen_m3)
-            if carga_kg + peso > float(vehiculo.capacidad_kg) + 1e-6:
-                continue
-            if carga_m3 + volumen > float(vehiculo.capacidad_m3) + 1e-6:
-                continue
-            km = distancia_km(lat, lon, float(pedido.latitud), float(pedido.longitud))
-            minutos = (km / velocidad) * 60.0 * congestion
-            if not jornada.puede_conducir(minutos):
-                continue
-            llegada, _proyectado = jornada.proyectar(reloj, minutos)
-            if llegada > pedido.ventana_fin or llegada > fin:
-                continue
-            espera = 0.0
-            if llegada < pedido.ventana_inicio:
-                espera = (pedido.ventana_inicio - llegada).total_seconds() / 60.0
-            clave = (0 if pedido.prioridad == "EXPRESS" else 1, km, str(pedido.id_pedido))
-            if elegido is None or clave < elegido[0]:
-                elegido = (clave, pedido, km, minutos, espera)
-        if elegido is None:
-            break
-        _, pedido, km, minutos, espera = elegido
-        llegada, proyectado = jornada.proyectar(reloj, minutos)
-        jornada.adoptar(proyectado)
-        reloj = llegada
-        if espera:
-            reloj = jornada.esperar(reloj, espera)
-        reloj += timedelta(minutes=SERVICIO_MIN)
-        jornada.registrar_parada()
-        paradas.append(
-            ParadaPlan(
-                id_pedido=pedido.id_pedido,
-                lat=float(pedido.latitud),
-                lon=float(pedido.longitud),
-                minutos_conduccion=minutos,
-                eta=reloj,
-                km=km,
-            )
-        )
-        distancia += km
-        carga_kg += float(pedido.peso_kg)
-        carga_m3 += float(pedido.volumen_m3)
-        lat, lon = float(pedido.latitud), float(pedido.longitud)
-        pendientes = [item for item in pendientes if item.id_pedido != pedido.id_pedido]
-
-    if not paradas:
-        return None, cortado
-    minutos_reloj = (reloj - reloj_inicial).total_seconds() / 60.0
-    consumo = float(vehiculo.consumo_km_l)
-    return (
-        RutaPlan(
-            id_vehiculo=vehiculo.id_vehiculo,
-            id_conductor=conductor.id_conductor,
-            paradas=paradas,
-            descansos=list(jornada.descansos),
-            distancia_km=distancia,
-            minutos_conduccion=jornada.minutos_conduccion,
-            minutos_reloj=minutos_reloj,
-            combustible_l=distancia / consumo if consumo else 0,
-            co2_kg=distancia * float(vehiculo.factor_emision_co2),
-        ),
-        cortado,
-    )
+def _semilla(fecha: date, identificadores: list[UUID]) -> int:
+    texto = fecha.isoformat() + "|" + ",".join(sorted(str(item) for item in identificadores))
+    return int(hashlib.sha256(texto.encode()).hexdigest()[:8], 16)
 
 
-def generar_plan(db: Session, fecha: date) -> Plan:
-    velocidad = max(_parametro(db, "velocidad_urbana_km_h", 25), 1)
-    congestion = max(_parametro(db, "factor_congestion", 1), 0.1)
-    presupuesto = _parametro(db, "tiempo_max_optimizacion_s", 45)
-    limite = time.perf_counter() + presupuesto
-
-    pedidos = pedidos_del_dia(db, fecha)
-    if not pedidos:
-        return Plan(False, MENSAJE_SIN_PEDIDOS)
-
-    activos = list(
-        db.scalars(
-            select(Vehiculo).where(Vehiculo.estado == "ACTIVO").order_by(Vehiculo.placa)
-        ).all()
-    )
-    habilitados = [vehiculo for vehiculo in activos if not placa_restringida(vehiculo.placa, fecha)]
-    excluidos = len(activos) - len(habilitados)
-    conductores = _conductores_libres(db, fecha)
-    if not habilitados and excluidos:
-        return Plan(False, MENSAJE_PLACA, sin_asignar=[pedido.id_pedido for pedido in pedidos])
-    if not habilitados or not conductores:
-        return Plan(False, MENSAJE_SIN_FLOTA, sin_asignar=[pedido.id_pedido for pedido in pedidos])
-
-    if time.perf_counter() >= limite:
-        return Plan(False, MENSAJE_TIEMPO, sin_asignar=[pedido.id_pedido for pedido in pedidos])
-
-    libres = list(pedidos)
-    rutas: list[RutaPlan] = []
-    cortado = False
-    pares = zip(habilitados, conductores, strict=False)
-    for vehiculo, conductor in pares:
-        if time.perf_counter() >= limite:
-            cortado = True
-            break
-        ruta, corto_ruta = _armar_ruta(
-            vehiculo, conductor, libres, fecha, velocidad, congestion, limite
-        )
-        cortado = cortado or corto_ruta
-        if ruta is None:
-            continue
-        rutas.append(ruta)
-        asignados = {parada.id_pedido for parada in ruta.paradas}
-        libres = [pedido for pedido in libres if pedido.id_pedido not in asignados]
-
-    sin_asignar = [pedido.id_pedido for pedido in libres]
-    if cortado and not rutas:
-        return Plan(False, MENSAJE_TIEMPO, sin_asignar=sin_asignar)
-    if not rutas:
-        return Plan(False, MENSAJE_SIN_FACTIBLE, sin_asignar=sin_asignar)
-
+def _mensaje_base(excluidos: int, sin_asignar: list[UUID], cortado: bool) -> str:
     mensaje = MENSAJE_PLAN
     if excluidos:
         mensaje += (
@@ -310,4 +135,101 @@ def generar_plan(db: Session, fecha: date) -> Plan:
         mensaje += (
             " El cálculo se detuvo al alcanzar el tiempo límite y devolvió el mejor plan factible."
         )
-    return Plan(True, mensaje, rutas, sin_asignar)
+    return mensaje
+
+
+def preparar(db: Session, fecha: date) -> Instancia | Plan:
+    velocidad = max(_parametro(db, "velocidad_urbana_km_h", 25), 1)
+    congestion = max(_parametro(db, "factor_congestion", 1), 0.1)
+    presupuesto = _parametro(db, "tiempo_max_optimizacion_s", 45)
+    precio_galon = _parametro(db, "precio_diesel_galon", 17.50)
+    costo_km = _parametro(db, "costo_mantenimiento_km", 1.20)
+    limite = time.perf_counter() + presupuesto
+
+    pedidos = pedidos_del_dia(db, fecha)
+    if not pedidos:
+        return Plan(False, MENSAJE_SIN_PEDIDOS)
+
+    identificadores = [pedido.id_pedido for pedido in pedidos]
+    activos = list(
+        db.scalars(
+            select(Vehiculo).where(Vehiculo.estado == "ACTIVO").order_by(Vehiculo.placa)
+        ).all()
+    )
+    habilitados = [vehiculo for vehiculo in activos if not placa_restringida(vehiculo.placa, fecha)]
+    excluidos = len(activos) - len(habilitados)
+    conductores = _conductores_libres(db, fecha)
+    if not habilitados and excluidos:
+        return Plan(False, MENSAJE_PLACA, sin_asignar=identificadores)
+    if not habilitados or not conductores:
+        return Plan(False, MENSAJE_SIN_FLOTA, sin_asignar=identificadores)
+    if time.perf_counter() >= limite:
+        return Plan(False, MENSAJE_TIEMPO, sin_asignar=identificadores)
+
+    nodos = [
+        PedidoNodo(
+            id=pedido.id_pedido,
+            lat=float(pedido.latitud),
+            lon=float(pedido.longitud),
+            peso=float(pedido.peso_kg),
+            volumen=float(pedido.volumen_m3),
+            ventana_inicio=pedido.ventana_inicio,
+            ventana_fin=pedido.ventana_fin,
+            express=pedido.prioridad == "EXPRESS",
+        )
+        for pedido in pedidos
+    ]
+    recursos: list[Recurso] = []
+    for vehiculo, conductor in zip(habilitados, conductores, strict=False):
+        lat, lon = _origen(conductor)
+        recursos.append(
+            Recurso(
+                id_vehiculo=vehiculo.id_vehiculo,
+                id_conductor=conductor.id_conductor,
+                placa=vehiculo.placa,
+                capacidad_kg=float(vehiculo.capacidad_kg),
+                capacidad_m3=float(vehiculo.capacidad_m3),
+                consumo_km_l=float(vehiculo.consumo_km_l),
+                factor_co2=float(vehiculo.factor_emision_co2),
+                origen_lat=lat,
+                origen_lon=lon,
+                inicio=datetime.combine(fecha, conductor.disponibilidad_inicio, tzinfo=UTC),
+                fin=datetime.combine(fecha, conductor.disponibilidad_fin, tzinfo=UTC),
+            )
+        )
+    return Instancia(
+        fecha=fecha,
+        pedidos=nodos,
+        recursos=recursos,
+        velocidad=velocidad,
+        congestion=congestion,
+        limite=limite,
+        precio_litro=precio_galon / LITROS_POR_GALON,
+        costo_km=costo_km,
+        excluidos=excluidos,
+        semilla=_semilla(fecha, identificadores),
+    )
+
+
+def plan_desde_vecino(inst: Instancia) -> Plan:
+    rutas, sin_asignar, cortado = vecino_mas_cercano(inst)
+    if cortado and not rutas:
+        return Plan(False, MENSAJE_TIEMPO, sin_asignar=sin_asignar)
+    if not rutas:
+        return Plan(False, MENSAJE_SIN_FACTIBLE, sin_asignar=sin_asignar)
+    return Plan(
+        True,
+        _mensaje_base(inst.excluidos, sin_asignar, cortado),
+        rutas,
+        sin_asignar,
+        algoritmo="vecino_mas_cercano",
+    )
+
+
+def generar_plan(db: Session, fecha: date) -> Plan:
+    """Línea base del Sprint 3. El worker del Sprint 4 usa la metaheurística."""
+
+    preparado = preparar(db, fecha)
+    if isinstance(preparado, Plan):
+        return preparado
+    return plan_desde_vecino(preparado)

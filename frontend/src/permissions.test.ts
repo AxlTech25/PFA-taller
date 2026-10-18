@@ -37,10 +37,18 @@ describe("permisos de Sprint 2", () => {
       "conductores",
       "pedidos",
       "rutas",
+      "dashboard",
       "usuarios",
     ]);
-    expect(modulosVisibles("OPERADOR")).toEqual(["flota", "conductores", "pedidos", "rutas"]);
+    expect(modulosVisibles("OPERADOR")).toEqual([
+      "flota",
+      "conductores",
+      "pedidos",
+      "rutas",
+      "dashboard",
+    ]);
     expect(modulosVisibles("CONDUCTOR")).toEqual(["flota", "modo"]);
+    expect(modulosVisibles("CONDUCTOR")).not.toContain("dashboard");
     expect(modulosVisibles("CONDUCTOR")).not.toContain("usuarios");
   });
 
