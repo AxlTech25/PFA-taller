@@ -21,7 +21,7 @@ Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 I
 | Variables de control | Descripción del estado |
 | --- | --- |
 | **Alcance** | Se cierra en código la continuación de **ENB-001 / US-010**: algoritmo genético VRPTW + Green VRP con DEAP, en el worker, comparado con el vecino más cercano del Sprint 3. El escenario de 150 pedidos y 15 vehículos queda factible y bajo el presupuesto de 45 s en la prueba de CI. **US-012** queda iniciada: mapa Leaflet/OSM con trazado, paradas, ETA por tramo y semáforo. El tablero de sostenibilidad queda **iniciado** (km, CO₂, combustible, soles, % de ventanas); US-014 no se cierra. IMP-04: Staging en Railway/Render **sigue pendiente**. |
-| **Cronograma** | **Adelantado respecto de la ventana.** El Sprint 4 va del 30/10/2026 al 12/11/2026 (Hito 3 el 12/11/2026). El código se entrega el 18/10/2026, todavía dentro del calendario del Sprint 3. El Hito 3 no se mueve. Hito 4 el 13/12/2026. |
+| **Cronograma** | **Adelantado respecto de la ventana.** El Sprint 4 va del 30/10/2026 al 12/11/2026 (Hito 3 el 12/11/2026). El código se entrega el 18/10/2026 en el [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16), todavía dentro del calendario del Sprint 3. El Hito 3 no se mueve. Hito 4 el 13/12/2026. |
 | **Costos** | Línea base **S/ 13,000**. Cloud sigue en **S/ 0**: no hay Staging (IMP-04). Contingencia S/ 1,500 intacta. No se compra infraestructura nueva. DEAP y Leaflet son de código abierto. |
 | **Calidad** | CI de producto: Ruff, Pytest con cobertura ≥ 80 % y build de Vite. CodeQL sigue en `.github/workflows/codeql.yml`. Pruebas nuevas del genético frente al vecino, del bench 150×15, del semáforo, del tablero vacío y del tablero con plan. |
 

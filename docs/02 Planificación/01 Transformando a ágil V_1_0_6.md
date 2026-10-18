@@ -901,7 +901,7 @@ Compromiso de referencia: US-008 B (3 SP), US-007 (5 SP), ENB-006 (5 SP) e inici
 
 Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM). El Hito 3 también nombra el dashboard: puede quedar iniciado.
 
-**Cierre en código (18/10/2026):** el genético VRPTW + Green VRP corre en el worker y se compara con el vecino más cercano. El mapa Leaflet/OSM y el tablero quedan iniciados, no cerrados. IMP-04 (Staging) sigue pendiente al 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético VRPTW + Green VRP corre en el worker y se compara con el vecino más cercano. El mapa Leaflet/OSM y el tablero quedan iniciados, no cerrados. IMP-04 (Staging) sigue pendiente al 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
