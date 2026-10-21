@@ -25,7 +25,7 @@ Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 I
 | **Costos** | Línea base **S/ 13,000**. Cloud sigue en **S/ 0**: no hay Staging (IMP-04). Contingencia S/ 1,500 intacta. No se compra infraestructura nueva. DEAP y Leaflet son de código abierto. |
 | **Calidad** | CI de producto: Ruff, Pytest con cobertura ≥ 80 % y build de Vite. CodeQL sigue en `.github/workflows/codeql.yml`. Pruebas nuevas del genético frente al vecino, del bench 150×15, del semáforo, del tablero vacío y del tablero con plan. |
 
-Detalle (fuente: [01 Transformando a ágil V_1_0_6.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md) §8 y §12):
+Detalle (fuente: [01 Transformando a ágil V_1_0_7.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §8 y §12):
 
 | ID | Título | SP | Estado |
 |---|---|---|---|

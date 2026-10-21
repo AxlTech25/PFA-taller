@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 18/10/2026  
-**Versión:** 1.0.8  
+**Fecha:** 21/10/2026  
+**Versión:** 1.0.9  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -18,7 +18,7 @@
 
 ## 1. Propósito
 
-Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprint 1 y Sprint 2 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_6.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md).
+Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprints 1 a 6 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md).
 
 Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclusivamente** al panel de Jira (sin escritorio, barra de tareas, pestañas del navegador ni espacio sobrante). Las capturas viven en [`evidencias/`](./evidencias/). Este informe deja lista la parametrización (claves, SP, Sprint Goal, columnas y release) para cargarla en el sitio Jira del equipo; las PNG recortadas se añaden tras crear el proyecto `ECO` con el guion de la sección 8.
 
@@ -61,7 +61,7 @@ flowchart LR
     B --> A
 ```
 
-Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
+Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
 
 ---
 
@@ -192,7 +192,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 **Sprint:** `ECO Sprint 2`  
 **Fechas:** 16/09/2026 – 29/09/2026 (2 semanas)  
 **Capacidad:** 172 h académicas · compromiso **26 SP**  
-**Fuente:** [01 Transformando a ágil V_1_0_6.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_6.md) §10.
+**Fuente:** [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §10.
 
 #### Sprint Goal (texto a pegar en la cabecera de Jira)
 
@@ -221,16 +221,88 @@ Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Co
 
 **Cierre en código (01/10/2026):** las seis tarjetas del compromiso están en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). En Jira deben pasar a **Done** el mismo día del merge (acción A5 de la retrospectiva; aún pendiente de evidencia). US-008 permanece estimada en 8 SP: solo el incremento A (5 SP) se da por cerrado; el B (3 SP) queda en el backlog del Sprint 3. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
-### 5.2 Sprints 3 a 6 — fechas a cargar en Jira
+### 5.2 Sprint 3 — planificación
 
-| Sprint | Fechas (plan Acta) | Fechas al crear el sprint | Compromiso de referencia |
-|---|---|---|---|
-| `ECO Sprint 3` | 16/10/2026 – 29/10/2026 | 16/10/2026 – 29/10/2026 | US-008 B, US-007, ENB-006, inicio ENB-001 / US-010 |
-| `ECO Sprint 4` | 30/10/2026 – 12/11/2026 | 30/10/2026 – 12/11/2026 | Cierre motor + inicio US-012. Hito 3 el 12/11. Código el 18/10/2026, antes de la ventana. |
-| `ECO Sprint 5` | 13/11/2026 – 26/11/2026 | 13/11/2026 – 26/11/2026 | Mapa, dashboard, modo conductor, WCAG |
-| `ECO Sprint 6` | 27/11/2026 – 10/12/2026 | 27/11/2026 – 10/12/2026 | Re-opt, PDF, confirmar entrega, compensación |
+**Sprint:** `ECO Sprint 3`  
+**Fechas:** 16/10/2026 – 29/10/2026 · compromiso **26 SP**  
+**Fuente:** artefacto 01 §11. Cerrado en código el 17/10/2026 ([PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)).
 
-Al crear el Sprint 3: Backlog → **Crear sprint** → nombre `ECO Sprint 3` → fechas **16/10/2026 – 29/10/2026**. Pegar el Goal antes de iniciarlo.
+#### Sprint Goal (texto a pegar en Jira)
+
+> Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística del vecino más cercano.
+
+| Key | Ítem | Incremento | SP | Assignee |
+|---|---|---|---|---|
+| ECO-19 | US-008 Registrar pedido | **B** cobertura Lima Este (migración 004) | 3 | Katheryn Huaman |
+| ECO-21 | US-007 Jornada y descansos | Completo | 5 | Jorge Cruz |
+| ECO-22 | ENB-006 Worker y cola Redis | Completo (`POST /optimizaciones` 202) | 5 | Jorge Cruz |
+| ECO-23 | ENB-001 Motor metaheurístico | **A** vecino más cercano | 8 | Jorge Cruz |
+| ECO-24 | US-010 Generar rutas VRPTW | **A** job asíncrono + BORRADOR | 5 | Jorge Cruz |
+| | **Compromiso** | | **26** | |
+
+En US-008 y ENB-001 / US-010 anotar el incremento en la descripción. No meter US-012 ni US-014.
+
+### 5.3 Sprint 4 — planificación (Hito 3)
+
+**Sprint:** `ECO Sprint 4`  
+**Fechas:** 30/10/2026 – 12/11/2026 · compromiso **26 SP**  
+**Fuente:** artefacto 01 §12. Código el 18/10/2026 ([PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)), antes de la ventana. Hito 3 el 12/11.
+
+#### Sprint Goal (texto a pegar en Jira)
+
+> El Operador genera rutas VRPTW/Green VRP con AG DEAP (150×15 factible), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
+
+| Key | Ítem | Incremento | SP | Assignee |
+|---|---|---|---|---|
+| ECO-23 | ENB-001 Motor metaheurístico | **B** AG DEAP | 5 | Jorge Cruz |
+| ECO-24 | US-010 Generar rutas VRPTW | **B** cierre 150×15 | 8 | Jorge Cruz |
+| ECO-25 | US-012 Mapa Leaflet/OSM | **A** inicio (trazado, ETA, semáforo) | 8 | Katheryn Huaman |
+| ECO-27 | US-014 Dashboard sostenibilidad | **A** km / CO₂ / soles / % ventanas | 5 | Katheryn Huaman |
+| | **Compromiso** | | **26** | |
+
+### 5.4 Sprint 5 — planificación
+
+**Sprint:** `ECO Sprint 5`  
+**Fechas:** 13/11/2026 – 26/11/2026 · compromiso **26 SP**  
+**Fuente:** artefacto 01 §13.
+
+#### Sprint Goal (texto a pegar en Jira)
+
+> El Gerente ve equivalentes económicos y ambientales; el mapa marca zonas de riesgo; el Conductor opera en modo simplificado accesible y liviano.
+
+| Key | Ítem | Incremento | SP | Assignee |
+|---|---|---|---|---|
+| ECO-26 | US-013 Zonas de riesgo | Completo (cierre del mapa) | 5 | Brayan Leon |
+| ECO-27 | US-014 Dashboard sostenibilidad | **B** factor árboles RN-018 | 3 | Katheryn Huaman |
+| ECO-28 | US-015 Modo conductor | Completo | 8 | Katheryn Huaman |
+| ECO-29 | ENB-005 WCAG 2.1 AA | Completo | 5 | Katheryn Huaman |
+| ECO-30 | ENB-008 Payload 2G/3G | Completo | 5 | Axel Estrada |
+| | **Compromiso** | | **26** | |
+
+No meter US-009 (queda para el Sprint 6: el Sprint 5 ya suma 26 SP). Staging IMP-04 e IMP-11 van en paralelo, sin SP.
+
+### 5.5 Sprint 6 — planificación
+
+**Sprint:** `ECO Sprint 6`  
+**Fechas:** 27/11/2026 – 10/12/2026 · compromiso **26 SP**  
+**Fuente:** artefacto 01 §14.
+
+#### Sprint Goal (texto a pegar en Jira)
+
+> Ante un incidente se re-optimizan solo las rutas afectadas; el Conductor confirma la entrega; el Gerente descarga PDF y ve un plan de compensación.
+
+| Key | Ítem | Incremento | SP | Assignee |
+|---|---|---|---|---|
+| ECO-32 | US-011 Re-optimización dinámica | Completo | 8 | Jorge Cruz |
+| ECO-33 | US-016 Reporte PDF | Completo | 5 | Axel Estrada |
+| ECO-34 | US-018 Confirmar entrega | Completo | 3 | Katheryn Huaman |
+| ECO-35 | US-017 Compensación de carbono | Completo (Could) | 5 | Jorge Cruz |
+| ECO-31 | US-009 Preferencias de cliente | Completo (Could, recortable) | 5 | Katheryn Huaman |
+| | **Compromiso** | | **26** | |
+
+Recorte MoSCoW: US-009 → US-017 → US-016.
+
+Al crear cada sprint: Backlog → **Crear sprint** → nombre `ECO Sprint n` → pegar el Goal **antes** de iniciarlo → fechas del [cronograma](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
 
 ---
 
@@ -323,5 +395,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
 | 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas vigentes: Sprint 3 = 16/10–29/10; Hito 3 = 12/11; Hito 4 / release = 13/12. |
 | 1.0.8 | 18/10/2026 | Equipo EcoLogística Lima | El código del Sprint 4 entra el 18/10, antes de abrir `ECO Sprint 4`. En Jira las tarjetas del motor pasan a Done el día del merge (A5). Staging sigue fuera. |
+| 1.0.9 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a S3 (PR #15) y S4 (PR #16). US-009 en `ECO Sprint 6`. |
 
 [← Volver al README Principal](../../README.md)

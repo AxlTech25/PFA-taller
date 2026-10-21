@@ -6,15 +6,15 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 16/10/2026  
-**Versión:** 1.0.7  
+**Fecha:** 21/10/2026  
+**Versión:** 1.0.8  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
 
 ## 1. Propósito
 
-Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_7.md)) y se estima en Story Points Fibonacci.
+Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_8.md)) y se estima en Story Points Fibonacci.
 
 No se reescriben los requisitos: se descomponen. Cualquier omisión detectada se registra en el historial de control de cambios.
 
@@ -47,12 +47,12 @@ flowchart LR
 |---|---|---|---|---|
 | Transversal (auth, RN-019, RN-020) | EP-01 Identidad, acceso y cumplimiento | US-001, US-002, US-003 | Must | Sprint 1–2 |
 | RF-001 | EP-02 Gestión de flota | US-004, US-005 | Must | Sprint 1–2 |
-| RF-008 | EP-03 Gestión de conductores y jornadas | US-006, US-007 | Must | Sprint 2 |
-| RF-002, RF-009 | EP-04 Pedidos y preferencias de clientes | US-008, US-009 | Must / Could | Sprint 2–3 / Sprint 5 |
+| RF-008 | EP-03 Gestión de conductores y jornadas | US-006, US-007 | Must | Sprint 2–3 |
+| RF-002, RF-009 | EP-04 Pedidos y preferencias de clientes | US-008, US-009 | Must / Could | Sprint 2–3 / Sprint 6 |
 | RF-003, RF-007 | EP-05 Optimización y re-optimización | US-010, US-011 | Must / Should | Sprint 3–4 / Sprint 6 |
 | RF-004 | EP-06 Visualización geoespacial | US-012, US-013 | Must | Sprint 4–5 |
-| RF-005, RF-006, RF-010 | EP-07 Sostenibilidad, dashboard y reportes | US-014, US-015, US-016, US-017, US-018 | Should / Could | Sprint 5–7 |
-| RNF-001, RNF-008 | ENB-001 Motor y factibilidad | ENB-001 | Must | Sprint 3–6 |
+| RF-005, RF-006, RF-010 | EP-07 Sostenibilidad, dashboard y reportes | US-014, US-015, US-016, US-017, US-018 | Should / Could | Sprint 4–6 |
+| RNF-001, RNF-008 | ENB-001 Motor y factibilidad | ENB-001 | Must | Sprint 3–4 |
 | RNF-007, CI | ENB-002 Pipeline CI/CD y análisis estático | ENB-002 | Must | Sprint 1 |
 | Documento 11 | ENB-003 Esquema PostgreSQL + PostGIS | ENB-003 | Must | Sprint 1 |
 | RNF-002, RNF-010 | ENB-004 Hardening OWASP y auditoría | ENB-004 | Must | Sprint 1–6 (transversal) |
@@ -352,7 +352,7 @@ Entonces el sistema rechaza y no crea el pedido.
 **ID:** US-009  
 **Título:** Registrar preferencias de entrega del bodeguero  
 **Épica Relacionada:** EP-04 Pedidos y preferencias de clientes  
-**SP:** 5 · **MoSCoW:** Could · **Sprint objetivo:** 5  
+**SP:** 5 · **MoSCoW:** Could · **Sprint objetivo:** 6  
 **RF/RNF:** RF-009  
 
 **Redacción:**  
@@ -381,8 +381,15 @@ Entonces el sistema rechaza y solicita corrección.
 **ID:** US-010  
 **Título:** Calcular rutas del día para hasta 150 pedidos y 15 vehículos  
 **Épica Relacionada:** EP-05 Optimización y re-optimización de rutas  
-**SP:** 13 · **MoSCoW:** Must · **Sprint objetivo:** 3–4  
+**SP:** 13 · **MoSCoW:** Must · **Sprint objetivo:** 3 (5 SP) / 4 (8 SP)  
 **RF/RNF:** RF-003, RN-006, RN-009, RN-011, RN-014, RNF-001, RNF-008  
+
+**Partición para no romper el tope de 26 SP**
+
+| Incremento | Sprint | SP | Alcance |
+|---|---|---|---|
+| **A — job y heurística** | 3 | 5 | El Operador dispara la generación; la API responde 202 con `job_id`; el worker (ENB-006) devuelve un plan factible con el **vecino más cercano**. Estado BORRADOR. |
+| **B — cierre SLA** | 4 | 8 | AG DEAP, bench 150 pedidos / 15 vehículos factible bajo 45 s, pico y placa, overlay de congestión y persistencia de rutas para el mapa (US-012). |
 
 **Redacción:**  
 Como Operador de Logística,  
@@ -442,7 +449,7 @@ Entonces se mantienen las rutas anteriores, se notifica el fallo y se registra e
 **ID:** US-012  
 **Título:** Ver trazado, paradas y congestión en Leaflet/OSM  
 **Épica Relacionada:** EP-06 Visualización geoespacial  
-**SP:** 8 · **MoSCoW:** Must · **Sprint objetivo:** 4–5  
+**SP:** 8 · **MoSCoW:** Must · **Sprint objetivo:** 4  
 **RF/RNF:** RF-004  
 
 **Redacción:**  
@@ -498,8 +505,15 @@ Entonces el sistema la rechaza (RN-013).
 **ID:** US-014  
 **Título:** Consultar km, CO₂, combustible, cumplimiento y soles ahorrados  
 **Épica Relacionada:** EP-07 Sostenibilidad, dashboard y reportes  
-**SP:** 8 · **MoSCoW:** Should · **Sprint objetivo:** 5  
+**SP:** 8 · **MoSCoW:** Should · **Sprint objetivo:** 4 (5 SP) / 5 (3 SP)  
 **RF/RNF:** RF-005, RN-016, RN-017, RN-018  
+
+**Partición para no romper el tope de 26 SP**
+
+| Incremento | Sprint | SP | Alcance |
+|---|---|---|---|
+| **A — indicadores del último plan** | 4 | 5 | km, kg CO₂, combustible, soles y % de ventanas (inicio del tablero, Hito 3). Ceros + mensaje si no hay operación. |
+| **B — factor árboles** | 5 | 3 | `factor_captura_arbol_kg` (RN-018) cuando el docente lo ratifique. El tablero no inventa el número. |
 
 **Redacción:**  
 Como Gerente de Operaciones,  
@@ -525,7 +539,7 @@ Entonces los valores se muestran en cero con el mensaje “Sin datos de operaci�
 **ID:** US-015  
 **Título:** Consultar ruta asignada en modo conductor  
 **Épica Relacionada:** EP-07 Sostenibilidad, dashboard y reportes  
-**SP:** 8 · **MoSCoW:** Should · **Sprint objetivo:** 5–6  
+**SP:** 8 · **MoSCoW:** Should · **Sprint objetivo:** 5  
 **RF/RNF:** RF-005, RNF-003, RNF-005, RNF-009  
 
 **Redacción:**  
@@ -634,8 +648,13 @@ Cada Enabler sigue la misma disciplina BDD. No entregan UI de negocio, pero desb
 
 #### ENB-001 Motor metaheurístico con SLA
 
-**ID:** ENB-001 · **SP:** 13 · **Sprint:** 3–4 · **RNF-001, RNF-008**  
-Como equipo de arquitectura, quiero un worker que ejecute GA/Tabú/ACO sobre el modelo VRPTW+Green VRP, para cumplir ≤ 45 s y 100 % de soluciones factibles.
+**ID:** ENB-001 · **SP:** 13 · **Sprint:** 3 (8 SP) / 4 (5 SP) · **RNF-001, RNF-008**  
+Como equipo de arquitectura, quiero un worker que ejecute un algoritmo genético (DEAP) sobre el modelo VRPTW+Green VRP, para cumplir ≤ 45 s y 100 % de soluciones factibles.
+
+| Incremento | Sprint | SP | Alcance |
+|---|---|---|---|
+| **A — constructiva** | 3 | 8 | Vecino más cercano demostrable, timeout controlado, la API no se cuelga. |
+| **B — genético** | 4 | 5 | AG DEAP, bench 150×15 factible, corte a 45 s, mejor factible si no converge. |
 
 Escenario: Bench 150×15  
 Dado un dataset sintético de 150 pedidos y 15 vehículos  
@@ -775,22 +794,22 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 11 | ENB-004 | Hardening OWASP y logs | Enabler | — | 5 | 2 | Backend |
 | 12 | US-007 | Jornada y descansos | US | EP-03 | 5 | 3 | Backend |
 | 13 | ENB-006 | Worker y cola Redis | Enabler | — | 5 | 3 | Backend |
-| 14 | ENB-001 | Motor metaheurístico SLA | Enabler | — | 13 | 3–4 | Optimizer |
-| 15 | US-010 | Generar rutas VRPTW | US | EP-05 | 13 | 3–4 | Optimizer / API |
-| 16 | US-012 | Mapa Leaflet/OSM | US | EP-06 | 8 | 4–5 | Frontend |
+| 14 | ENB-001 | Motor metaheurístico SLA | Enabler | — | 13 | 3 (8 SP) / 4 (5 SP) | Optimizer |
+| 15 | US-010 | Generar rutas VRPTW | US | EP-05 | 13 | 3 (5 SP) / 4 (8 SP) | Optimizer / API |
+| 16 | US-012 | Mapa Leaflet/OSM | US | EP-06 | 8 | 4 | Frontend |
 | 17 | US-013 | Zonas de riesgo | US | EP-06 | 5 | 5 | Frontend / DB |
-| 18 | US-014 | Dashboard sostenibilidad | US | EP-07 | 8 | 5 | Frontend / API |
-| 19 | US-015 | Modo conductor | US | EP-07 | 8 | 5–6 | Frontend |
+| 18 | US-014 | Dashboard sostenibilidad | US | EP-07 | 8 | 4 (5 SP) / 5 (3 SP) | Frontend / API |
+| 19 | US-015 | Modo conductor | US | EP-07 | 8 | 5 | Frontend |
 | 20 | ENB-005 | WCAG 2.1 AA | Enabler | — | 5 | 5 | Frontend |
 | 21 | ENB-008 | Payload 2G/3G | Enabler | — | 5 | 5 | Frontend |
-| 22 | US-009 | Preferencias de cliente | US | EP-04 | 5 | 5 | Frontend / API |
+| 22 | US-009 | Preferencias de cliente | US | EP-04 | 5 | 6 | Frontend / API |
 | 23 | US-011 | Re-optimización dinámica | US | EP-05 | 8 | 6 | Optimizer |
 | 24 | US-016 | Reporte PDF | US | EP-07 | 5 | 6 | API |
 | 25 | US-018 | Confirmar entrega | US | EP-07 | 3 | 6 | Frontend / API |
 | 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 6 | API / Frontend |
 | | | **Total** | | | **156** | | |
 
-US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP).
+US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable: ENB-001 = 8+5, US-010 = 5+8. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP). US-014 (8 SP) se parte en A (Sprint 4, 5 SP) y B (Sprint 5, 3 SP) para el Hito 3. US-009 (Could) queda en el Sprint 6, primera en recortarse. Tabla canónica: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md) §3.
 
 ### 8.1 Cronograma de sprints (fechas)
 
@@ -806,7 +825,7 @@ Calendario canónico: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20
 | 6 | 27/11/2026 | 10/12/2026 | — |
 | Cierre | 11/12/2026 | 13/12/2026 | Hito 4 — 13/12/2026 |
 
-Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10). El Sprint 3 arranca el **16/10/2026** (calendario rebaselinado).
+Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10); Sprint 3 el 17/10/2026 (PR #15, dentro de ventana); Sprint 4 el 18/10/2026 (PR #16, antes de la ventana; Hito 3 el 12/11).
 
 ---
 
@@ -831,7 +850,7 @@ Criterio de éxito del Sprint 1: un Operador de prueba inicia sesión en Staging
 
 **Cierre en código (30/09/2026):** el compromiso de 26 SP está en `main` (PR #9). La API y la SPA viven en `backend/` y `frontend/` (Compose). El Quality Gate de CI es Ruff + Pytest ≥ 80 % + build Vite; CodeQL/Sonar y Staging en la nube quedan como deuda del DoD (IMP-04 del registro de impedimentos). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%201/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
-Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_7.md](./02%20Artefactos%20Jira%20V_1_0_7.md).
+Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_8.md](./02%20Artefactos%20Jira%20V_1_0_8.md).
 
 ---
 
@@ -875,49 +894,107 @@ En Staging, con el menú visible:
 5. Tres contraseñas incorrectas bloquean una cuenta (respuesta 423 / mensaje de bloqueo).
 6. El usuario Conductor **no** puede entrar a Usuarios ni editar flota (403).
 
-Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_7.md](./02%20Artefactos%20Jira%20V_1_0_7.md).
+Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_8.md](./02%20Artefactos%20Jira%20V_1_0_8.md).
 
 **Cierre en código (01/10/2026):** el compromiso de 26 SP (incremento A de US-008, no el B) está en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). El bloqueo 423 se corrigió el mismo día ([74dac8b](https://github.com/AxlTech25/PFA-taller/commit/74dac8b): `clock_timestamp()` en PostgreSQL). Clientes de demostración en migración `003_clientes_demo.py`. Staging cloud y CodeQL siguen como deuda (IMP-04). El Hito 2 del Acta (29/09/2026) se incumplió por 2 días (IMP-08). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
-## 11. Sprint 3 — fechas y alcance de referencia
+## 11. Sprint 3 — planificación de referencia
 
-**Fechas:** 16/10/2026 – 29/10/2026.  
+**Fechas:** 16/10/2026 – 29/10/2026 (2 semanas).  
 **Nombre Jira:** `ECO Sprint 3`.  
-**Hito:** ninguno al cierre; alimenta el Hito 3 (12/11/2026, fin del Sprint 4).
+**Hito:** ninguno al cierre; alimenta el Hito 3 (12/11/2026, fin del Sprint 4).  
+**Capacidad académica:** 172 h. Compromiso **26 SP**.
 
-**Sprint Goal (borrador):** un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema respeta la jornada de 8 h; queda un worker listo y una heurística de rutas demostrable (aunque no sea el GA final).
+**Sprint Goal:** Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística del vecino más cercano.
 
-Compromiso de referencia: US-008 B (3 SP), US-007 (5 SP), ENB-006 (5 SP) e inicio de ENB-001 / US-010 (partidos). IMP-04 (Staging + CodeQL) sigue abierto.
+### 11.1 Compromiso (26 SP)
+
+| ID | Pantalla / resultado | SP | Responsable principal |
+|---|---|---|---|
+| US-008 B | Cobertura Lima Este; migración `004_sprint3_cobertura.py` | 3 | Huaman Baldeon, Katheryn Elena |
+| US-007 | Rechazo de asignación si conducción > 8 h o falta descanso | 5 | Cruz Salazar, Jorge Luiz |
+| ENB-006 | Worker Redis: `POST /optimizaciones` → 202 + `job_id`; 503 si Redis cae | 5 | Cruz Salazar, Jorge Luiz |
+| ENB-001 A | Heurística del vecino más cercano; timeout sin colgar la API | 8 | Cruz Salazar, Jorge Luiz |
+| US-010 A | Plan factible en BORRADOR vía job asíncrono | 5 | Cruz Salazar, Jorge Luiz |
+| **Total** | | **26** | |
+
+Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Staging (IMP-04), catastro INEI (IMP-11).
+
+**Cierre en código (17/10/2026, [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)):** US-008 B, US-007, ENB-006 y el vecino más cercano están en `main`. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%203/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
-## 12. Sprint 4 — fechas y alcance de referencia
+## 12. Sprint 4 — planificación de referencia
 
-**Fechas:** 30/10/2026 – 12/11/2026.  
+**Fechas:** 30/10/2026 – 12/11/2026 (2 semanas).  
 **Nombre Jira:** `ECO Sprint 4`.  
-**Hito 3 del Acta:** 12/11/2026 — motor, mapa y dashboard integrados (el dashboard puede quedar iniciado si RSK-03 se materializa).
+**Hito 3 del Acta:** 12/11/2026 — motor, mapa y dashboard integrados.  
+**Capacidad académica:** 172 h. Compromiso **26 SP**.
 
-Continuación de ENB-001 / US-010 e inicio de US-012 (mapa Leaflet/OSM). El Hito 3 también nombra el dashboard: puede quedar iniciado.
+**Sprint Goal:** El Operador genera rutas VRPTW/Green VRP con AG DEAP (150×15 factible), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
 
-**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético VRPTW + Green VRP corre en el worker y se compara con el vecino más cercano. El mapa Leaflet/OSM y el tablero quedan iniciados, no cerrados. IMP-04 (Staging) sigue pendiente al 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+### 12.1 Compromiso (26 SP)
+
+| ID | Pantalla / resultado | SP | Responsable principal |
+|---|---|---|---|
+| ENB-001 B | AG DEAP; corte a 45 s; bench 150×15 factible | 5 | Cruz Salazar, Jorge Luiz |
+| US-010 B | Cierre: persistir rutas, pico y placa, overlay de congestión | 8 | Cruz Salazar, Jorge Luiz |
+| US-012 A | Inicio mapa: trazado, paradas, ETA, semáforo; tabular si fallan tiles | 8 | Huaman Baldeon, Katheryn Elena |
+| US-014 A | Inicio dashboard: km, CO₂, combustible, soles, % ventanas | 5 | Huaman Baldeon, Katheryn Elena |
+| **Total** | | **26** | |
+
+Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-014 B (factor árboles RN-018), Staging IMP-04 e IMP-11.
+
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. Mapa y tablero quedan iniciados, no Done. El Hito 3 sigue el 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
-## 13. Sprint 5 — fechas y alcance de referencia
+## 13. Sprint 5 — planificación de referencia
 
-**Fechas:** 13/11/2026 – 26/11/2026.  
-**Nombre Jira:** `ECO Sprint 5`.
+**Fechas:** 13/11/2026 – 26/11/2026 (2 semanas).  
+**Nombre Jira:** `ECO Sprint 5`.  
+**Capacidad académica:** 172 h. Compromiso **26 SP**.
 
-US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
+**Sprint Goal:** El Gerente ve equivalentes económicos y ambientales; el mapa marca zonas de riesgo; el Conductor opera en modo simplificado accesible y liviano.
+
+### 13.1 Compromiso (26 SP)
+
+| ID | Pantalla / resultado | SP | Responsable principal |
+|---|---|---|---|
+| US-013 | Overlay `zona_restriccion` y ruta alternativa (cierre de US-012) | 5 | Leon Taza, Brayan Angel |
+| US-014 B | Factor de árboles `factor_captura_arbol_kg` (RN-018) | 3 | Huaman Baldeon, Katheryn Elena |
+| US-015 | Modo conductor: secuencia, ETA, alertas; sin dashboard gerencial | 8 | Huaman Baldeon, Katheryn Elena |
+| ENB-005 | Contraste, labels y foco teclado WCAG 2.1 AA | 5 | Huaman Baldeon, Katheryn Elena |
+| ENB-008 | Sesión de ruta ≤ 150 KB en 2G/3G | 5 | Estrada Flores, Axel Sebastian |
+| **Total** | | **26** | |
+
+Fuera: re-optimización, PDF, confirmar entrega. US-009 (Could) no entra: va al Sprint 6 para no romper el tope de 26 SP. IMP-04 Staging e IMP-11 siguen en paralelo, sin SP.
 
 ---
 
-## 14. Sprint 6 y cierre — fechas y alcance de referencia
+## 14. Sprint 6 y cierre — planificación de referencia
 
-**Sprint 6:** 27/11/2026 – 10/12/2026 (`ECO Sprint 6`). US-011, US-016, US-018, US-017.  
+**Sprint 6:** 27/11/2026 – 10/12/2026 (`ECO Sprint 6`). **26 SP**.  
 **Cierre / presentación:** 11/12/2026 – 13/12/2026. **Hito 4:** 13/12/2026. Release `v1.0.3-MVP`.
+
+**Sprint Goal:** Ante un incidente se re-optimizan solo las rutas afectadas; el Conductor confirma la entrega; el Gerente descarga PDF y ve un plan de compensación.
+
+### 14.1 Compromiso (26 SP)
+
+| ID | Pantalla / resultado | SP | Responsable principal |
+|---|---|---|---|
+| US-011 | Re-opt ≤ 30 s en rutas afectadas; se conservan las no impactadas | 8 | Cruz Salazar, Jorge Luiz |
+| US-016 | PDF de sostenibilidad del período | 5 | Estrada Flores, Axel Sebastian |
+| US-018 | Confirmar ENTREGADO / FALLIDO (403 si no es su ruta) | 3 | Huaman Baldeon, Katheryn Elena |
+| US-017 | Árboles y proyectos locales de compensación (Could) | 5 | Cruz Salazar, Jorge Luiz |
+| US-009 | Preferencias de horario del bodeguero (Could, recortable) | 5 | Huaman Baldeon, Katheryn Elena |
+| **Total** | | **26** | |
+
+Orden de recorte si RSK-05 se materializa: US-009 → US-017 → US-016.
+
+**Cierre (sin SP):** UAT, documentación de entrega y presentación. No se abren historias nuevas.
 
 ---
 
@@ -932,6 +1009,7 @@ US-012 (cierre), US-013, US-014, US-015, ENB-005, ENB-008, US-009.
 | 1.0.5 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10, 26 SP: US-002, US-003, US-005, US-006, US-008 A, ENB-004). Incremento B de US-008 y US-007 quedan para el Sprint 3. IMP-04 sigue abierto. |
 | 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito. Sprint 3 = 16/10/2026 – 29/10/2026; Hito 3 = 12/11/2026; Hito 4 = 13/12/2026. Enlace al artefacto 05. |
 | 1.0.7 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4: ENB-001 / US-010 con algoritmo genético, inicio de US-012 y tablero iniciado. Staging (IMP-04) sigue abierto al 12/11/2026. |
+| 1.0.8 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a lo entregado en S3 (PR #15) y S4 (PR #16). Heurística = vecino más cercano; S4 = AG DEAP + inicio de mapa y dashboard. US-009 al Sprint 6. |
 
 ---
 
