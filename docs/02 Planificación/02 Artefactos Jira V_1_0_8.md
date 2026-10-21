@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 17/10/2026  
-**Versión:** 1.0.8  
+**Fecha:** 21/10/2026  
+**Versión:** 1.0.9  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -225,19 +225,19 @@ Subtareas sugeridas (≤ 8 h): (1) seed de dos clientes demo, (2) menú Flota/Co
 
 **Sprint:** `ECO Sprint 3`  
 **Fechas:** 16/10/2026 – 29/10/2026 · compromiso **26 SP**  
-**Fuente:** artefacto 01 §11.
+**Fuente:** artefacto 01 §11. Cerrado en código el 17/10/2026 ([PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)).
 
 #### Sprint Goal (texto a pegar en Jira)
 
-> Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística de rutas demostrable (Sweep/NN).
+> Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística del vecino más cercano.
 
 | Key | Ítem | Incremento | SP | Assignee |
 |---|---|---|---|---|
-| ECO-19 | US-008 Registrar pedido | **B** cobertura Lima Este | 3 | Katheryn Huaman |
+| ECO-19 | US-008 Registrar pedido | **B** cobertura Lima Este (migración 004) | 3 | Katheryn Huaman |
 | ECO-21 | US-007 Jornada y descansos | Completo | 5 | Jorge Cruz |
-| ECO-22 | ENB-006 Worker y cola Redis | Completo | 5 | Jorge Cruz |
-| ECO-23 | ENB-001 Motor metaheurístico | **A** Sweep/NN | 8 | Jorge Cruz |
-| ECO-24 | US-010 Generar rutas VRPTW | **A** job + escenario ≤ 50 | 5 | Jorge Cruz |
+| ECO-22 | ENB-006 Worker y cola Redis | Completo (`POST /optimizaciones` 202) | 5 | Jorge Cruz |
+| ECO-23 | ENB-001 Motor metaheurístico | **A** vecino más cercano | 8 | Jorge Cruz |
+| ECO-24 | US-010 Generar rutas VRPTW | **A** job asíncrono + BORRADOR | 5 | Jorge Cruz |
 | | **Compromiso** | | **26** | |
 
 En US-008 y ENB-001 / US-010 anotar el incremento en la descripción. No meter US-012 ni US-014.
@@ -246,18 +246,18 @@ En US-008 y ENB-001 / US-010 anotar el incremento en la descripción. No meter U
 
 **Sprint:** `ECO Sprint 4`  
 **Fechas:** 30/10/2026 – 12/11/2026 · compromiso **26 SP**  
-**Fuente:** artefacto 01 §12.
+**Fuente:** artefacto 01 §12. Código el 18/10/2026 ([PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)), antes de la ventana. Hito 3 el 12/11.
 
 #### Sprint Goal (texto a pegar en Jira)
 
-> El Operador genera rutas VRPTW/Green VRP en ≤ 45 s (150×15), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
+> El Operador genera rutas VRPTW/Green VRP con AG DEAP (150×15 factible), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
 
 | Key | Ítem | Incremento | SP | Assignee |
 |---|---|---|---|---|
-| ECO-23 | ENB-001 Motor metaheurístico | **B** GA/Tabú + SLA | 5 | Jorge Cruz |
+| ECO-23 | ENB-001 Motor metaheurístico | **B** AG DEAP | 5 | Jorge Cruz |
 | ECO-24 | US-010 Generar rutas VRPTW | **B** cierre 150×15 | 8 | Jorge Cruz |
-| ECO-25 | US-012 Mapa Leaflet/OSM | Completo | 8 | Katheryn Huaman |
-| ECO-27 | US-014 Dashboard sostenibilidad | **A** km / CO₂ / litros | 5 | Katheryn Huaman |
+| ECO-25 | US-012 Mapa Leaflet/OSM | **A** inicio (trazado, ETA, semáforo) | 8 | Katheryn Huaman |
+| ECO-27 | US-014 Dashboard sostenibilidad | **A** km / CO₂ / soles / % ventanas | 5 | Katheryn Huaman |
 | | **Compromiso** | | **26** | |
 
 ### 5.4 Sprint 5 — planificación
@@ -272,14 +272,14 @@ En US-008 y ENB-001 / US-010 anotar el incremento en la descripción. No meter U
 
 | Key | Ítem | Incremento | SP | Assignee |
 |---|---|---|---|---|
-| ECO-27 | US-014 Dashboard sostenibilidad | **B** soles / árboles / % ventanas | 3 | Katheryn Huaman |
-| ECO-26 | US-013 Zonas de riesgo | Completo | 5 | Brayan Leon |
+| ECO-26 | US-013 Zonas de riesgo | Completo (cierre del mapa) | 5 | Brayan Leon |
+| ECO-27 | US-014 Dashboard sostenibilidad | **B** factor árboles RN-018 | 3 | Katheryn Huaman |
 | ECO-28 | US-015 Modo conductor | Completo | 8 | Katheryn Huaman |
 | ECO-29 | ENB-005 WCAG 2.1 AA | Completo | 5 | Katheryn Huaman |
 | ECO-30 | ENB-008 Payload 2G/3G | Completo | 5 | Axel Estrada |
 | | **Compromiso** | | **26** | |
 
-No meter US-009 (queda para el Sprint 6).
+No meter US-009 (queda para el Sprint 6: el Sprint 5 ya suma 26 SP). Staging IMP-04 e IMP-11 van en paralelo, sin SP.
 
 ### 5.5 Sprint 6 — planificación
 
@@ -394,6 +394,7 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.5 | 29/09/2026 | Equipo EcoLogística Lima | Planificación de `ECO Sprint 2` (26 SP, Goal, assignees e incremento A de US-008). Enlace al artefacto 01 V_1_0_3. |
 | 1.0.6 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10). Enlaces al artefacto 01 V_1_0_5 y al informe de implementación vigente. Recuerda mover las tarjetas a Done (A5). |
 | 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas vigentes: Sprint 3 = 16/10–29/10; Hito 3 = 12/11; Hito 4 / release = 13/12. |
-| 1.0.8 | 17/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP y Sprint Goal para `ECO Sprint 3` a `ECO Sprint 6` (secciones 5.2–5.5). |
+| 1.0.8 | 18/10/2026 | Equipo EcoLogística Lima | El código del Sprint 4 entra el 18/10, antes de abrir `ECO Sprint 4`. En Jira las tarjetas del motor pasan a Done el día del merge (A5). Staging sigue fuera. |
+| 1.0.9 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a S3 (PR #15) y S4 (PR #16). US-009 en `ECO Sprint 6`. |
 
 [← Volver al README Principal](../../README.md)

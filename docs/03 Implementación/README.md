@@ -8,10 +8,10 @@ Calendario completo: [05 Cronograma de sprints V_1_0_0.md](../02%20Planificaci%C
 |---|---|---|---|---|
 | 1 | 02/09/2026 | 15/09/2026 | Esquema PostGIS; CI/CD; login JWT; registrar vehículo; OpenAPI | [Sprint 1/](./Sprint%201/) |
 | 2 | 16/09/2026 | 29/09/2026 | Usuarios y roles; bloqueo; menú de flota; conductor; alta de pedido (demo); OWASP | [Sprint 2/](./Sprint%202/) |
-| 3 | 16/10/2026 | 29/10/2026 | Cobertura Lima Este; jornada 8 h; worker Redis; heurística Sweep/NN; rutas ≤ 50 | (se abre al documentar el Sprint 3) |
-| 4 | 30/10/2026 | 12/11/2026 | GA/Tabú; ruteo 150×15; mapa Leaflet; dashboard km/CO₂ (Hito 3) | — |
-| 5 | 13/11/2026 | 26/11/2026 | Dashboard soles/árboles; zonas de riesgo; modo conductor; WCAG; payload 2G/3G | — |
-| 6 | 27/11/2026 | 10/12/2026 | Re-opt; PDF; confirmar entrega; compensación; preferencias (Could) | — |
+| 3 | 16/10/2026 | 29/10/2026 | Cobertura Lima Este (migración 004); jornada 8 h; worker Redis 202; vecino más cercano; CodeQL | [Sprint 3/](./Sprint%203/) |
+| 4 | 30/10/2026 | 12/11/2026 | AG DEAP 150×15; inicio mapa Leaflet; inicio dashboard (Hito 3 el 12/11) | [Sprint 4/](./Sprint%204/) |
+| 5 | 13/11/2026 | 26/11/2026 | Zonas y ruta alternativa; factor árboles RN-018; modo conductor; WCAG; payload 2G/3G | — |
+| 6 | 27/11/2026 | 10/12/2026 | Re-opt; PDF; confirmar entrega; compensación; US-009 (Could) | — |
 | Cierre (Hito 4) | 11/12/2026 | 13/12/2026 | UAT, documentación y presentación | — |
 
 [← Volver al README Principal](../../README.md)

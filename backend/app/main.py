@@ -3,7 +3,18 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import auth, clientes, conductores, health, pedidos, usuarios, vehiculos
+from app.api.routes import (
+    auth,
+    clientes,
+    conductores,
+    health,
+    indicadores,
+    optimizaciones,
+    pedidos,
+    rutas,
+    usuarios,
+    vehiculos,
+)
 from app.core.config import settings
 from app.core.errores import traducir_validacion
 from app.core.middleware import SecurityHeadersMiddleware
@@ -12,8 +23,8 @@ app = FastAPI(
     title="EcoLogística Lima",
     version="1.0.0-MVP",
     description=(
-        "API del Sprint 2: usuarios y roles, bloqueo de cuenta, flota, "
-        "conductores y alta de pedidos sobre PostgreSQL + PostGIS."
+        "API del Sprint 4: algoritmo genético VRPTW + Green VRP en el worker, "
+        "comparación con el vecino más cercano, mapa de rutas y tablero iniciado."
     ),
 )
 
@@ -33,6 +44,9 @@ app.include_router(vehiculos.router)
 app.include_router(conductores.router)
 app.include_router(clientes.router)
 app.include_router(pedidos.router)
+app.include_router(optimizaciones.router)
+app.include_router(rutas.router)
+app.include_router(indicadores.router)
 
 
 @app.exception_handler(RequestValidationError)

@@ -8,6 +8,7 @@ import {
   puedeGestionarUsuarios,
   puedeRegistrarConductor,
   puedeRegistrarFlota,
+  puedeGenerarRutas,
   puedeRegistrarPedido,
 } from "./permissions";
 
@@ -28,9 +29,26 @@ describe("permisos de Sprint 2", () => {
     expect(puedeRegistrarConductor("OPERADOR")).toBe(true);
     expect(puedeRegistrarPedido("OPERADOR")).toBe(true);
     expect(puedeRegistrarPedido("CONDUCTOR")).toBe(false);
-    expect(modulosVisibles("ADMIN")).toEqual(["flota", "conductores", "pedidos", "usuarios"]);
-    expect(modulosVisibles("OPERADOR")).toEqual(["flota", "conductores", "pedidos"]);
+    expect(puedeGenerarRutas("OPERADOR")).toBe(true);
+    expect(puedeGenerarRutas("GERENTE")).toBe(false);
+    expect(puedeGenerarRutas("CONDUCTOR")).toBe(false);
+    expect(modulosVisibles("ADMIN")).toEqual([
+      "flota",
+      "conductores",
+      "pedidos",
+      "rutas",
+      "dashboard",
+      "usuarios",
+    ]);
+    expect(modulosVisibles("OPERADOR")).toEqual([
+      "flota",
+      "conductores",
+      "pedidos",
+      "rutas",
+      "dashboard",
+    ]);
     expect(modulosVisibles("CONDUCTOR")).toEqual(["flota", "modo"]);
+    expect(modulosVisibles("CONDUCTOR")).not.toContain("dashboard");
     expect(modulosVisibles("CONDUCTOR")).not.toContain("usuarios");
   });
 

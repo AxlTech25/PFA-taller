@@ -1,6 +1,6 @@
 export type Rol = "ADMIN" | "GERENTE" | "OPERADOR" | "CONDUCTOR" | "AUDITOR";
 
-export type Modulo = "flota" | "conductores" | "pedidos" | "usuarios" | "modo";
+export type Modulo = "flota" | "conductores" | "pedidos" | "rutas" | "dashboard" | "usuarios" | "modo";
 
 const ETIQUETAS: Record<string, string> = {
   ADMIN: "Administrador",
@@ -22,6 +22,18 @@ const ETIQUETAS: Record<string, string> = {
   ECONOMICO: "Económico",
   PERECEDERO: "Perecedero",
   NO_PERECEDERO: "No perecedero",
+  BORRADOR: "Borrador",
+  CONFIRMADA: "Confirmada",
+  EN_EJECUCION: "En ejecución",
+  FINALIZADA: "Finalizada",
+  CANCELADA: "Cancelada",
+  ASIGNADO: "Asignado",
+  EN_TRANSITO: "En tránsito",
+  ENTREGADO: "Entregado",
+  ENCOLADO: "En cola",
+  EN_PROCESO: "En proceso",
+  COMPLETADO: "Completado",
+  FALLIDO: "Fallido",
 };
 
 export function etiquetaRol(rol: string): string {
@@ -52,10 +64,16 @@ export function puedeGestionarUsuarios(rol: string): boolean {
   return rol === "ADMIN";
 }
 
+export function puedeGenerarRutas(rol: string): boolean {
+  return rol === "ADMIN" || rol === "OPERADOR";
+}
+
 export function modulosVisibles(rol: string): Modulo[] {
-  if (rol === "ADMIN") return ["flota", "conductores", "pedidos", "usuarios"];
-  if (rol === "GERENTE") return ["flota", "conductores", "pedidos", "usuarios"];
-  if (rol === "OPERADOR" || rol === "AUDITOR") return ["flota", "conductores", "pedidos"];
+  if (rol === "ADMIN") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];
+  if (rol === "GERENTE") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];
+  if (rol === "OPERADOR" || rol === "AUDITOR") {
+    return ["flota", "conductores", "pedidos", "rutas", "dashboard"];
+  }
   if (rol === "CONDUCTOR") return ["flota", "modo"];
   return ["flota"];
 }

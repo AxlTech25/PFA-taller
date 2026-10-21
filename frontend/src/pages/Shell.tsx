@@ -7,6 +7,8 @@ const ENLACES: { to: string; etiqueta: string; modulo: Modulo }[] = [
   { to: "/flota", etiqueta: "Flota", modulo: "flota" },
   { to: "/conductores", etiqueta: "Conductores", modulo: "conductores" },
   { to: "/pedidos", etiqueta: "Pedidos", modulo: "pedidos" },
+  { to: "/rutas", etiqueta: "Rutas", modulo: "rutas" },
+  { to: "/dashboard", etiqueta: "Tablero", modulo: "dashboard" },
   { to: "/usuarios", etiqueta: "Usuarios", modulo: "usuarios" },
   { to: "/modo", etiqueta: "Modo conductor", modulo: "modo" },
 ];

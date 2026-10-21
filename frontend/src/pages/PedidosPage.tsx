@@ -15,6 +15,7 @@ function horaLocal(hora: string): string {
 const vacio = {
   id_cliente: "",
   direccion: "",
+  punto_referencia: "",
   peso_kg: "",
   volumen_m3: "",
   ventana_inicio: horaLocal("08:00"),
@@ -60,12 +61,17 @@ export function PedidosPage() {
     event.preventDefault();
     setError("");
     setExito("");
+    if (formulario.ventana_inicio >= formulario.ventana_fin) {
+      setError("La ventana de inicio debe ser anterior a la ventana de fin.");
+      return;
+    }
     try {
       const creado = await llamar<Pedido>("/pedidos", {
         method: "POST",
         body: JSON.stringify({
           id_cliente: formulario.id_cliente,
           direccion: formulario.direccion || null,
+          punto_referencia: formulario.punto_referencia || null,
           latitud: Number(formulario.latitud),
           longitud: Number(formulario.longitud),
           peso_kg: Number(formulario.peso_kg),
@@ -89,8 +95,9 @@ export function PedidosPage() {
       <header>
         <h1>Pedidos</h1>
         <p className="ayuda">
-          Registre entregas con peso, ventana horaria y coordenadas. El cliente de demostración
-          debe tener consentimiento de datos.
+          Registre entregas en San Juan de Lurigancho, El Agustino, Santa Anita o Ate. Si la
+          dirección no es estándar, escriba el punto de referencia: el pedido queda con
+          georreferencia aproximada. El cliente de demostración debe tener consentimiento.
         </p>
       </header>
       {error ? (
@@ -213,12 +220,22 @@ export function PedidosPage() {
               </select>
             </label>
             <label htmlFor="direccion">
-              Dirección o referencia
+              Dirección
               <input
                 id="direccion"
                 maxLength={255}
                 value={formulario.direccion}
                 onChange={(event) => actualizarCampo("direccion", event.target.value)}
+              />
+            </label>
+            <label htmlFor="punto_referencia">
+              Punto de referencia
+              <input
+                id="punto_referencia"
+                maxLength={255}
+                placeholder="frente a la bodega El Ahorro"
+                value={formulario.punto_referencia}
+                onChange={(event) => actualizarCampo("punto_referencia", event.target.value)}
               />
             </label>
             <button type="submit">Registrar pedido</button>
@@ -241,6 +258,8 @@ export function PedidosPage() {
               <thead>
                 <tr>
                   <th>Cliente</th>
+                  <th>Distrito</th>
+                  <th>Referencia</th>
                   <th>Peso</th>
                   <th>Ventana</th>
                   <th>Prioridad</th>
@@ -251,6 +270,11 @@ export function PedidosPage() {
                 {pedidos.map((pedido) => (
                   <tr key={pedido.id_pedido}>
                     <td>{pedido.nombre_cliente ?? "Cliente"}</td>
+                    <td>{pedido.distrito ?? "—"}</td>
+                    <td>
+                      {pedido.punto_referencia ?? "—"}
+                      {pedido.georreferencia_aproximada ? " (aproximada)" : ""}
+                    </td>
                     <td>{pedido.peso_kg} kg</td>
                     <td>
                       {pedido.ventana_inicio.slice(0, 16).replace("T", " ")} –{" "}

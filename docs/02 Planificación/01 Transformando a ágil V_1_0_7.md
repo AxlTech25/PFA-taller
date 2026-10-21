@@ -6,8 +6,8 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 17/10/2026  
-**Versión:** 1.0.7  
+**Fecha:** 21/10/2026  
+**Versión:** 1.0.8  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -388,8 +388,8 @@ Entonces el sistema rechaza y solicita corrección.
 
 | Incremento | Sprint | SP | Alcance |
 |---|---|---|---|
-| **A — job y heurística** | 3 | 5 | El Operador dispara la generación; la API responde 202 con `job_id`; el worker (ENB-006) devuelve un plan factible en escenario ≤ 50 pedidos (Sweep/NN). Estado BORRADOR. |
-| **B — cierre SLA** | 4 | 8 | Bench 150 pedidos / 15 vehículos, P95 ≤ 45 s, pico y placa, overlay de congestión y persistencia de rutas para el mapa (US-012). |
+| **A — job y heurística** | 3 | 5 | El Operador dispara la generación; la API responde 202 con `job_id`; el worker (ENB-006) devuelve un plan factible con el **vecino más cercano**. Estado BORRADOR. |
+| **B — cierre SLA** | 4 | 8 | AG DEAP, bench 150 pedidos / 15 vehículos factible bajo 45 s, pico y placa, overlay de congestión y persistencia de rutas para el mapa (US-012). |
 
 **Redacción:**  
 Como Operador de Logística,  
@@ -512,8 +512,8 @@ Entonces el sistema la rechaza (RN-013).
 
 | Incremento | Sprint | SP | Alcance |
 |---|---|---|---|
-| **A — indicadores de la última ruta** | 4 | 5 | km, kg CO₂ y litros de la ruta generada (Hito 3). Ceros + mensaje si no hay operación. |
-| **B — equivalentes** | 5 | 3 | % de ventanas cumplidas, soles ahorrados (S/ 17.50/galón, S/ 1.20/km) y equivalentes en árboles. |
+| **A — indicadores del último plan** | 4 | 5 | km, kg CO₂, combustible, soles y % de ventanas (inicio del tablero, Hito 3). Ceros + mensaje si no hay operación. |
+| **B — factor árboles** | 5 | 3 | `factor_captura_arbol_kg` (RN-018) cuando el docente lo ratifique. El tablero no inventa el número. |
 
 **Redacción:**  
 Como Gerente de Operaciones,  
@@ -649,12 +649,12 @@ Cada Enabler sigue la misma disciplina BDD. No entregan UI de negocio, pero desb
 #### ENB-001 Motor metaheurístico con SLA
 
 **ID:** ENB-001 · **SP:** 13 · **Sprint:** 3 (8 SP) / 4 (5 SP) · **RNF-001, RNF-008**  
-Como equipo de arquitectura, quiero un worker que ejecute GA/Tabú/ACO sobre el modelo VRPTW+Green VRP, para cumplir ≤ 45 s y 100 % de soluciones factibles.
+Como equipo de arquitectura, quiero un worker que ejecute un algoritmo genético (DEAP) sobre el modelo VRPTW+Green VRP, para cumplir ≤ 45 s y 100 % de soluciones factibles.
 
 | Incremento | Sprint | SP | Alcance |
 |---|---|---|---|
-| **A — constructiva** | 3 | 8 | Sweep/NN demostrable, timeout controlado, la API no se cuelga. |
-| **B — metaheurística** | 4 | 5 | GA/Tabú, bench 150×15, P95 ≤ 45 s, mejor factible si no converge. |
+| **A — constructiva** | 3 | 8 | Vecino más cercano demostrable, timeout controlado, la API no se cuelga. |
+| **B — genético** | 4 | 5 | AG DEAP, bench 150×15 factible, corte a 45 s, mejor factible si no converge. |
 
 Escenario: Bench 150×15  
 Dado un dataset sintético de 150 pedidos y 15 vehículos  
@@ -825,7 +825,7 @@ Calendario canónico: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20
 | 6 | 27/11/2026 | 10/12/2026 | — |
 | Cierre | 11/12/2026 | 13/12/2026 | Hito 4 — 13/12/2026 |
 
-Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10). El Sprint 3 arranca el **16/10/2026** (calendario rebaselinado).
+Cierre real: Sprint 1 el 30/09/2026 (PR #9); Sprint 2 el 01/10/2026 (PR #10); Sprint 3 el 17/10/2026 (PR #15, dentro de ventana); Sprint 4 el 18/10/2026 (PR #16, antes de la ventana; Hito 3 el 12/11).
 
 ---
 
@@ -907,22 +907,22 @@ Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_8.md](./02%
 **Hito:** ninguno al cierre; alimenta el Hito 3 (12/11/2026, fin del Sprint 4).  
 **Capacidad académica:** 172 h. Compromiso **26 SP**.
 
-**Sprint Goal:** Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística de rutas demostrable (Sweep/NN), aunque no sea el GA final.
+**Sprint Goal:** Un Operador registra pedidos con cobertura de Lima Este y punto de referencia; el sistema rechaza jornadas de más de 8 h; queda un worker con heurística del vecino más cercano.
 
 ### 11.1 Compromiso (26 SP)
 
 | ID | Pantalla / resultado | SP | Responsable principal |
 |---|---|---|---|
-| US-008 B | Distrito de cobertura + punto de referencia / `georreferencia_aproximada` | 3 | Huaman Baldeon, Katheryn Elena |
+| US-008 B | Cobertura Lima Este; migración `004_sprint3_cobertura.py` | 3 | Huaman Baldeon, Katheryn Elena |
 | US-007 | Rechazo de asignación si conducción > 8 h o falta descanso | 5 | Cruz Salazar, Jorge Luiz |
-| ENB-006 | Cola Redis: API 202 + `job_id`; 503 si Redis cae | 5 | Cruz Salazar, Jorge Luiz |
-| ENB-001 A | Heurística constructiva Sweep/NN; timeout sin colgar la API | 8 | Cruz Salazar, Jorge Luiz |
-| US-010 A | Generar rutas en escenario ≤ 50 pedidos; resultado BORRADOR | 5 | Cruz Salazar, Jorge Luiz |
+| ENB-006 | Worker Redis: `POST /optimizaciones` → 202 + `job_id`; 503 si Redis cae | 5 | Cruz Salazar, Jorge Luiz |
+| ENB-001 A | Heurística del vecino más cercano; timeout sin colgar la API | 8 | Cruz Salazar, Jorge Luiz |
+| US-010 A | Plan factible en BORRADOR vía job asíncrono | 5 | Cruz Salazar, Jorge Luiz |
 | **Total** | | **26** | |
 
-Fuera de este sprint: GA/SLA 150×15, mapa Leaflet, dashboard. IMP-04 (CodeQL + Staging) sigue abierto **sin SP** del compromiso; tope Hito 3.
+Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Staging (IMP-04), catastro INEI (IMP-11).
 
-Criterio de éxito: un Operador da de alta un pedido en Ate con punto de referencia; uno fuera de Lima Este se rechaza; una ruta heurística queda en BORRADOR vía job asíncrono; una jornada de 9 h no se confirma.
+**Cierre en código (17/10/2026, [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)):** US-008 B, US-007, ENB-006 y el vecino más cercano están en `main`. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%203/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
@@ -933,21 +933,21 @@ Criterio de éxito: un Operador da de alta un pedido en Ate con punto de referen
 **Hito 3 del Acta:** 12/11/2026 — motor, mapa y dashboard integrados.  
 **Capacidad académica:** 172 h. Compromiso **26 SP**.
 
-**Sprint Goal:** El Operador genera rutas VRPTW/Green VRP en ≤ 45 s (150×15), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
+**Sprint Goal:** El Operador genera rutas VRPTW/Green VRP con AG DEAP (150×15 factible), las ve en Leaflet/OSM y consulta km/CO₂ de esa ruta.
 
 ### 12.1 Compromiso (26 SP)
 
 | ID | Pantalla / resultado | SP | Responsable principal |
 |---|---|---|---|
-| ENB-001 B | GA/Tabú; bench 150×15; P95 ≤ 45 s | 5 | Cruz Salazar, Jorge Luiz |
+| ENB-001 B | AG DEAP; corte a 45 s; bench 150×15 factible | 5 | Cruz Salazar, Jorge Luiz |
 | US-010 B | Cierre: persistir rutas, pico y placa, overlay de congestión | 8 | Cruz Salazar, Jorge Luiz |
-| US-012 | Mapa: trazado, paradas, ETA, semáforo; tabular si fallan tiles | 8 | Huaman Baldeon, Katheryn Elena |
-| US-014 A | Dashboard: km, kg CO₂ y litros de la última ruta | 5 | Huaman Baldeon, Katheryn Elena |
+| US-012 A | Inicio mapa: trazado, paradas, ETA, semáforo; tabular si fallan tiles | 8 | Huaman Baldeon, Katheryn Elena |
+| US-014 A | Inicio dashboard: km, CO₂, combustible, soles, % ventanas | 5 | Huaman Baldeon, Katheryn Elena |
 | **Total** | | **26** | |
 
-Fuera: modo conductor, zonas de riesgo, PDF, re-optimización. Equivalentes en soles/árboles (US-014 B) quedan para el Sprint 5.
+Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-014 B (factor árboles RN-018), Staging IMP-04 e IMP-11.
 
-Criterio de éxito: demo del Hito 3 con una ruta en el mapa y tres números de sostenibilidad (km, CO₂, litros).
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. Mapa y tablero quedan iniciados, no Done. El Hito 3 sigue el 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
 ---
 
@@ -963,14 +963,14 @@ Criterio de éxito: demo del Hito 3 con una ruta en el mapa y tres números de s
 
 | ID | Pantalla / resultado | SP | Responsable principal |
 |---|---|---|---|
-| US-014 B | % ventanas, soles ahorrados y árboles equivalentes | 3 | Huaman Baldeon, Katheryn Elena |
-| US-013 | Overlay `zona_restriccion` y acción de ruta alternativa | 5 | Leon Taza, Brayan Angel |
+| US-013 | Overlay `zona_restriccion` y ruta alternativa (cierre de US-012) | 5 | Leon Taza, Brayan Angel |
+| US-014 B | Factor de árboles `factor_captura_arbol_kg` (RN-018) | 3 | Huaman Baldeon, Katheryn Elena |
 | US-015 | Modo conductor: secuencia, ETA, alertas; sin dashboard gerencial | 8 | Huaman Baldeon, Katheryn Elena |
 | ENB-005 | Contraste, labels y foco teclado WCAG 2.1 AA | 5 | Huaman Baldeon, Katheryn Elena |
 | ENB-008 | Sesión de ruta ≤ 150 KB en 2G/3G | 5 | Estrada Flores, Axel Sebastian |
 | **Total** | | **26** | |
 
-Fuera: re-optimización, PDF, confirmar entrega. US-009 (Could) no entra: va al Sprint 6.
+Fuera: re-optimización, PDF, confirmar entrega. US-009 (Could) no entra: va al Sprint 6 para no romper el tope de 26 SP. IMP-04 Staging e IMP-11 siguen en paralelo, sin SP.
 
 ---
 
@@ -1008,7 +1008,8 @@ Orden de recorte si RSK-05 se materializa: US-009 → US-017 → US-016.
 | 1.0.4 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 1 en código (PR #9, 26/26 SP). Se registra deuda de Staging cloud y CodeQL. Enlace al informe de estado de la Fase 03. |
 | 1.0.5 | 02/10/2026 | Equipo EcoLogística Lima | Cierre del Sprint 2 en código (PR #10, 26 SP: US-002, US-003, US-005, US-006, US-008 A, ENB-004). Incremento B de US-008 y US-007 quedan para el Sprint 3. IMP-04 sigue abierto. |
 | 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito. Sprint 3 = 16/10/2026 – 29/10/2026; Hito 3 = 12/11/2026; Hito 4 = 13/12/2026. Enlace al artefacto 05. |
-| 1.0.7 | 17/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP en Sprints 3–6 (secciones 11–14). Particiones ENB-001 8+5, US-010 5+8, US-014 5+3. US-009 al Sprint 6. |
+| 1.0.7 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4: ENB-001 / US-010 con algoritmo genético, inicio de US-012 y tablero iniciado. Staging (IMP-04) sigue abierto al 12/11/2026. |
+| 1.0.8 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a lo entregado en S3 (PR #15) y S4 (PR #16). Heurística = vecino más cercano; S4 = AG DEAP + inicio de mapa y dashboard. US-009 al Sprint 6. |
 
 ---
 
