@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
@@ -12,17 +14,20 @@ router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 @router.post(
     "/login",
-    response_model=TokenResponse,
     responses={
         401: {"description": "Credenciales inválidas"},
         403: {"description": "Cuenta inactiva"},
         423: {"description": "Cuenta bloqueada temporalmente"},
     },
 )
-def login(datos: LoginRequest, request: Request, db: Session = Depends(get_db)) -> TokenResponse:
+def login(
+    datos: LoginRequest,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+) -> TokenResponse:
     return autenticar(db, datos, ip_de(request))
 
 
 @router.get("/me", response_model=UsuarioSesion)
-def me(usuario: Usuario = Depends(get_current_user)) -> Usuario:
+def me(usuario: Annotated[Usuario, Depends(get_current_user)]) -> Usuario:
     return usuario

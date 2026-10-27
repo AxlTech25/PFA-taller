@@ -36,8 +36,8 @@ export function LoginPage() {
         <p className="subtitulo">Inicie sesión para gestionar la operación de reparto.</p>
         <form className="formulario" onSubmit={onSubmit}>
           <label htmlFor="email">
-            Correo
-            <input
+            Correo{/*
+            */}<input
               id="email"
               name="email"
               type="email"
@@ -48,8 +48,8 @@ export function LoginPage() {
             />
           </label>
           <label htmlFor="password">
-            Contraseña
-            <input
+            Contraseña{/*
+            */}<input
               id="password"
               name="password"
               type="password"

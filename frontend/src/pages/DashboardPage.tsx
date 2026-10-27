@@ -63,8 +63,8 @@ export function DashboardPage() {
       <section className="panel">
         <form className="grilla" onSubmit={consultar}>
           <label htmlFor="fecha-tablero">
-            Fecha
-            <input
+            Fecha{/*
+            */}<input
               id="fecha-tablero"
               type="date"
               required
@@ -76,9 +76,7 @@ export function DashboardPage() {
         </form>
       </section>
       {datos && !datos.hay_datos ? (
-        <p className="aviso" role="status">
-          {datos.mensaje}
-        </p>
+        <output className="aviso">{datos.mensaje}</output>
       ) : null}
       {datos?.hay_datos ? (
         <section className="metricas" aria-label="Indicadores del día">

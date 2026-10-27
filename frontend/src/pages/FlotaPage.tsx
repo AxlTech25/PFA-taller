@@ -135,17 +135,15 @@ export function FlotaPage() {
         </p>
       ) : null}
       {exito ? (
-        <p className="exito" role="status">
-          {exito}
-        </p>
+        <output className="exito">{exito}</output>
       ) : null}
       {registrar ? (
         <section className="panel">
           <h2>Registrar vehículo</h2>
           <form className="grilla" onSubmit={enviar}>
             <label htmlFor="placa">
-              Placa
-              <input
+              Placa{/*
+              */}<input
                 id="placa"
                 required
                 maxLength={10}
@@ -154,8 +152,8 @@ export function FlotaPage() {
               />
             </label>
             <label htmlFor="tipo">
-              Tipo
-              <select
+              Tipo{/*
+              */}<select
                 id="tipo"
                 value={formulario.tipo}
                 onChange={(event) => actualizarCampo("tipo", event.target.value)}
@@ -168,8 +166,8 @@ export function FlotaPage() {
               </select>
             </label>
             <label htmlFor="capacidad_kg">
-              Capacidad (kg)
-              <input
+              Capacidad (kg){/*
+              */}<input
                 id="capacidad_kg"
                 type="number"
                 min="0.01"
@@ -180,8 +178,8 @@ export function FlotaPage() {
               />
             </label>
             <label htmlFor="capacidad_m3">
-              Capacidad (m³)
-              <input
+              Capacidad (m³){/*
+              */}<input
                 id="capacidad_m3"
                 type="number"
                 min="0.01"
@@ -192,8 +190,8 @@ export function FlotaPage() {
               />
             </label>
             <label htmlFor="consumo_km_l">
-              Consumo (km/L)
-              <input
+              Consumo (km/L){/*
+              */}<input
                 id="consumo_km_l"
                 type="number"
                 min="0.001"
@@ -204,8 +202,8 @@ export function FlotaPage() {
               />
             </label>
             <label htmlFor="factor_emision_co2">
-              Factor de emisión (kg CO₂/km)
-              <input
+              Factor de emisión (kg CO₂/km){/*
+              */}<input
                 id="factor_emision_co2"
                 type="number"
                 min="0.0001"
@@ -216,8 +214,8 @@ export function FlotaPage() {
               />
             </label>
             <label htmlFor="anio_fabricacion">
-              Año de fabricación
-              <input
+              Año de fabricación{/*
+              */}<input
                 id="anio_fabricacion"
                 type="number"
                 min={1990}

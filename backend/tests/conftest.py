@@ -1,5 +1,8 @@
+import atexit
 import os
 import re
+import xml.etree.ElementTree as ET
+from pathlib import Path
 
 os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL",
@@ -99,6 +102,49 @@ def autenticar(client: TestClient, email: str, password: str = "clave-segura") -
     assert respuesta.status_code == 200, respuesta.text
     token = respuesta.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+
+
+def _ruta_dentro_de_app(nombre: str) -> str:
+    """Devuelve la ruta del archivo relativa a backend/app, con barras /."""
+
+    limpio = nombre.replace("\\", "/")
+    marca = "/backend/app/"
+    indice = limpio.lower().find(marca)
+    if indice >= 0:
+        return limpio[indice + len(marca) :]
+    if limpio.startswith("backend/app/"):
+        return limpio[len("backend/app/") :]
+    if limpio.startswith("app/"):
+        return limpio[len("app/") :]
+    return limpio.lstrip("./")
+
+
+def _normalizar_cobertura_xml() -> None:
+    """Deja coverage.xml con rutas de la raíz del repo, no del disco donde corrió pytest.
+
+    SonarQube, dentro de sonarsource/sonar-scanner-cli, solo ve el repositorio en
+    /usr/src. Un <source> absoluto de Windows no existe ahí y la cobertura queda
+    en «Not computed». <source>.</source> más filename backend/app/... resuelve
+    igual en el host y en el contenedor.
+    """
+
+    ruta = Path("coverage.xml")
+    if not ruta.is_file():
+        return
+    arbol = ET.parse(ruta)
+    raiz = arbol.getroot()
+    fuentes = raiz.find("sources")
+    if fuentes is None:
+        fuentes = ET.SubElement(raiz, "sources")
+    for fuente in list(fuentes):
+        fuentes.remove(fuente)
+    ET.SubElement(fuentes, "source").text = "."
+    for clase in raiz.iter("class"):
+        clase.set("filename", "backend/app/" + _ruta_dentro_de_app(clase.get("filename") or ""))
+    arbol.write(ruta, encoding="UTF-8", xml_declaration=True)
+
+
+atexit.register(_normalizar_cobertura_xml)
 
 
 def vehiculo_valido(**cambios: object) -> dict:

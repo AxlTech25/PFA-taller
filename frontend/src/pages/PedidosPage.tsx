@@ -106,17 +106,15 @@ export function PedidosPage() {
         </p>
       ) : null}
       {exito ? (
-        <p className="exito" role="status">
-          {exito}
-        </p>
+        <output className="exito">{exito}</output>
       ) : null}
       {registrar ? (
         <section className="panel">
           <h2>Registrar pedido</h2>
           <form className="grilla" onSubmit={enviar}>
             <label htmlFor="id_cliente">
-              Cliente
-              <select
+              Cliente{/*
+              */}<select
                 id="id_cliente"
                 required
                 value={formulario.id_cliente}
@@ -131,8 +129,8 @@ export function PedidosPage() {
               </select>
             </label>
             <label htmlFor="peso_kg">
-              Peso (kg)
-              <input
+              Peso (kg){/*
+              */}<input
                 id="peso_kg"
                 type="number"
                 min="0.01"
@@ -143,8 +141,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="volumen_m3">
-              Volumen (m³)
-              <input
+              Volumen (m³){/*
+              */}<input
                 id="volumen_m3"
                 type="number"
                 min="0.001"
@@ -155,8 +153,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="ventana_inicio">
-              Ventana desde
-              <input
+              Ventana desde{/*
+              */}<input
                 id="ventana_inicio"
                 type="datetime-local"
                 required
@@ -165,8 +163,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="ventana_fin">
-              Ventana hasta
-              <input
+              Ventana hasta{/*
+              */}<input
                 id="ventana_fin"
                 type="datetime-local"
                 required
@@ -175,8 +173,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="latitud">
-              Latitud
-              <input
+              Latitud{/*
+              */}<input
                 id="latitud"
                 type="number"
                 step="0.0000001"
@@ -186,8 +184,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="longitud">
-              Longitud
-              <input
+              Longitud{/*
+              */}<input
                 id="longitud"
                 type="number"
                 step="0.0000001"
@@ -197,8 +195,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="prioridad">
-              Prioridad
-              <select
+              Prioridad{/*
+              */}<select
                 id="prioridad"
                 value={formulario.prioridad}
                 onChange={(event) => actualizarCampo("prioridad", event.target.value)}
@@ -209,8 +207,8 @@ export function PedidosPage() {
               </select>
             </label>
             <label htmlFor="tipo_producto">
-              Tipo de producto
-              <select
+              Tipo de producto{/*
+              */}<select
                 id="tipo_producto"
                 value={formulario.tipo_producto}
                 onChange={(event) => actualizarCampo("tipo_producto", event.target.value)}
@@ -220,8 +218,8 @@ export function PedidosPage() {
               </select>
             </label>
             <label htmlFor="direccion">
-              Dirección
-              <input
+              Dirección{/*
+              */}<input
                 id="direccion"
                 maxLength={255}
                 value={formulario.direccion}
@@ -229,8 +227,8 @@ export function PedidosPage() {
               />
             </label>
             <label htmlFor="punto_referencia">
-              Punto de referencia
-              <input
+              Punto de referencia{/*
+              */}<input
                 id="punto_referencia"
                 maxLength={255}
                 placeholder="frente a la bodega El Ahorro"
@@ -241,9 +239,9 @@ export function PedidosPage() {
             <button type="submit">Registrar pedido</button>
           </form>
           {clienteSeleccionado && !clienteSeleccionado.consentimiento_datos ? (
-            <p className="aviso" role="status">
+            <output className="aviso">
               Este cliente no tiene consentimiento. El sistema rechazará el pedido.
-            </p>
+            </output>
           ) : null}
         </section>
       ) : null}

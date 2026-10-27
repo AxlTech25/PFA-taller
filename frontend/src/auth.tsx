@@ -25,7 +25,7 @@ function leer(): Sesion | null {
   }
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [sesion, setSesion] = useState<Sesion | null>(() => leer());
 
   const cerrar = useCallback(() => {

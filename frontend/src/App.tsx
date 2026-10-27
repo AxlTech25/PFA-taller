@@ -19,7 +19,7 @@ function Inicio() {
   return <Navigate to="/flota" replace />;
 }
 
-function Modulo({ modulo, children }: { modulo: Modulo; children: ReactNode }) {
+function Modulo({ modulo, children }: Readonly<{ modulo: Modulo; children: ReactNode }>) {
   const { sesion } = useAuth();
   if (!sesion || !modulosVisibles(sesion.rol).includes(modulo)) {
     return (

@@ -22,3 +22,7 @@ select = ["E", "F", "I", "UP"]
 [tool.coverage.run]
 omit = ["app/seed.py"]
 source = ["app"]
+relative_files = true
+
+[tool.coverage.xml]
+output = "coverage.xml"

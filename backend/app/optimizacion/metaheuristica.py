@@ -4,6 +4,9 @@ Corre en el worker, no en el request. Parte de la heurística del vecino más
 cercano, la educa con 2-opt y evoluciona permutaciones hasta el presupuesto
 de `tiempo_max_optimizacion_s` (RN-014, tope 45 s). Si no mejora el costo
 verde, se conserva el plan base: nunca se devuelve una solución peor.
+
+`random` siembra esa búsqueda con la semilla del plan. No genera secretos,
+tokens ni claves: el uso es no criptográfico (python:S2245, revisión Safe).
 """
 
 import random
@@ -133,6 +136,71 @@ def _generaciones(inst: Instancia, incumbente: tuple) -> tuple[int, tuple]:
         random.setstate(estado)
 
 
+def _evaluar(inst: Instancia, incumbente: tuple, individuo: list[int]) -> tuple[float]:
+    if time.perf_counter() >= inst.limite:
+        return (incumbente[2]["total"],)
+    rutas, libres, _ = decodificar(list(individuo), inst)
+    return (costo_verde(rutas, libres, inst)["total"],)
+
+
+def _cruzar(caja: base.Toolbox, hijos: list) -> None:
+    for izquierda, derecha in zip(hijos[::2], hijos[1::2], strict=False):
+        if random.random() < 0.7:
+            caja.mate(izquierda, derecha)
+            del izquierda.fitness.values
+            del derecha.fitness.values
+
+
+def _mutar(caja: base.Toolbox, hijos: list) -> None:
+    for individuo in hijos:
+        if random.random() < 0.3:
+            caja.mutar(individuo)
+            del individuo.fitness.values
+
+
+def _adoptar_si_mejora(
+    inst: Instancia,
+    puntero: list,
+    incumbente: tuple,
+    mejor_valor: float,
+) -> tuple[tuple, float, int]:
+    if puntero.fitness.values[0] + 1e-6 >= mejor_valor:
+        return incumbente, mejor_valor, 1
+    rutas, libres, _ = decodificar(list(puntero), inst)
+    rutas, libres = mejorar_orden_local(rutas, libres, inst)
+    total = costo_verde(rutas, libres, inst)
+    if total["total"] + 1e-6 < incumbente[2]["total"]:
+        return (rutas, libres, total), total["total"], 0
+    return incumbente, mejor_valor, 1
+
+
+def _generacion(
+    inst: Instancia,
+    caja: base.Toolbox,
+    poblacion: list,
+    tam: int,
+    incumbente: tuple,
+    mejor_valor: float,
+    quietud: int,
+    generaciones: int,
+) -> tuple[list, int, tuple, float, int]:
+    generaciones += 1
+    hijos = [caja.clone(ind) for ind in caja.seleccionar(poblacion, tam)]
+    _cruzar(caja, hijos)
+    _mutar(caja, hijos)
+    invalidos = [ind for ind in hijos if not ind.fitness.valid]
+    for individuo in invalidos:
+        individuo.fitness.values = _evaluar(inst, incumbente, individuo)
+    poblacion = tools.selBest(poblacion + hijos, tam)
+    puntero = tools.selBest(poblacion, 1)[0]
+    incumbente, mejor_valor, delta = _adoptar_si_mejora(inst, puntero, incumbente, mejor_valor)
+    if delta == 0:
+        quietud = 0
+    else:
+        quietud += 1
+    return poblacion, generaciones, incumbente, mejor_valor, quietud
+
+
 def _correr(inst: Instancia, incumbente: tuple) -> tuple[int, tuple]:
     n = len(inst.pedidos)
     caja = base.Toolbox()
@@ -143,16 +211,10 @@ def _correr(inst: Instancia, incumbente: tuple) -> tuple[int, tuple]:
     caja.register("mutar", tools.mutShuffleIndexes, indpb=0.15)
     caja.register("seleccionar", tools.selTournament, tournsize=3)
 
-    def evaluar(individuo: list[int]) -> tuple[float]:
-        if time.perf_counter() >= inst.limite:
-            return (incumbente[2]["total"],)
-        rutas, libres, _ = decodificar(list(individuo), inst)
-        return (costo_verde(rutas, libres, inst)["total"],)
-
     tam = 8 if n > 40 else POBLACION
     poblacion = caja.poblacion(n=tam)
     for individuo in poblacion:
-        individuo.fitness.values = evaluar(individuo)
+        individuo.fitness.values = _evaluar(inst, incumbente, individuo)
     mejor_valor = incumbente[2]["total"]
     generaciones = 0
     quietud = 0
@@ -161,34 +223,16 @@ def _correr(inst: Instancia, incumbente: tuple) -> tuple[int, tuple]:
         and quietud < ESTANCAMIENTO
         and time.perf_counter() < inst.limite
     ):
-        generaciones += 1
-        hijos = [caja.clone(ind) for ind in caja.seleccionar(poblacion, tam)]
-        for izquierda, derecha in zip(hijos[::2], hijos[1::2], strict=False):
-            if random.random() < 0.7:
-                caja.mate(izquierda, derecha)
-                del izquierda.fitness.values
-                del derecha.fitness.values
-        for individuo in hijos:
-            if random.random() < 0.3:
-                caja.mutar(individuo)
-                del individuo.fitness.values
-        invalidos = [ind for ind in hijos if not ind.fitness.valid]
-        for individuo in invalidos:
-            individuo.fitness.values = evaluar(individuo)
-        poblacion = tools.selBest(poblacion + hijos, tam)
-        puntero = tools.selBest(poblacion, 1)[0]
-        if puntero.fitness.values[0] + 1e-6 < mejor_valor:
-            rutas, libres, _ = decodificar(list(puntero), inst)
-            rutas, libres = mejorar_orden_local(rutas, libres, inst)
-            total = costo_verde(rutas, libres, inst)
-            if total["total"] + 1e-6 < incumbente[2]["total"]:
-                incumbente = (rutas, libres, total)
-                mejor_valor = total["total"]
-                quietud = 0
-            else:
-                quietud += 1
-        else:
-            quietud += 1
+        poblacion, generaciones, incumbente, mejor_valor, quietud = _generacion(
+            inst,
+            caja,
+            poblacion,
+            tam,
+            incumbente,
+            mejor_valor,
+            quietud,
+            generaciones,
+        )
     return generaciones, incumbente
 
 

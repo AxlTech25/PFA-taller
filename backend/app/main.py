@@ -28,6 +28,9 @@ app = FastAPI(
     ),
 )
 
+# CORSMiddleware va al final: en Starlette el último agregado es el más externo
+# y así las cabeceras CORS cubren también la respuesta del middleware de seguridad.
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -35,7 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(SecurityHeadersMiddleware)
 
 app.include_router(health.router)
 app.include_router(auth.router)

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.orm import Session
 
@@ -12,9 +14,9 @@ router = APIRouter(prefix="/pedidos", tags=["Pedidos"])
 
 @router.get("", response_model=list[PedidoOut])
 def listar(
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*LECTURA_PEDIDOS)),
-    limite: int = Query(default=100, ge=1, le=200),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*LECTURA_PEDIDOS))],
+    limite: Annotated[int, Query(ge=1, le=200)] = 100,
 ) -> list:
     return servicio.listar_pedidos(db, actor, limite)
 
@@ -23,8 +25,8 @@ def listar(
 def crear(
     datos: PedidoCreate,
     request: Request,
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*ESCRITURA_PEDIDOS)),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_PEDIDOS))],
 ) -> dict:
     pedido = servicio.crear_pedido(db, datos, actor, ip_de(request))
     cuerpo = servicio.salida_pedido(db, pedido, actor.rol)
