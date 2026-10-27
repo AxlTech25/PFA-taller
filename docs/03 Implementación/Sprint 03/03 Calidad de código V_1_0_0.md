@@ -76,7 +76,11 @@ Severidad de los 111 issues (vulnerabilidad + code smells): Bloqueante 47, Alta 
 
 13. **python:S2245 (hotspots, sin cambio de generador).** Los dos usos de `random` alimentan el cruce y la mutación del algoritmo genético, con semilla del plan y estado restaurado al salir. Es un uso no criptográfico. Decisión: **Safe**. No se cambió el generador: `secrets` no es sembrable y alteraría los planes. El detalle y el comentario para marcarlo en la interfaz de SonarQube están en [04 OWASP V_1_0_0.md](./04%20OWASP%20V_1_0_0.md). Tras el extracto de complejidad, las llamadas quedan en `backend/app/optimizacion/metaheuristica.py` líneas 148 y 156.
 
-Cobertura de apoyo, fuera del porcentaje de SonarQube: se añadieron pruebas de `api.ts`, de roles y del semáforo del mapa, y tres pruebas de que la URL de Postgres sale del entorno. Vitest local (`@vitest/coverage-v8` 2.1.9) midió **8.39 %** de líneas en `frontend/src` (la línea base citaba 6.3 %). `api.ts`, `mapa.ts` y `permissions.ts` quedan al 100 % de líneas. Las páginas siguen sin montarse en el entorno `node` de vitest. El porcentaje que publique SonarQube sigue pendiente de re-escaneo.
+14. **python:S2115 (Bloqueante, código nuevo).** El re-escaneo de esta rama dejó el Quality Gate de New Code en FAILED. El issue nuevo está en `backend/app/core/config.py`, la rama `else` (líneas 46-47 del análisis): si `DATABASE_URL` venía vacía y `POSTGRES_PASSWORD` también, se armaba `postgresql+psycopg://usuario@host` sin contraseña. Corrección: ese camino ya no existe. Si falta la contraseña, `resolver_database_url` lanza `ValueError` con un mensaje que nombra `DATABASE_URL` y `POSTGRES_PASSWORD`, y la URL solo se construye con usuario y contraseña. Una `DATABASE_URL` explícita sigue teniendo prioridad, así Docker Compose, la CI y pytest —que ya la definen— no cambian de comportamiento. La contraseña no vuelve al código. Archivos: `backend/app/core/config.py`, `backend/tests/test_config_entorno.py`.
+
+El mismo análisis marcó la cobertura de New Code como «Not computed» y avisó warnings. El `coverage.xml` llevaba en `<source>` la ruta absoluta del disco donde corrió pytest. Dentro de `sonarsource/sonar-scanner-cli` el repositorio está montado en `/usr/src`, así que esa ruta de Windows no existe y Sonar descarta el reporte. El lcov del frontend salía como `SF:src\App.tsx`: relativo a `frontend/` y con barras invertidas, y no coincide con `frontend/src/App.tsx`. Corrección, sin reescribir nada a mano antes de escanear: `relative_files` en `backend/pyproject.toml`; al cerrar pytest, si hay `coverage.xml`, `<source>` queda en `.` y cada `filename` en `backend/app/...` con barras `/`. Al cerrar vitest con cobertura, `frontend/vite.config.ts` deja cada `SF:` en `frontend/src/...` con barras `/`. Esas rutas resuelven igual en el host y en el contenedor.
+
+Medición local de esta revisión, distinta del porcentaje que publique SonarQube: pytest **97.71 %** de líneas sobre `app` (78 pruebas, antes 93.23 % con 67). Vitest (`@vitest/coverage-v8` 2.1.9) **99.60 %** de líneas sobre `frontend/src` (52 pruebas, antes 8.39 %). Las páginas, `App` y la sesión se montan con Testing Library y `fetch` simulado. El valor de SonarQube sigue pendiente de re-escaneo.
 
 ## 4. Antes / Después
 
@@ -91,23 +95,36 @@ Cobertura de apoyo, fuera del porcentaje de SonarQube: se añadieron pruebas de 
 | Code smells | 110 (Bloqueante 46, Alta 9, Media 47, Baja 8) | pendiente de re-escaneo |
 | Security hotspots | 2, Media, `TO_REVIEW` | pendiente de re-escaneo |
 | Deuda técnica | 616 min | pendiente de re-escaneo |
-| Cobertura frontend (vitest, líneas) | 6.3 % | 8.39 % en medición local v8; el valor de SonarQube queda pendiente de re-escaneo |
-| Pruebas backend | 64 pytest en verde | 67 pytest en verde (las 64 originales más 3 de configuración) |
-| Pruebas frontend | 7 vitest en verde | 13 vitest en verde (las 7 originales más 6) |
+| Cobertura frontend (vitest, líneas) | 6.3 % | 99.60 % en medición local v8; el valor de SonarQube queda pendiente de re-escaneo |
+| Cobertura backend (pytest, líneas) | no figuraba aparte de SonarQube | 97.71 % en medición local; el valor de SonarQube queda pendiente de re-escaneo |
+| Pruebas backend | 64 pytest en verde | 78 pytest en verde |
+| Pruebas frontend | 7 vitest en verde | 52 vitest en verde |
 
 ### Comandos para el re-escaneo
 
-Desde la raíz del repositorio, con SonarQube local en marcha y el token del proyecto `pfa-taller`:
+No reescriba el `<source>` de `backend/coverage.xml`. Pytest y vitest ya dejan las rutas relativas a la raíz del repositorio (`backend/app/...` y `frontend/src/...`, con barras `/`). SonarQube local en marcha, proyecto `pfa-taller`, token en `SONAR_TOKEN`.
 
-```bash
+PowerShell, con el escáner en Docker y el repositorio montado en `/usr/src`:
+
+```powershell
 cd backend
 pytest --cov=app --cov-report=xml --cov-fail-under=80
-cd ../frontend
+cd ..\frontend
 npx vitest run --coverage
 cd ..
-sonar-scanner -Dsonar.host.url=http://localhost:9000 -Dsonar.token="$SONAR_TOKEN"
+docker run --rm `
+  -e SONAR_HOST_URL="http://host.docker.internal:9000" `
+  -e SONAR_TOKEN="$env:SONAR_TOKEN" `
+  -v "${PWD}:/usr/src" `
+  sonarsource/sonar-scanner-cli
 ```
 
-`sonar-project.properties` ya apunta a `backend/app` y `frontend/src`, a `backend/coverage.xml` y a `frontend/coverage/lcov.info`, y excluye pruebas, migraciones de Alembic y `backend/app/seed.py`. Después del análisis, marcar los dos hotspots `python:S2245` como Safe con el comentario del reporte OWASP y copiar las métricas nuevas a la columna Después de esta tabla.
+Si el escáner está instalado en el propio host:
+
+```powershell
+sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="$env:SONAR_TOKEN"
+```
+
+`sonar-project.properties` apunta a `backend/app` y `frontend/src`, a `backend/coverage.xml` y a `frontend/coverage/lcov.info`, y excluye pruebas, el directorio `frontend/src/test`, migraciones de Alembic y `backend/app/seed.py`. Después del análisis, marcar los dos hotspots `python:S2245` como Safe con el comentario del reporte OWASP y copiar las métricas de SonarQube a la columna Después de esta tabla. Esa columna sigue pendiente de re-escaneo.
 
 [← Volver al README Principal](../../../README.md)

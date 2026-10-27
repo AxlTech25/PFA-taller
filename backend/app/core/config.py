@@ -37,11 +37,13 @@ class Settings(BaseSettings):
     def resolver_database_url(self) -> Self:
         if self.database_url:
             return self
+        if not self.postgres_password:
+            raise ValueError(
+                "Falta la contraseña de PostgreSQL. Defina DATABASE_URL "
+                "o POSTGRES_PASSWORD; no se abre una conexión sin contraseña."
+            )
         usuario = quote_plus(self.postgres_user)
-        if self.postgres_password:
-            credencial = f"{usuario}:{quote_plus(self.postgres_password)}"
-        else:
-            credencial = usuario
+        credencial = f"{usuario}:{quote_plus(self.postgres_password)}"
         self.database_url = (
             f"postgresql+psycopg://{credencial}@{self.postgres_host}:"
             f"{self.postgres_port}/{self.postgres_db}"
