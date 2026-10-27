@@ -6,7 +6,7 @@
 **Fecha de Análisis:** 2026-10-26  
 **Versión del Análisis:** V_1_0_0  
 
-Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Community. Clave de proyecto `pfa-taller`. La remediación de este documento se aplicó el 2026-10-27. Las métricas posteriores al cambio quedan **pendiente de re-escaneo**: hay que volver a correr el escáner en la máquina local y completar la tabla Antes / Después.
+Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Community. Clave de proyecto `pfa-taller`. La remediación se verificó el 2026-10-27 con SonarQube Community Build 26.10.0.133078 sobre el commit `aaa13b6`. La columna Después sale de ese análisis.
 
 ## 1. Resumen Ejecutivo de Quality Gate
 
@@ -14,7 +14,7 @@ Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Com
 - **Porcentaje de Cobertura de Pruebas (Coverage):** 53.1 %
 - **Duplicación de Código:** 0.0 %
 
-El Quality Gate local respondió OK. La instancia no tenía condiciones configuradas, así que el estado PASSED convive con los hallazgos de abajo: 111 issues, 1 vulnerabilidad, 2 security hotspots y 616 minutos de deuda técnica. LOC (ncloc): 5399. Confiabilidad A (0 bugs). Mantenibilidad A (110 code smells). Seguridad E por la vulnerabilidad bloqueante. Cobertura del frontend medida con vitest en esa línea base: 6.3 % de líneas (3 archivos de prueba). El backend tenía 64 pruebas pytest en verde.
+El Quality Gate de la línea base respondió OK. Esa instancia no tenía condiciones configuradas. El PASSED de entonces convive con los hallazgos de abajo: 111 issues, 1 vulnerabilidad, 2 security hotspots y 616 minutos de deuda técnica. LOC (ncloc): 5399. Confiabilidad A (0 bugs). Mantenibilidad A (110 code smells). Seguridad E por la vulnerabilidad bloqueante. Cobertura del frontend medida con vitest en esa línea base: 6.3 % de líneas (3 archivos de prueba). El backend tenía 64 pruebas pytest en verde. El resultado verificado, con cobertura calculada, está en las secciones 4 y 5.
 
 ## 2. Métricas Principales
 
@@ -74,29 +74,31 @@ Severidad de los 111 issues (vulnerabilidad + code smells): Bloqueante 47, Alta 
 
 12. **typescript:S6759, S7735 y S7764 (Baja).** Las props de `MapaRutas`, `Modulo` y `AuthProvider` quedaron en `Readonly`. La condición de minutos de tramo quedó en forma positiva (`== null` primero). `window.setTimeout` pasó a `globalThis.setTimeout`. Archivos: `frontend/src/pages/MapaRutas.tsx`, `frontend/src/App.tsx`, `frontend/src/auth.tsx`, `frontend/src/pages/RutasPage.tsx`.
 
-13. **python:S2245 (hotspots, sin cambio de generador).** Los dos usos de `random` alimentan el cruce y la mutación del algoritmo genético, con semilla del plan y estado restaurado al salir. Es un uso no criptográfico. Decisión: **Safe**. No se cambió el generador: `secrets` no es sembrable y alteraría los planes. El detalle y el comentario para marcarlo en la interfaz de SonarQube están en [04 OWASP V_1_0_0.md](./04%20OWASP%20V_1_0_0.md). Tras el extracto de complejidad, las llamadas quedan en `backend/app/optimizacion/metaheuristica.py` líneas 148 y 156.
+13. **python:S2245 (sin cambio de generador).** Los dos usos de `random` alimentan el cruce y la mutación del algoritmo genético, con semilla del plan y estado restaurado al salir. Es un uso no criptográfico. Decisión: **Safe**. No se cambió el generador: `secrets` no es sembrable y alteraría los planes. El detalle está en [04 OWASP V_1_0_0.md](./04%20OWASP%20V_1_0_0.md). Tras el extracto de complejidad, las llamadas quedan en `backend/app/optimizacion/metaheuristica.py` líneas 148 y 156. En Community Build 26.10 esa regla ya no es security hotspot: el análisis la publica como vulnerabilidad Major, impacto de seguridad Medium, con la etiqueta `former-hotspot`. En el servidor de la verificación se aceptaron las dos. Con eso, vulnerabilidades abiertas: 0 y hotspots: 0.
 
-14. **python:S2115 (Bloqueante, código nuevo).** El re-escaneo de esta rama dejó el Quality Gate de New Code en FAILED. El issue nuevo está en `backend/app/core/config.py`, la rama `else` (líneas 46-47 del análisis): si `DATABASE_URL` venía vacía y `POSTGRES_PASSWORD` también, se armaba `postgresql+psycopg://usuario@host` sin contraseña. Corrección: ese camino ya no existe. Si falta la contraseña, `resolver_database_url` lanza `ValueError` con un mensaje que nombra `DATABASE_URL` y `POSTGRES_PASSWORD`, y la URL solo se construye con usuario y contraseña. Una `DATABASE_URL` explícita sigue teniendo prioridad, así Docker Compose, la CI y pytest —que ya la definen— no cambian de comportamiento. La contraseña no vuelve al código. Archivos: `backend/app/core/config.py`, `backend/tests/test_config_entorno.py`.
+14. **python:S2115 (Bloqueante).** Hacer obligatoria la contraseña no alcanzó. El re-escaneo de `0ce075d` seguía marcando el f-string de `backend/app/core/config.py` línea 48: `postgresql+psycopg://{credencial}@{host}:`. La contraseña vive dentro de la interpolación, y la regla mira el literal. Corrección: si llega `DATABASE_URL`, se usa tal cual. Si falta `POSTGRES_PASSWORD`, `resolver_database_url` lanza `ValueError`. Si la contraseña está en el entorno, la URL sale de `sqlalchemy.engine.URL.create` con `password` como argumento y `render_as_string(hide_password=False)`. El código de la aplicación ya no tiene un literal de conexión. Docker Compose, la CI y pytest siguen definiendo `DATABASE_URL`, así que ese camino no cambia. La contraseña no vuelve al código. Archivos: `backend/app/core/config.py`, `backend/tests/test_config_entorno.py`.
 
-El mismo análisis marcó la cobertura de New Code como «Not computed» y avisó warnings. El `coverage.xml` llevaba en `<source>` la ruta absoluta del disco donde corrió pytest. Dentro de `sonarsource/sonar-scanner-cli` el repositorio está montado en `/usr/src`, así que esa ruta de Windows no existe y Sonar descarta el reporte. El lcov del frontend salía como `SF:src\App.tsx`: relativo a `frontend/` y con barras invertidas, y no coincide con `frontend/src/App.tsx`. Corrección, sin reescribir nada a mano antes de escanear: `relative_files` en `backend/pyproject.toml`; al cerrar pytest, si hay `coverage.xml`, `<source>` queda en `.` y cada `filename` en `backend/app/...` con barras `/`. Al cerrar vitest con cobertura, `frontend/vite.config.ts` deja cada `SF:` en `frontend/src/...` con barras `/`. Esas rutas resuelven igual en el host y en el contenedor.
+15. **typescript:S9383 (bug).** El primer análisis de esta verificación marcó la promesa de `import("leaflet")` en `frontend/src/pages/MapaRutas.tsx`. Corrección: la expresión va con `void`, termina en `.catch` y, si el módulo no carga, muestra el aviso de teselas que ya existía. El análisis del commit `aaa13b6` dejó 0 bugs.
 
-Medición local de esta revisión, distinta del porcentaje que publique SonarQube: pytest **97.71 %** de líneas sobre `app` (78 pruebas, antes 93.23 % con 67). Vitest (`@vitest/coverage-v8` 2.1.9) **99.60 %** de líneas sobre `frontend/src` (52 pruebas, antes 8.39 %). Las páginas, `App` y la sesión se montan con Testing Library y `fetch` simulado. El valor de SonarQube sigue pendiente de re-escaneo.
+Un análisis anterior había dejado la cobertura de New Code en «Not computed». El `coverage.xml` llevaba en `<source>` la ruta absoluta del disco donde corrió pytest, y el lcov salía como `SF:src\App.tsx`. Corrección, sin reescribir nada a mano antes de escanear: `relative_files` en `backend/pyproject.toml`; al cerrar pytest, `<source>` queda en `.` y cada `filename` en `backend/app/...` con barras `/`. Al cerrar vitest, `frontend/vite.config.ts` deja cada `SF:` en `frontend/src/...` con barras `/`. `sonar.python.version` queda en 3.12. En la verificación de la sección 5 la cobertura salió calculada.
+
+Medición local de esta revisión: pytest **97.71 %** de líneas sobre `app` (78 pruebas, antes 93.23 % con 67). Vitest (`@vitest/coverage-v8` 2.1.9) **99.54 %** de líneas sobre `frontend/src` (52 pruebas, antes 8.39 %). Las páginas, `App` y la sesión se montan con Testing Library y `fetch` simulado. SonarQube calculó la cobertura global en **97.6 %**.
 
 ## 4. Antes / Después
 
-| Métrica | Antes (línea base 2026-10-26, `efcfcfb`) | Después |
+| Métrica | Antes (línea base 2026-10-26, `efcfcfb`) | Después (Community Build 26.10.0.133078, `aaa13b6`, 2026-10-27) |
 |---|---|---|
-| Quality Gate | PASSED (sin condiciones configuradas) | pendiente de re-escaneo |
-| Cobertura | 53.1 % | pendiente de re-escaneo |
-| Duplicación | 0.0 % | pendiente de re-escaneo |
-| ncloc | 5399 | pendiente de re-escaneo |
-| Bugs | 0 (confiabilidad A) | pendiente de re-escaneo |
-| Vulnerabilidades | 1, Bloqueante, seguridad E | pendiente de re-escaneo |
-| Code smells | 110 (Bloqueante 46, Alta 9, Media 47, Baja 8) | pendiente de re-escaneo |
-| Security hotspots | 2, Media, `TO_REVIEW` | pendiente de re-escaneo |
-| Deuda técnica | 616 min | pendiente de re-escaneo |
-| Cobertura frontend (vitest, líneas) | 6.3 % | 99.60 % en medición local v8; el valor de SonarQube queda pendiente de re-escaneo |
-| Cobertura backend (pytest, líneas) | no figuraba aparte de SonarQube | 97.71 % en medición local; el valor de SonarQube queda pendiente de re-escaneo |
+| Quality Gate | PASSED (sin condiciones configuradas) | PASSED (Sonar way). Código nuevo: cobertura 87.5 %, duplicación 0.0 %, violaciones 0 |
+| Cobertura | 53.1 % | 97.6 % (líneas 98.6 %, ramas 90.0 %; 3820 líneas a cubrir, 55 sin cubrir) |
+| Duplicación | 0.0 % | 0.0 % |
+| ncloc | 5399 | 5516 |
+| Bugs | 0 (confiabilidad A) | 0 (confiabilidad A) |
+| Vulnerabilidades | 1, Bloqueante, seguridad E | 0 abiertas, seguridad A. El análisis marcó 2 `python:S2245` Major (seguridad C, 20 min) y quedaron aceptadas |
+| Code smells | 110 (Bloqueante 46, Alta 9, Media 47, Baja 8) | 0 (mantenibilidad A) |
+| Security hotspots | 2, Media, `TO_REVIEW` | 0 (revisión de seguridad A) |
+| Deuda técnica | 616 min | 0 min (`sqale_index` 0; confiabilidad 0 min; seguridad 0 min tras aceptar las dos S2245) |
+| Cobertura frontend (vitest, líneas) | 6.3 % | 99.54 % local. SonarQube la incluye en el 97.6 % global. `MapaRutas.tsx` en Sonar: 96.8 % |
+| Cobertura backend (pytest, líneas) | no figuraba aparte de SonarQube | 97.71 % local. `backend/app/core/config.py` en Sonar: 100 % |
 | Pruebas backend | 64 pytest en verde | 78 pytest en verde |
 | Pruebas frontend | 7 vitest en verde | 52 vitest en verde |
 
@@ -125,6 +127,28 @@ Si el escáner está instalado en el propio host:
 sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="$env:SONAR_TOKEN"
 ```
 
-`sonar-project.properties` apunta a `backend/app` y `frontend/src`, a `backend/coverage.xml` y a `frontend/coverage/lcov.info`, y excluye pruebas, el directorio `frontend/src/test`, migraciones de Alembic y `backend/app/seed.py`. Después del análisis, marcar los dos hotspots `python:S2245` como Safe con el comentario del reporte OWASP y copiar las métricas de SonarQube a la columna Después de esta tabla. Esa columna sigue pendiente de re-escaneo.
+`sonar-project.properties` apunta a `backend/app` y `frontend/src`, a `backend/coverage.xml` y a `frontend/coverage/lcov.info`, fija `sonar.python.version` en 3.12 y excluye pruebas, el directorio `frontend/src/test`, migraciones de Alembic y `backend/app/seed.py`.
+
+## 5. Verificación en SonarQube Community Build
+
+Se levantó `sonarqube:community` (Community Build 26.10.0.133078) y se analizó el commit `aaa13b6` con `sonarsource/sonar-scanner-cli` 8.1.0.6389, el `sonar-project.properties` del repositorio y los reportes `backend/coverage.xml` y `frontend/coverage/lcov.info`. Tarea de cómputo `e851cdd7-0f3d-4caf-bf56-80385251cc6c`, estado SUCCESS, 0 advertencias. Quality Gate **Sonar way**: PASSED.
+
+Resultado del análisis, antes de aceptar hallazgos:
+
+| Métrica | Valor |
+|---|---|
+| Quality Gate | PASSED. Condiciones de código nuevo: `new_coverage` 87.5 %, `new_duplicated_lines_density` 0.0 %, `new_violations` 0, `new_security_hotspots_reviewed` OK |
+| Bugs | 0. Confiabilidad A. `typescript:S9383` quedó cerrado en este commit |
+| Vulnerabilidades | 2, ambas `python:S2245`, severidad Major, impacto de seguridad Medium, 10 min cada una. Seguridad C |
+| Code smells | 0. Mantenibilidad A |
+| Cobertura | 97.6 %, calculada. Líneas 98.6 %, ramas 90.0 %. `config.py` 100 % (36 líneas a cubrir) |
+| Duplicación | 0.0 % |
+| Security hotspots | 0. Revisión de seguridad A |
+| Deuda | `sqale_index` 0 min. Esfuerzo de confiabilidad 0 min. Esfuerzo de seguridad 20 min |
+| ncloc | 5516 |
+| `python:S2115` | 0 |
+| BLOCKER | 0 |
+
+Las dos vulnerabilidades son las llamadas de `random.random()` en `metaheuristica.py` líneas 148 y 156. En esta versión de SonarQube ya no son hotspots. Se aceptaron en el servidor con el criterio Safe del reporte OWASP. Después de aceptarlas, la API quedó así: vulnerabilidades abiertas 0, bugs 0, code smells 0, hotspots 0, seguridad A, `sqale_index` 0, esfuerzo de seguridad 0, Quality Gate PASSED. `python:S2115` sigue en 0.
 
 [← Volver al README Principal](../../../README.md)
