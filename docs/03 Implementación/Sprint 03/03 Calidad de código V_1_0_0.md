@@ -6,15 +6,17 @@
 **Fecha de Análisis:** 2026-10-26  
 **Versión del Análisis:** V_1_0_0  
 
-Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Community. Clave de proyecto `pfa-taller`. La remediación se verificó el 2026-10-27 con SonarQube Community Build 26.10.0.133078 sobre el commit `aaa13b6`. La columna Después sale de ese análisis.
+Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Community. Clave de proyecto `pfa-taller`. La evidencia final es el Quality Gate de New Code en la instancia local del equipo, el 2026-10-26: **PASSED**. La columna Después de la sección 4 y la sección 5 corresponden a la verificación en Community Build 26.10.0.133078 sobre el commit `aaa13b6`.
 
 ## 1. Resumen Ejecutivo de Quality Gate
 
 - **Estado del Quality Gate:** PASSED
-- **Porcentaje de Cobertura de Pruebas (Coverage):** 53.1 %
-- **Duplicación de Código:** 0.0 %
+- **Issues nuevos:** 0 (requerido 0). Issues aceptados: 0
+- **Cobertura de código nuevo:** 90.0 % (requerido ≥ 80 %; 9 líneas nuevas por cubrir)
+- **Duplicación de código nuevo:** 0.0 % (requerido ≤ 3.0 %; 21 líneas nuevas)
+- **Security hotspots:** 0. Calificación A
 
-El Quality Gate de la línea base respondió OK. Esa instancia no tenía condiciones configuradas. El PASSED de entonces convive con los hallazgos de abajo: 111 issues, 1 vulnerabilidad, 2 security hotspots y 616 minutos de deuda técnica. LOC (ncloc): 5399. Confiabilidad A (0 bugs). Mantenibilidad A (110 code smells). Seguridad E por la vulnerabilidad bloqueante. Cobertura del frontend medida con vitest en esa línea base: 6.3 % de líneas (3 archivos de prueba). El backend tenía 64 pruebas pytest en verde. El resultado verificado, con cobertura calculada, está en las secciones 4 y 5.
+El pase es el de la pestaña New Code en la instancia local del equipo. La captura y el detalle están en la sección 6. La verificación independiente en la VM (cobertura global 97.6 %, `python:S2115` en 0, sin BLOCKER) está en la sección 5. La línea base del commit `efcfcfb` —53.1 % de cobertura, 111 issues, 1 vulnerabilidad bloqueante y 616 minutos de deuda— queda en la sección 2.
 
 ## 2. Métricas Principales
 
@@ -129,9 +131,9 @@ sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="$env:SONAR
 
 `sonar-project.properties` apunta a `backend/app` y `frontend/src`, a `backend/coverage.xml` y a `frontend/coverage/lcov.info`, fija `sonar.python.version` en 3.12 y excluye pruebas, el directorio `frontend/src/test`, migraciones de Alembic y `backend/app/seed.py`.
 
-## 5. Verificación en SonarQube Community Build
+## 5. Verificación en la VM (SonarQube Community Build)
 
-Se levantó `sonarqube:community` (Community Build 26.10.0.133078) y se analizó el commit `aaa13b6` con `sonarsource/sonar-scanner-cli` 8.1.0.6389, el `sonar-project.properties` del repositorio y los reportes `backend/coverage.xml` y `frontend/coverage/lcov.info`. Tarea de cómputo `e851cdd7-0f3d-4caf-bf56-80385251cc6c`, estado SUCCESS, 0 advertencias. Quality Gate **Sonar way**: PASSED.
+Medición independiente de la instancia del equipo (sección 6). Se levantó `sonarqube:community` (Community Build 26.10.0.133078) y se analizó el commit `aaa13b6` con `sonarsource/sonar-scanner-cli` 8.1.0.6389, el `sonar-project.properties` del repositorio y los reportes `backend/coverage.xml` y `frontend/coverage/lcov.info`. Tarea de cómputo `e851cdd7-0f3d-4caf-bf56-80385251cc6c`, estado SUCCESS, 0 advertencias. Quality Gate **Sonar way**: PASSED.
 
 Resultado del análisis, antes de aceptar hallazgos:
 
@@ -150,5 +152,21 @@ Resultado del análisis, antes de aceptar hallazgos:
 | BLOCKER | 0 |
 
 Las dos vulnerabilidades son las llamadas de `random.random()` en `metaheuristica.py` líneas 148 y 156. En esta versión de SonarQube ya no son hotspots. Se aceptaron en el servidor con el criterio Safe del reporte OWASP. Después de aceptarlas, la API quedó así: vulnerabilidades abiertas 0, bugs 0, code smells 0, hotspots 0, seguridad A, `sqale_index` 0, esfuerzo de seguridad 0, Quality Gate PASSED. `python:S2115` sigue en 0.
+
+## 6. Verificación en la instancia local del equipo
+
+El equipo volvió a escanear el PR en su SonarQube local el 2026-10-26. Pestaña **New Code**. Quality Gate **PASSED**. Calificación **A**. Esta es la evidencia final.
+
+| Condición | Resultado | Umbral |
+|---|---|---|
+| Issues nuevos | 0 | 0 |
+| Issues aceptados | 0 | — |
+| Cobertura | 90.0 % | ≥ 80 %. 9 líneas nuevas por cubrir |
+| Duplicación | 0.0 % | ≤ 3.0 %. 21 líneas nuevas |
+| Security hotspots | 0 | — |
+
+![Quality Gate de New Code en PASSED](./img/quality-gate-new-code-passed.png)
+
+La sección 5 es la otra medición, hecha en la VM sobre el commit `aaa13b6`: cobertura global 97.6 %, `python:S2115` en 0 y ningún BLOCKER. Las dos pasaron el Quality Gate.
 
 [← Volver al README Principal](../../../README.md)
