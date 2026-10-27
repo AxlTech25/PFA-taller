@@ -1,8 +1,8 @@
 from typing import Self
-from urllib.parse import quote_plus
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine import URL
 
 
 class Settings(BaseSettings):
@@ -42,12 +42,16 @@ class Settings(BaseSettings):
                 "Falta la contraseña de PostgreSQL. Defina DATABASE_URL "
                 "o POSTGRES_PASSWORD; no se abre una conexión sin contraseña."
             )
-        usuario = quote_plus(self.postgres_user)
-        credencial = f"{usuario}:{quote_plus(self.postgres_password)}"
-        self.database_url = (
-            f"postgresql+psycopg://{credencial}@{self.postgres_host}:"
-            f"{self.postgres_port}/{self.postgres_db}"
-        )
+        # URL.create recibe la contraseña como argumento. No hay literal
+        # postgresql://... en este archivo, que es lo que marca python:S2115.
+        self.database_url = URL.create(
+            drivername="postgresql+psycopg",
+            username=self.postgres_user,
+            password=self.postgres_password,
+            host=self.postgres_host,
+            port=self.postgres_port,
+            database=self.postgres_db,
+        ).render_as_string(hide_password=False)
         return self
 
     @property

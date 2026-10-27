@@ -127,16 +127,20 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
     let cancelado = false;
     let mapa: { remove: () => void } | null = null;
 
-    import("leaflet").then((modulo) => {
-      if (cancelado || !contenedor.current) return;
-      mapa = dibujar(
-        modulo.default as unknown as LeafletApi,
-        contenedor.current,
-        activas,
-        seleccionada,
-        () => setTilesCaidos(true),
-      );
-    });
+    void import("leaflet")
+      .then((modulo) => {
+        if (cancelado || !contenedor.current) return;
+        mapa = dibujar(
+          modulo.default as unknown as LeafletApi,
+          contenedor.current,
+          activas,
+          seleccionada,
+          () => setTilesCaidos(true),
+        );
+      })
+      .catch(() => {
+        if (!cancelado) setTilesCaidos(true);
+      });
 
     return () => {
       cancelado = true;
