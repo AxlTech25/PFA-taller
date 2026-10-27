@@ -3,6 +3,8 @@
 La API solo encola. El proceso `python -m app.worker` consume la cola.
 """
 
+from typing import NoReturn
+
 import redis
 
 from app.core.config import settings
@@ -27,14 +29,14 @@ def obtener_cliente() -> redis.Redis:
     )
 
 
-def _traducir(exc: Exception) -> None:
+def _traducir(exc: Exception) -> NoReturn:
     raise ColaNoDisponible(MENSAJE_COLA) from exc
 
 
 def disponible() -> bool:
     try:
         return bool(obtener_cliente().ping())
-    except (redis.RedisError, OSError, TimeoutError):
+    except (redis.RedisError, OSError):
         return False
 
 
@@ -43,15 +45,15 @@ def encolar(id_job: str) -> None:
         cliente = obtener_cliente()
         cliente.ping()
         cliente.lpush(NOMBRE_COLA, id_job)
-    except (redis.RedisError, OSError, TimeoutError) as exc:
-        raise _traducir(exc) from exc
+    except (redis.RedisError, OSError) as exc:
+        _traducir(exc)
 
 
 def tomar(timeout: int = 5) -> str | None:
     try:
         fila = obtener_cliente().brpop(NOMBRE_COLA, timeout=timeout)
-    except (redis.RedisError, OSError, TimeoutError) as exc:
-        raise _traducir(exc) from exc
+    except (redis.RedisError, OSError) as exc:
+        _traducir(exc)
     if not fila:
         return None
     return str(fila[1])

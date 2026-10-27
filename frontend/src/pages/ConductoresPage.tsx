@@ -79,17 +79,15 @@ export function ConductoresPage() {
         </p>
       ) : null}
       {exito ? (
-        <p className="exito" role="status">
-          {exito}
-        </p>
+        <output className="exito">{exito}</output>
       ) : null}
       {registrar ? (
         <section className="panel">
           <h2>Registrar conductor</h2>
           <form className="grilla" onSubmit={enviar}>
             <label htmlFor="nombre">
-              Nombre
-              <input
+              Nombre{/*
+              */}<input
                 id="nombre"
                 required
                 maxLength={150}
@@ -98,8 +96,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="dni">
-              DNI
-              <input
+              DNI{/*
+              */}<input
                 id="dni"
                 required
                 inputMode="numeric"
@@ -110,8 +108,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="licencia_categoria">
-              Licencia
-              <input
+              Licencia{/*
+              */}<input
                 id="licencia_categoria"
                 required
                 maxLength={10}
@@ -120,8 +118,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="anios_experiencia">
-              Años de experiencia
-              <input
+              Años de experiencia{/*
+              */}<input
                 id="anios_experiencia"
                 type="number"
                 min={0}
@@ -131,8 +129,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="disponibilidad_inicio">
-              Disponibilidad desde
-              <input
+              Disponibilidad desde{/*
+              */}<input
                 id="disponibilidad_inicio"
                 type="time"
                 required
@@ -141,8 +139,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="disponibilidad_fin">
-              Disponibilidad hasta
-              <input
+              Disponibilidad hasta{/*
+              */}<input
                 id="disponibilidad_fin"
                 type="time"
                 required
@@ -151,8 +149,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="lat_punto_partida">
-              Latitud de partida
-              <input
+              Latitud de partida{/*
+              */}<input
                 id="lat_punto_partida"
                 type="number"
                 step="0.0000001"
@@ -162,8 +160,8 @@ export function ConductoresPage() {
               />
             </label>
             <label htmlFor="lon_punto_partida">
-              Longitud de partida
-              <input
+              Longitud de partida{/*
+              */}<input
                 id="lon_punto_partida"
                 type="number"
                 step="0.0000001"

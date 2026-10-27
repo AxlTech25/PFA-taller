@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy.orm import Session
 
@@ -12,9 +14,9 @@ router = APIRouter(prefix="/conductores", tags=["Conductores"])
 
 @router.get("", response_model=list[ConductorOut])
 def listar(
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*LECTURA_CONDUCTORES)),
-    limite: int = Query(default=100, ge=1, le=200),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*LECTURA_CONDUCTORES))],
+    limite: Annotated[int, Query(ge=1, le=200)] = 100,
 ) -> list:
     return servicio.listar_conductores(db, actor, limite)
 
@@ -23,8 +25,8 @@ def listar(
 def crear(
     datos: ConductorCreate,
     request: Request,
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*ESCRITURA_CONDUCTORES)),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_CONDUCTORES))],
 ) -> dict:
     conductor = servicio.crear_conductor(db, datos, actor, ip_de(request))
     cuerpo = servicio.salida_conductor(conductor, actor.rol)

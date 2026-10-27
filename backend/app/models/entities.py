@@ -19,12 +19,17 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
+_UUID_V4 = "uuid_generate_v4()"
+_AHORA = "CURRENT_TIMESTAMP"
+_FK_USUARIO = "usuario.id_usuario"
+_FK_RUTA = "ruta.id_ruta"
+
 
 class Usuario(Base):
     __tablename__ = "usuario"
 
     id_usuario: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -33,10 +38,10 @@ class Usuario(Base):
     intentos_fallidos: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     bloqueado_hasta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
     actualizado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -44,14 +49,14 @@ class Cliente(Base):
     __tablename__ = "cliente"
 
     id_cliente: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     nombre: Mapped[str] = mapped_column(String(150), nullable=False)
     telefono: Mapped[str | None] = mapped_column(String(20))
     email: Mapped[str | None] = mapped_column(String(255))
     consentimiento_datos: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -59,7 +64,7 @@ class Vehiculo(Base):
     __tablename__ = "vehiculo"
 
     id_vehiculo: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     placa: Mapped[str] = mapped_column(String(10), unique=True, nullable=False)
     tipo: Mapped[str] = mapped_column(String(30), nullable=False)
@@ -70,7 +75,7 @@ class Vehiculo(Base):
     anio_fabricacion: Mapped[int] = mapped_column(Integer, nullable=False)
     estado: Mapped[str] = mapped_column(String(20), nullable=False, default="ACTIVO")
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -78,10 +83,10 @@ class Conductor(Base):
     __tablename__ = "conductor"
 
     id_conductor: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_usuario: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("usuario.id_usuario"), unique=True
+        UUID(as_uuid=True), ForeignKey(_FK_USUARIO), unique=True
     )
     dni: Mapped[str] = mapped_column(String(15), unique=True, nullable=False)
     nombre: Mapped[str] = mapped_column(String(150), nullable=False)
@@ -93,7 +98,7 @@ class Conductor(Base):
     lon_punto_partida: Mapped[Decimal | None] = mapped_column(Numeric(10, 7))
     estado: Mapped[str] = mapped_column(String(20), nullable=False, default="ACTIVO")
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -101,7 +106,7 @@ class Pedido(Base):
     __tablename__ = "pedido"
 
     id_pedido: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_cliente: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("cliente.id_cliente"), nullable=False
@@ -121,7 +126,7 @@ class Pedido(Base):
         Boolean, nullable=False, default=False, server_default=text("false")
     )
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -129,10 +134,10 @@ class LogAuditoria(Base):
     __tablename__ = "log_auditoria"
 
     id_log: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_usuario: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("usuario.id_usuario")
+        UUID(as_uuid=True), ForeignKey(_FK_USUARIO)
     )
     accion: Mapped[str] = mapped_column(String(100), nullable=False)
     tabla_afectada: Mapped[str | None] = mapped_column(String(50))
@@ -141,7 +146,7 @@ class LogAuditoria(Base):
     datos_nuevos: Mapped[dict | None] = mapped_column(JSONB)
     ip_origen: Mapped[str | None] = mapped_column(INET)
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -149,20 +154,20 @@ class JobOptimizacion(Base):
     __tablename__ = "job_optimizacion"
 
     id_job: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     estado: Mapped[str] = mapped_column(String(20), nullable=False, default="ENCOLADO")
     id_usuario: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("usuario.id_usuario")
+        UUID(as_uuid=True), ForeignKey(_FK_USUARIO)
     )
     fecha: Mapped[date] = mapped_column(Date, nullable=False)
     mensaje: Mapped[str | None] = mapped_column(Text)
     resultado: Mapped[dict | None] = mapped_column(JSONB)
     creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
     actualizado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -170,7 +175,7 @@ class Ruta(Base):
     __tablename__ = "ruta"
 
     id_ruta: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     fecha: Mapped[date] = mapped_column(Date, nullable=False)
     estado: Mapped[str] = mapped_column(String(20), nullable=False, default="BORRADOR")
@@ -183,7 +188,7 @@ class Ruta(Base):
         UUID(as_uuid=True), ForeignKey("job_optimizacion.id_job")
     )
     generada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -191,10 +196,10 @@ class AsignacionRuta(Base):
     __tablename__ = "asignacion_ruta"
 
     id_asignacion: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_ruta: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), unique=True, nullable=False
+        UUID(as_uuid=True), ForeignKey(_FK_RUTA), unique=True, nullable=False
     )
     id_vehiculo: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("vehiculo.id_vehiculo"), nullable=False
@@ -203,7 +208,7 @@ class AsignacionRuta(Base):
         UUID(as_uuid=True), ForeignKey("conductor.id_conductor"), nullable=False
     )
     asignada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
 
 
@@ -211,10 +216,10 @@ class DetalleRuta(Base):
     __tablename__ = "detalle_ruta"
 
     id_detalle: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_ruta: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), nullable=False
+        UUID(as_uuid=True), ForeignKey(_FK_RUTA), nullable=False
     )
     id_pedido: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("pedido.id_pedido"), nullable=False
@@ -228,10 +233,10 @@ class DescansoRuta(Base):
     __tablename__ = "descanso_ruta"
 
     id_descanso: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("uuid_generate_v4()")
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
     )
     id_ruta: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("ruta.id_ruta"), nullable=False
+        UUID(as_uuid=True), ForeignKey(_FK_RUTA), nullable=False
     )
     despues_de_secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
     duracion_min: Mapped[int] = mapped_column(Integer, nullable=False, default=60)

@@ -84,6 +84,73 @@ def _mapa(db: Session) -> tuple[float, float]:
     return velocidad, congestion
 
 
+def _origen_conductor(
+    conductor: Conductor | None,
+    anonimo: bool,
+) -> tuple[float | None, float | None]:
+    if conductor is None or anonimo:
+        return None, None
+    if conductor.lat_punto_partida is None or conductor.lon_punto_partida is None:
+        return DEPOSITO_SJL
+    return _float(conductor.lat_punto_partida), _float(conductor.lon_punto_partida)
+
+
+def _comparacion_de(db: Session, ruta: Ruta):
+    if ruta.id_job is None:
+        return None
+    job = db.get(JobOptimizacion, ruta.id_job)
+    if job is None or not job.resultado:
+        return None
+    return job.resultado.get("comparacion")
+
+
+def _minutos_tramo(
+    previo: tuple[float | None, float | None],
+    latitud: float | None,
+    longitud: float | None,
+    velocidad: float,
+    congestion: float,
+) -> tuple[float | None, tuple[float | None, float | None]]:
+    if None in (previo[0], previo[1], latitud, longitud):
+        return None, previo
+    km = distancia_km(previo[0], previo[1], latitud, longitud)
+    minutos = round((km / velocidad) * 60.0 * congestion, 2)
+    return minutos, (latitud, longitud)
+
+
+def _parada(
+    db: Session,
+    detalle: DetalleRuta,
+    anonimo: bool,
+    previo: tuple[float | None, float | None],
+    velocidad: float,
+    congestion: float,
+) -> tuple[dict, tuple[float | None, float | None]]:
+    pedido = db.get(Pedido, detalle.id_pedido)
+    cliente = db.get(Cliente, pedido.id_cliente) if pedido else None
+    if anonimo or pedido is None:
+        latitud = None
+        longitud = None
+        referencia = None
+    else:
+        latitud = _float(pedido.latitud)
+        longitud = _float(pedido.longitud)
+        referencia = pedido.punto_referencia
+    minutos, previo = _minutos_tramo(previo, latitud, longitud, velocidad, congestion)
+    parada = {
+        "secuencia": detalle.secuencia,
+        "id_pedido": detalle.id_pedido,
+        "nombre_cliente": cliente.nombre if cliente else None,
+        "eta": detalle.eta,
+        "latitud": latitud,
+        "longitud": longitud,
+        "punto_referencia": referencia,
+        "minutos_tramo": minutos,
+        "nivel_congestion": nivel_congestion(congestion, detalle.eta),
+    }
+    return parada, previo
+
+
 def salida_ruta(
     db: Session,
     ruta: Ruta,
@@ -109,45 +176,13 @@ def salida_ruta(
         ).all()
     )
     velocidad, congestion = mapa or _mapa(db)
-    origen_lat = None
-    origen_lon = None
-    if conductor is not None and not anonimo:
-        if conductor.lat_punto_partida is not None and conductor.lon_punto_partida is not None:
-            origen_lat = _float(conductor.lat_punto_partida)
-            origen_lon = _float(conductor.lon_punto_partida)
-        else:
-            origen_lat, origen_lon = DEPOSITO_SJL
+    origen_lat, origen_lon = _origen_conductor(conductor, anonimo)
     previo = (origen_lat, origen_lon)
     paradas = []
     for detalle in detalles:
-        pedido = db.get(Pedido, detalle.id_pedido)
-        cliente = db.get(Cliente, pedido.id_cliente) if pedido else None
-        latitud = None if anonimo or pedido is None else _float(pedido.latitud)
-        longitud = None if anonimo or pedido is None else _float(pedido.longitud)
-        minutos = None
-        hay_tramo = None not in (previo[0], previo[1], latitud, longitud)
-        if hay_tramo:
-            km = distancia_km(previo[0], previo[1], latitud, longitud)
-            minutos = round((km / velocidad) * 60.0 * congestion, 2)
-            previo = (latitud, longitud)
-        paradas.append(
-            {
-                "secuencia": detalle.secuencia,
-                "id_pedido": detalle.id_pedido,
-                "nombre_cliente": cliente.nombre if cliente else None,
-                "eta": detalle.eta,
-                "latitud": latitud,
-                "longitud": longitud,
-                "punto_referencia": None if anonimo or pedido is None else pedido.punto_referencia,
-                "minutos_tramo": minutos,
-                "nivel_congestion": nivel_congestion(congestion, detalle.eta),
-            }
-        )
-    comparacion = None
-    if ruta.id_job is not None:
-        job = db.get(JobOptimizacion, ruta.id_job)
-        if job is not None and job.resultado:
-            comparacion = job.resultado.get("comparacion")
+        parada, previo = _parada(db, detalle, anonimo, previo, velocidad, congestion)
+        paradas.append(parada)
+    comparacion = _comparacion_de(db, ruta)
     return {
         "id_ruta": ruta.id_ruta,
         "fecha": ruta.fecha,

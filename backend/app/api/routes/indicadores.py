@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -23,8 +24,8 @@ router = APIRouter(prefix="/indicadores", tags=["Sostenibilidad"])
     ),
 )
 def consultar(
-    db: Session = Depends(get_db),
-    _actor: Usuario = Depends(require_roles(*LECTURA_RUTAS)),
-    fecha: date = Query(),
+    db: Annotated[Session, Depends(get_db)],
+    _actor: Annotated[Usuario, Depends(require_roles(*LECTURA_RUTAS))],
+    fecha: Annotated[date, Query()],
 ) -> dict:
     return servicio.consultar(db, fecha)

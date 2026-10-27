@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request
@@ -15,9 +16,9 @@ router = APIRouter(prefix="/rutas", tags=["Optimización"])
 
 @router.get("", response_model=list[RutaOut], summary="Listar rutas generadas")
 def listar(
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*LECTURA_RUTAS)),
-    fecha: date | None = Query(default=None),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*LECTURA_RUTAS))],
+    fecha: Annotated[date | None, Query()] = None,
 ) -> list:
     return servicio.listar_rutas(db, actor, fecha)
 
@@ -34,7 +35,7 @@ def listar(
 def confirmar(
     id_ruta: UUID,
     request: Request,
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*ESCRITURA_RUTAS)),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
 ) -> dict:
     return servicio.confirmar(db, id_ruta, actor, ip_de(request))

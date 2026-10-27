@@ -14,4 +14,11 @@ Calendario completo: [05 Cronograma de sprints V_1_0_0.md](../02%20Planificaci%C
 | 6 | 27/11/2026 | 10/12/2026 | Re-opt; PDF; confirmar entrega; compensación; US-009 (Could) | — |
 | Cierre (Hito 4) | 11/12/2026 | 13/12/2026 | UAT, documentación y presentación | — |
 
+La consigna del Sprint 3 pide la calidad de código y el reporte OWASP en la carpeta `Sprint 03`. Los informes de gestión del mismo calendario siguen en [Sprint 3/](./Sprint%203/).
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 03 | Evaluación de calidad de código (SonarQube) | [03 Calidad de código V_1_0_0.md](./Sprint%2003/03%20Calidad%20de%20c%C3%B3digo%20V_1_0_0.md) |
+| 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./Sprint%2003/04%20OWASP%20V_1_0_0.md) |
+
 [← Volver al README Principal](../../README.md)

@@ -1,3 +1,4 @@
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Request, status
@@ -26,8 +27,8 @@ router = APIRouter(prefix="/optimizaciones", tags=["Optimización"])
 def solicitar(
     datos: SolicitudOptimizacion,
     request: Request,
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*ESCRITURA_RUTAS)),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
 ) -> dict:
     job = servicio.solicitar(db, actor, datos.fecha, ip_de(request))
     return servicio.salida_job(db, job, actor.rol)
@@ -40,8 +41,8 @@ def solicitar(
 )
 def consultar(
     id_job: UUID,
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*LECTURA_RUTAS)),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*LECTURA_RUTAS))],
 ) -> dict:
     job = servicio.obtener_job(db, id_job)
     return servicio.salida_job(db, job, actor.rol)

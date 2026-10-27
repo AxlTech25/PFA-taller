@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mensajeError } from "./api";
 import {
+  etiqueta,
   etiquetaRol,
   modulosVisibles,
   puedeEditarFlota,
@@ -52,8 +53,33 @@ describe("permisos de Sprint 2", () => {
     expect(modulosVisibles("CONDUCTOR")).not.toContain("usuarios");
   });
 
+  it("abre el tablero al gerente y al auditor, y deja la flota si el rol no existe", () => {
+    expect(modulosVisibles("GERENTE")).toEqual([
+      "flota",
+      "conductores",
+      "pedidos",
+      "rutas",
+      "dashboard",
+      "usuarios",
+    ]);
+    expect(modulosVisibles("AUDITOR")).toEqual([
+      "flota",
+      "conductores",
+      "pedidos",
+      "rutas",
+      "dashboard",
+    ]);
+    expect(modulosVisibles("DESCONOCIDO")).toEqual(["flota"]);
+    expect(puedeEditarFlota("AUDITOR")).toBe(false);
+    expect(puedeRegistrarConductor("GERENTE")).toBe(false);
+    expect(puedeRegistrarFlota("")).toBe(false);
+  });
+
   it("traduce el rol y los mensajes de la API", () => {
     expect(etiquetaRol("OPERADOR")).toBe("Operador");
+    expect(etiqueta("PERECEDERO")).toBe("Perecedero");
+    expect(etiqueta("codigo-libre")).toBe("codigo-libre");
+    expect(etiquetaRol("codigo-libre")).toBe("codigo-libre");
     expect(mensajeError({ detail: "La placa ya se encuentra registrada" })).toBe(
       "La placa ya se encuentra registrada",
     );

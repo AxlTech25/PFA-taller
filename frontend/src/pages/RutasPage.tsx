@@ -16,7 +16,7 @@ function fechaHoy(): string {
 
 function esperar(ms: number): Promise<void> {
   return new Promise((resolver) => {
-    window.setTimeout(resolver, ms);
+    globalThis.setTimeout(resolver, ms);
   });
 }
 
@@ -108,17 +108,15 @@ export function RutasPage() {
         </p>
       ) : null}
       {aviso ? (
-        <p className="exito" role="status">
-          {aviso}
-        </p>
+        <output className="exito">{aviso}</output>
       ) : null}
       {generar ? (
         <section className="panel">
           <h2>Generar plan del día</h2>
           <form className="grilla" onSubmit={solicitar}>
             <label htmlFor="fecha">
-              Fecha de reparto
-              <input
+              Fecha de reparto{/*
+              */}<input
                 id="fecha"
                 type="date"
                 required
@@ -144,12 +142,12 @@ export function RutasPage() {
       <section className="panel">
         <h2>Plan generado</h2>
         {rutas[0]?.comparacion ? (
-          <p className="exito" role="status">
+          <output className="exito">
             Costo verde frente al vecino más cercano: {rutas[0].comparacion.mejora_porcentaje ?? 0} %.
             Distancia {rutas[0].comparacion.distancia_km ?? 0} km (base{" "}
             {rutas[0].comparacion.distancia_base_km ?? 0} km). CO₂ {rutas[0].comparacion.co2_kg ?? 0} kg
             (base {rutas[0].comparacion.co2_base_kg ?? 0} kg).
-          </p>
+          </output>
         ) : null}
         {rutas.length === 0 ? (
           <p>No hay rutas para la fecha seleccionada.</p>
@@ -197,7 +195,7 @@ export function RutasPage() {
                         <td>{parada.nombre_cliente ?? "Cliente"}</td>
                         <td>{parada.punto_referencia ?? "—"}</td>
                         <td>{parada.eta ? parada.eta.slice(0, 16).replace("T", " ") : "—"}</td>
-                        <td>{parada.minutos_tramo != null ? `${parada.minutos_tramo} min` : "—"}</td>
+                        <td>{parada.minutos_tramo == null ? "—" : `${parada.minutos_tramo} min`}</td>
                         <td>
                           <span className={`insignia semaforo ${parada.nivel_congestion ?? ""}`}>
                             {etiquetaCongestion(parada.nivel_congestion)}

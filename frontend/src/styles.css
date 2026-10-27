@@ -114,6 +114,7 @@ button:disabled {
 }
 
 .alerta {
+  display: block;
   background: #fdecec;
   color: var(--peligro);
   border: 1px solid #e7b4b4;
@@ -122,6 +123,7 @@ button:disabled {
 }
 
 .exito {
+  display: block;
   background: #e7f6ee;
   color: var(--ok);
   border: 1px solid #b7dfc8;
@@ -130,6 +132,7 @@ button:disabled {
 }
 
 .aviso {
+  display: block;
   background: #fff6df;
   color: var(--aviso);
   border: 1px solid #ead7a1;

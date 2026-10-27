@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
@@ -20,8 +22,8 @@ router = APIRouter(prefix="/clientes", tags=["Pedidos"])
     ),
 )
 def listar(
-    db: Session = Depends(get_db),
-    actor: Usuario = Depends(require_roles(*LECTURA_CLIENTES)),
-    limite: int = Query(default=100, ge=1, le=200),
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*LECTURA_CLIENTES))],
+    limite: Annotated[int, Query(ge=1, le=200)] = 100,
 ) -> list:
     return servicio.listar_clientes(db, actor, limite)

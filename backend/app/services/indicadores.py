@@ -37,7 +37,27 @@ def _factor_arboles(db: Session) -> float | None:
     return factor
 
 
-def consultar(db: Session, fecha: date) -> dict:
+def _sin_datos(fecha: date) -> dict:
+    return {
+        "fecha": fecha,
+        "hay_datos": False,
+        "mensaje": MENSAJE_VACIO,
+        "rutas": 0,
+        "km": 0,
+        "co2_kg": 0,
+        "combustible_l": 0,
+        "soles_combustible": 0,
+        "soles_mantenimiento": 0,
+        "soles_ahorrados": 0,
+        "co2_ahorrado_kg": 0,
+        "arboles": None,
+        "nota_arboles": NOTA_ARBOLES,
+        "cumplimiento_ventanas_pct": 0,
+        "mejora_porcentaje": None,
+    }
+
+
+def _rutas_del_dia(db: Session, fecha: date) -> tuple[JobOptimizacion | None, list[Ruta]]:
     job = db.scalar(
         select(JobOptimizacion)
         .where(JobOptimizacion.fecha == fecha, JobOptimizacion.estado == "COMPLETADO")
@@ -47,49 +67,21 @@ def consultar(db: Session, fecha: date) -> dict:
         rutas = list(db.scalars(select(Ruta).where(Ruta.id_job == job.id_job)).all())
     else:
         rutas = list(
-            db.scalars(
-                select(Ruta).where(Ruta.fecha == fecha, Ruta.estado != "CANCELADA")
-            ).all()
+            db.scalars(select(Ruta).where(Ruta.fecha == fecha, Ruta.estado != "CANCELADA")).all()
         )
-    if not rutas:
-        return {
-            "fecha": fecha,
-            "hay_datos": False,
-            "mensaje": MENSAJE_VACIO,
-            "rutas": 0,
-            "km": 0,
-            "co2_kg": 0,
-            "combustible_l": 0,
-            "soles_combustible": 0,
-            "soles_mantenimiento": 0,
-            "soles_ahorrados": 0,
-            "co2_ahorrado_kg": 0,
-            "arboles": None,
-            "nota_arboles": NOTA_ARBOLES,
-            "cumplimiento_ventanas_pct": 0,
-            "mejora_porcentaje": None,
-        }
+    return job, rutas
 
-    precio_litro = _parametro(db, "precio_diesel_galon", 17.50) / LITROS_POR_GALON
-    costo_km = _parametro(db, "costo_mantenimiento_km", 1.20)
-    km = sum(float(ruta.distancia_total_km or 0) for ruta in rutas)
-    co2 = sum(float(ruta.co2_estimado_kg or 0) for ruta in rutas)
-    litros = sum(float(ruta.combustible_estimado_l or 0) for ruta in rutas)
+
+def _ahorros(job: JobOptimizacion | None) -> tuple[float, float, float | None]:
     comparacion = (job.resultado or {}).get("comparacion") if job and job.resultado else None
-    soles_ahorrados = 0.0
-    co2_ahorrado = 0.0
-    mejora = None
-    if comparacion:
-        soles_ahorrados = max(
-            float(comparacion.get("soles_base", 0)) - float(comparacion.get("soles", 0)),
-            0,
-        )
-        co2_ahorrado = max(
-            float(comparacion.get("co2_base_kg", 0)) - float(comparacion.get("co2_kg", 0)),
-            0,
-        )
-        mejora = float(comparacion.get("mejora_porcentaje", 0))
+    if not comparacion:
+        return 0.0, 0.0, None
+    soles = max(float(comparacion.get("soles_base", 0)) - float(comparacion.get("soles", 0)), 0)
+    co2 = max(float(comparacion.get("co2_base_kg", 0)) - float(comparacion.get("co2_kg", 0)), 0)
+    return soles, co2, float(comparacion.get("mejora_porcentaje", 0))
 
+
+def _cumplimiento(db: Session, rutas: list[Ruta]) -> float:
     cumplidas = 0
     totales = 0
     for ruta in rutas:
@@ -103,9 +95,30 @@ def consultar(db: Session, fecha: date) -> dict:
             totales += 1
             if pedido.ventana_inicio <= detalle.eta <= pedido.ventana_fin:
                 cumplidas += 1
-    pct = 0.0 if totales == 0 else cumplidas / totales * 100
-    factor = _factor_arboles(db)
-    arboles = None if factor is None or co2_ahorrado <= 0 else round(co2_ahorrado / factor, 2)
+    if totales == 0:
+        return 0.0
+    return cumplidas / totales * 100
+
+
+def _equivalente_arboles(factor: float | None, co2_ahorrado: float) -> float | None:
+    if factor is None or co2_ahorrado <= 0:
+        return None
+    return round(co2_ahorrado / factor, 2)
+
+
+def consultar(db: Session, fecha: date) -> dict:
+    job, rutas = _rutas_del_dia(db, fecha)
+    if not rutas:
+        return _sin_datos(fecha)
+
+    precio_litro = _parametro(db, "precio_diesel_galon", 17.50) / LITROS_POR_GALON
+    costo_km = _parametro(db, "costo_mantenimiento_km", 1.20)
+    km = sum(float(ruta.distancia_total_km or 0) for ruta in rutas)
+    co2 = sum(float(ruta.co2_estimado_kg or 0) for ruta in rutas)
+    litros = sum(float(ruta.combustible_estimado_l or 0) for ruta in rutas)
+    soles_ahorrados, co2_ahorrado, mejora = _ahorros(job)
+    pct = _cumplimiento(db, rutas)
+    arboles = _equivalente_arboles(_factor_arboles(db), co2_ahorrado)
     return {
         "fecha": fecha,
         "hay_datos": True,

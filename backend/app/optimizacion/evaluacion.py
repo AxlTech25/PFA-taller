@@ -191,6 +191,24 @@ def _cerrar(recurso: Recurso, cursor: _Cursor) -> RutaPlan | None:
     )
 
 
+def _elegir_cercano(
+    cursor: _Cursor,
+    pendientes: list[PedidoNodo],
+    recurso: Recurso,
+    inst: Instancia,
+) -> tuple | None:
+    elegido: tuple | None = None
+    for pedido in pendientes:
+        cabe = _cabe(cursor, pedido, recurso, inst)
+        if cabe is None:
+            continue
+        km = cabe[0]
+        clave = (0 if pedido.express else 1, km, str(pedido.id))
+        if elegido is None or clave < elegido[0]:
+            elegido = (clave, pedido, cabe)
+    return elegido
+
+
 def _armar_por_cercania(
     recurso: Recurso,
     candidatos: list[PedidoNodo],
@@ -203,18 +221,10 @@ def _armar_por_cercania(
         if time.perf_counter() >= inst.limite:
             cortado = True
             break
-        elegido_nodo: tuple | None = None
-        for pedido in pendientes:
-            cabe = _cabe(cursor, pedido, recurso, inst)
-            if cabe is None:
-                continue
-            km = cabe[0]
-            clave = (0 if pedido.express else 1, km, str(pedido.id))
-            if elegido_nodo is None or clave < elegido_nodo[0]:
-                elegido_nodo = (clave, pedido, cabe)
-        if elegido_nodo is None:
+        elegido = _elegir_cercano(cursor, pendientes, recurso, inst)
+        if elegido is None:
             break
-        _, pedido, cabe = elegido_nodo
+        _, pedido, cabe = elegido
         _adoptar(cursor, pedido, cabe)
         pendientes = [item for item in pendientes if item.id != pedido.id]
     return _cerrar(recurso, cursor), pendientes, cortado
@@ -321,6 +331,45 @@ def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia)
     }
 
 
+def _reverso_mejor(
+    recurso: Recurso,
+    secuencia: list[PedidoNodo],
+    inst: Instancia,
+    mejor_total: float,
+) -> tuple[list[PedidoNodo], RutaPlan, float] | None:
+    n = len(secuencia)
+    for inicio in range(n):
+        for fin in range(inicio + 1, n):
+            candidata = (
+                secuencia[:inicio] + secuencia[inicio : fin + 1][::-1] + secuencia[fin + 1 :]
+            )
+            simulada = simular(recurso, candidata, inst)
+            if simulada is None:
+                continue
+            total = costo_verde([simulada], [], inst)["total"]
+            if total + 1e-6 < mejor_total:
+                return candidata, simulada, total
+    return None
+
+
+def _optimizar_secuencia(
+    recurso: Recurso,
+    secuencia: list[PedidoNodo],
+    actual: RutaPlan,
+    inst: Instancia,
+    mejor_total: float,
+) -> RutaPlan:
+    hubo = True
+    while hubo and time.perf_counter() < inst.limite:
+        hubo = False
+        hallazgo = _reverso_mejor(recurso, secuencia, inst, mejor_total)
+        if hallazgo is None:
+            break
+        secuencia, actual, mejor_total = hallazgo
+        hubo = True
+    return actual
+
+
 def mejorar_orden_local(
     rutas: list[RutaPlan],
     sin_asignar: list[UUID],
@@ -339,30 +388,6 @@ def mejorar_orden_local(
         if len(secuencia) > 16:
             mejoradas.append(ruta)
             continue
-        actual = ruta
-        mejor_total = costo_verde([actual], [], inst)["total"]
-        hubo = True
-        while hubo and time.perf_counter() < inst.limite:
-            hubo = False
-            n = len(secuencia)
-            for inicio in range(n):
-                for fin in range(inicio + 1, n):
-                    candidata = (
-                        secuencia[:inicio]
-                        + secuencia[inicio : fin + 1][::-1]
-                        + secuencia[fin + 1 :]
-                    )
-                    simulada = simular(recurso, candidata, inst)
-                    if simulada is None:
-                        continue
-                    total = costo_verde([simulada], [], inst)["total"]
-                    if total + 1e-6 < mejor_total:
-                        secuencia = candidata
-                        actual = simulada
-                        mejor_total = total
-                        hubo = True
-                        break
-                if hubo:
-                    break
-        mejoradas.append(actual)
+        mejor_total = costo_verde([ruta], [], inst)["total"]
+        mejoradas.append(_optimizar_secuencia(recurso, secuencia, ruta, inst, mejor_total))
     return mejoradas, sin_asignar

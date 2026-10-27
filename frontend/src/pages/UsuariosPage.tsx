@@ -107,17 +107,15 @@ export function UsuariosPage() {
         </p>
       ) : null}
       {exito ? (
-        <p className="exito" role="status">
-          {exito}
-        </p>
+        <output className="exito">{exito}</output>
       ) : null}
       {gestionar ? (
         <section className="panel">
           <h2>Registrar usuario</h2>
           <form className="grilla" onSubmit={enviar}>
             <label htmlFor="email-usuario">
-              Correo
-              <input
+              Correo{/*
+              */}<input
                 id="email-usuario"
                 type="email"
                 required
@@ -126,8 +124,8 @@ export function UsuariosPage() {
               />
             </label>
             <label htmlFor="password-usuario">
-              Contraseña inicial
-              <input
+              Contraseña inicial{/*
+              */}<input
                 id="password-usuario"
                 type="password"
                 required
@@ -137,8 +135,8 @@ export function UsuariosPage() {
               />
             </label>
             <label htmlFor="rol-usuario">
-              Rol
-              <select
+              Rol{/*
+              */}<select
                 id="rol-usuario"
                 value={formulario.rol}
                 onChange={(event) => actualizarCampo("rol", event.target.value)}
@@ -151,8 +149,8 @@ export function UsuariosPage() {
               </select>
             </label>
             <label htmlFor="estado-usuario">
-              Estado
-              <select
+              Estado{/*
+              */}<select
                 id="estado-usuario"
                 value={formulario.estado}
                 onChange={(event) => actualizarCampo("estado", event.target.value)}
