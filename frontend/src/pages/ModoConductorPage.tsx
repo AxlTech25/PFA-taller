@@ -14,9 +14,9 @@ export function ModoConductorPage() {
           posterior. Mientras tanto puede revisar la flota, sin editarla ni administrar usuarios.
         </p>
       </header>
-      <section className="panel">
-        <h2>Su jornada</h2>
-        <p>No tiene una ruta confirmada para hoy.</p>
+      <section className="panel" aria-labelledby="titulo-jornada">
+        <h2 id="titulo-jornada">Su jornada</h2>
+        <output className="aviso">No tiene una ruta confirmada para hoy.</output>
       </section>
     </>
   );

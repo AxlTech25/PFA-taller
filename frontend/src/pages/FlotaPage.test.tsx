@@ -72,7 +72,7 @@ describe("FlotaPage", () => {
     fireEvent.change(screen.getByLabelText("Factor de emisión de XYZ789"), {
       target: { value: "0.4" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar XYZ789" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Factor fuera de rango");
     expect(guardar).toBe(true);
   });
@@ -93,9 +93,9 @@ describe("FlotaPage", () => {
     });
     montar(<FlotaPage />);
     await screen.findByLabelText("Estado de XYZ789");
-    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar XYZ789" }));
     expect(await screen.findByText("Vehículo actualizado correctamente")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar XYZ789" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo actualizar el vehículo.");
   });
 

@@ -28,6 +28,7 @@ describe("LoginPage", () => {
     const usuario = userEvent.setup();
     instalarFetch(() => ({ body: sesion("ADMIN") }));
     montarLogin();
+    expect(document.title).toBe("Iniciar sesión · EcoLogística Lima");
     await usuario.type(screen.getByLabelText("Correo"), "admin@distrirapido.example.com");
     await usuario.type(screen.getByLabelText("Contraseña"), "clave-segura");
     await usuario.click(screen.getByRole("button", { name: "Entrar" }));
@@ -42,6 +43,7 @@ describe("LoginPage", () => {
     await usuario.type(screen.getByLabelText("Contraseña"), "clave-segura");
     await usuario.click(screen.getByRole("button", { name: "Entrar" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Credenciales inválidas");
+    expect(screen.getByRole("link", { name: "Credenciales inválidas" })).toHaveFocus();
 
     vi.unstubAllGlobals();
     instalarFetch(() => {

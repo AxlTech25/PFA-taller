@@ -17,6 +17,7 @@ export function Shell() {
   const { sesion, cerrar } = useAuth();
   if (!sesion) return <Navigate to="/login" replace />;
   const visibles = modulosVisibles(sesion.rol);
+  const enlaces = ENLACES.filter((enlace) => visibles.includes(enlace.modulo));
 
   return (
     <div className="layout">
@@ -25,7 +26,7 @@ export function Shell() {
       </a>
       <header className="barra">
         <nav className="nav" aria-label="Módulos">
-          {ENLACES.filter((enlace) => visibles.includes(enlace.modulo)).map((enlace) => (
+          {enlaces.map((enlace) => (
             <NavLink key={enlace.to} to={enlace.to}>
               {enlace.etiqueta}
             </NavLink>
@@ -40,9 +41,24 @@ export function Shell() {
           </button>
         </div>
       </header>
-      <main id="contenido" className="contenido">
+      <main className="contenido">
+        <a id="contenido" className="ancla-contenido" href="#contenido">
+          Contenido principal
+        </a>
         <Outlet />
       </main>
+      <footer className="pie">
+        <nav aria-label="Accesos directos">
+          <p className="pie-titulo">Accesos directos</p>
+          <div className="pie-enlaces">
+            {enlaces.map((enlace) => (
+              <NavLink key={enlace.to} to={enlace.to}>
+                {enlace.etiqueta}
+              </NavLink>
+            ))}
+          </div>
+        </nav>
+      </footer>
     </div>
   );
 }

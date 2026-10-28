@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta, Exito, TablaDesplazable } from "../avisos";
 import { etiqueta, puedeRegistrarPedido } from "../permissions";
 import type { Cliente, Pedido } from "../types";
 
@@ -100,18 +101,12 @@ export function PedidosPage() {
           georreferencia aproximada. El cliente de demostración debe tener consentimiento.
         </p>
       </header>
-      {error ? (
-        <p className="alerta" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {exito ? (
-        <output className="exito">{exito}</output>
-      ) : null}
+      {error ? <Alerta id="alerta-pedidos">{error}</Alerta> : null}
+      {exito ? <Exito>{exito}</Exito> : null}
       {registrar ? (
-        <section className="panel">
-          <h2>Registrar pedido</h2>
-          <form className="grilla" onSubmit={enviar}>
+        <section className="panel" aria-labelledby="titulo-registrar-pedido">
+          <h2 id="titulo-registrar-pedido">Registrar pedido</h2>
+          <form className="grilla" aria-labelledby="titulo-registrar-pedido" onSubmit={enviar}>
             <label htmlFor="id_cliente">
               Cliente{/*
               */}<select
@@ -245,23 +240,23 @@ export function PedidosPage() {
           ) : null}
         </section>
       ) : null}
-      <section className="panel">
-        <h2>Pedidos registrados</h2>
+      <section className="panel" aria-labelledby="titulo-pedidos">
+        <h2 id="titulo-pedidos">Pedidos registrados</h2>
         {pedidos.length === 0 ? (
           <p>No hay pedidos registrados.</p>
         ) : (
-          <div className="tabla-contenedor">
+          <TablaDesplazable etiqueta="Tabla de pedidos registrados. Si no cabe, desplácela en horizontal con el teclado.">
             <table>
               <caption className="muted">Entregas en estado operativo</caption>
               <thead>
                 <tr>
-                  <th>Cliente</th>
-                  <th>Distrito</th>
-                  <th>Referencia</th>
-                  <th>Peso</th>
-                  <th>Ventana</th>
-                  <th>Prioridad</th>
-                  <th>Estado</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Distrito</th>
+                  <th scope="col">Referencia</th>
+                  <th scope="col">Peso</th>
+                  <th scope="col">Ventana</th>
+                  <th scope="col">Prioridad</th>
+                  <th scope="col">Estado</th>
                 </tr>
               </thead>
               <tbody>
@@ -288,7 +283,7 @@ export function PedidosPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TablaDesplazable>
         )}
       </section>
     </>

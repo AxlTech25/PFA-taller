@@ -62,9 +62,9 @@ describe("UsuariosPage", () => {
       target: { value: "GERENTE" },
     });
     expect(await screen.findByText("Rol actualizado correctamente")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Desactivar" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /^Desactivar/ })[0]);
     expect(await screen.findByText("Usuario desactivado")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Activar" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /^Activar/ })[0]);
     expect(await screen.findByText("Usuario activado")).toBeInTheDocument();
     const alta = llamadas.find((llamada) => llamada.init?.method === "POST");
     expect(cuerpoDe(alta?.init)).toMatchObject({ email: "ana@distrirapido.example.com", rol: "AUDITOR" });
@@ -119,7 +119,7 @@ describe("UsuariosPage", () => {
       target: { value: "GERENTE" },
     });
     expect(await screen.findByRole("alert")).toHaveTextContent("No puede asignar ese rol");
-    fireEvent.click(screen.getByRole("button", { name: "Desactivar" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Desactivar/ }));
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo cambiar el estado.");
   });
 });

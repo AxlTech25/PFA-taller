@@ -98,9 +98,9 @@ describe("RutasPage", () => {
     expect(screen.getByRole("heading", { name: /Vehículo · Conductor/ })).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Fecha de reparto"), { target: { value: "2026-11-03" } });
     expect(await screen.findByText("mapa r1")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Ver en el mapa" })[1]);
+    fireEvent.click(screen.getByRole("button", { name: "Ver en el mapa Vehículo · Conductor" }));
     expect(screen.getByText("mapa r2")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" }));
     expect(await screen.findByText("Ruta confirmada.")).toBeInTheDocument();
   });
 
@@ -242,8 +242,8 @@ describe("RutasPage", () => {
       return { body: [ruta] };
     });
     montar(<RutasPage />);
-    await screen.findByRole("button", { name: "Confirmar ruta" });
-    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta" }));
+    await screen.findByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" });
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Jornada excedida");
 
     cleanup();
@@ -252,8 +252,8 @@ describe("RutasPage", () => {
       return { body: [ruta] };
     });
     montar(<RutasPage />);
-    await screen.findByRole("button", { name: "Confirmar ruta" });
-    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta" }));
+    await screen.findByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" });
+    fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo confirmar la ruta.");
   });
 });

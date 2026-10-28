@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { Alerta } from "./avisos";
 import { useAuth } from "./auth";
 import { ConductoresPage } from "./pages/ConductoresPage";
 import { FlotaPage } from "./pages/FlotaPage";
@@ -21,11 +22,18 @@ function Inicio() {
 
 function Modulo({ modulo, children }: Readonly<{ modulo: Modulo; children: ReactNode }>) {
   const { sesion } = useAuth();
-  if (!sesion || !modulosVisibles(sesion.rol).includes(modulo)) {
+  const permitido = Boolean(sesion && modulosVisibles(sesion.rol).includes(modulo));
+
+  useEffect(() => {
+    if (!permitido) document.title = "Acceso denegado · EcoLogística Lima";
+  }, [permitido]);
+
+  if (!permitido) {
     return (
-      <p className="alerta" role="alert">
-        No tiene permiso para acceder a este módulo.
-      </p>
+      <>
+        <h1>Acceso denegado</h1>
+        <Alerta id="alerta-permiso">No tiene permiso para acceder a este módulo.</Alerta>
+      </>
     );
   }
   return children;

@@ -1,8 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta } from "../avisos";
 
 export function LoginPage() {
   const { sesion, iniciar } = useAuth();
@@ -10,6 +11,10 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  useEffect(() => {
+    document.title = "Iniciar sesión · EcoLogística Lima";
+  }, []);
 
   if (sesion) {
     return <Navigate to={sesion.rol === "CONDUCTOR" ? "/modo" : "/flota"} replace />;
@@ -30,11 +35,16 @@ export function LoginPage() {
 
   return (
     <main className="login">
-      <section className="tarjeta">
+      <section className="tarjeta" aria-labelledby="titulo-login">
         <p className="muted">DistriRápido S.A.C.</p>
-        <h1 className="marca">EcoLogística Lima</h1>
+        <h1 id="titulo-login" className="marca">EcoLogística Lima</h1>
         <p className="subtitulo">Inicie sesión para gestionar la operación de reparto.</p>
-        <form className="formulario" onSubmit={onSubmit}>
+        <form
+          className="formulario"
+          onSubmit={onSubmit}
+          aria-label="Iniciar sesión"
+          aria-describedby={error ? "alerta-login" : undefined}
+        >
           <label htmlFor="email">
             Correo{/*
             */}<input
@@ -59,11 +69,7 @@ export function LoginPage() {
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
-          {error ? (
-            <p className="alerta" role="alert">
-              {error}
-            </p>
-          ) : null}
+          {error ? <Alerta id="alerta-login">{error}</Alerta> : null}
           <button type="submit" disabled={enviando}>
             {enviando ? "Ingresando…" : "Entrar"}
           </button>

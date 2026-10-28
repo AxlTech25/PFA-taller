@@ -16,7 +16,7 @@ describe("App y la sesión", () => {
     instalarFetch(() => ({ body: [] }));
     montar(<App />, "ADMIN", "/");
     expect(await screen.findByRole("heading", { name: "Flota" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Usuarios" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "Usuarios" })).toHaveLength(2);
     await usuario.click(screen.getByRole("button", { name: "Cerrar sesión" }));
     expect(await screen.findByRole("button", { name: "Entrar" })).toBeInTheDocument();
   });

@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta, Exito, TablaDesplazable } from "../avisos";
 import { etiquetaCongestion } from "../mapa";
 import { etiqueta, puedeGenerarRutas } from "../permissions";
 import type { JobOptimizacion, Ruta } from "../types";
@@ -12,6 +13,10 @@ function fechaHoy(): string {
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
   const dia = String(fecha.getDate()).padStart(2, "0");
   return `${fecha.getFullYear()}-${mes}-${dia}`;
+}
+
+function nombreRuta(ruta: Ruta): string {
+  return `${ruta.placa ?? "Vehículo"} · ${ruta.conductor ?? "Conductor"}`;
 }
 
 function esperar(ms: number): Promise<void> {
@@ -94,32 +99,28 @@ export function RutasPage() {
     <>
       <header>
         <h1>Rutas</h1>
-        <p className="ayuda">
+        <p id="ayuda-rutas" className="ayuda">
           El operador encola el plan del día. Un worker aparte ejecuta el algoritmo genético
           (VRPTW + Green VRP) y lo compara con el vecino más cercano. La confirmación rechaza
           jornadas de más de 8 horas e inserta un descanso de 1 hora cada 4 horas de conducción
           (Ley N.º 30224). Los vehículos con el último dígito restringido ese día no entran al plan.
           El mapa usa OpenStreetMap. Si las teselas no cargan, queda la tabla de paradas.
+          Al cambiar la fecha se actualiza el plan mostrado.
         </p>
       </header>
-      {error ? (
-        <p className="alerta" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {aviso ? (
-        <output className="exito">{aviso}</output>
-      ) : null}
+      {error ? <Alerta id="alerta-rutas">{error}</Alerta> : null}
+      {aviso ? <Exito>{aviso}</Exito> : null}
       {generar ? (
-        <section className="panel">
-          <h2>Generar plan del día</h2>
-          <form className="grilla" onSubmit={solicitar}>
+        <section className="panel" aria-labelledby="titulo-generar">
+          <h2 id="titulo-generar">Generar plan del día</h2>
+          <form className="grilla" aria-labelledby="titulo-generar" onSubmit={solicitar}>
             <label htmlFor="fecha">
               Fecha de reparto{/*
               */}<input
                 id="fecha"
                 type="date"
                 required
+                aria-describedby="ayuda-rutas"
                 value={fecha}
                 onChange={(event) => setFecha(event.target.value)}
               />
@@ -130,17 +131,21 @@ export function RutasPage() {
           </form>
         </section>
       ) : null}
-      <section className="panel">
-        <h2>Mapa del plan</h2>
-        <p className="ayuda">
-          El punto blanco es la partida del conductor. Cada parada lleva el color del semáforo:
-          verde fuera de hora punta, amarillo con factor de congestión o en hora punta (07:00–09:00
-          y 17:00–20:00) y rojo si ambos se juntan o el factor llega a 1.35.
+      <section className="panel" aria-labelledby="titulo-mapa">
+        <h2 id="titulo-mapa">Mapa del plan</h2>
+        <p id="ayuda-mapa" className="ayuda">
+          El punto blanco es la partida del conductor. Cada parada lleva el color del semáforo y
+          también su nombre: verde fuera de hora punta, amarillo con factor de congestión o en hora
+          punta (07:00–09:00 y 17:00–20:00) y rojo si ambos se juntan o el factor llega a 1.35. Con
+          teclado, tabule hasta el mapa, use las flechas para desplazarlo y los botones Acercar y
+          Alejar para el zoom. Escape suelta el mapa. La rueda del mouse solo acerca cuando el mapa
+          tiene el foco, para no trabar el desplazamiento de la página. Si no puede usar el mapa,
+          lea la alternativa textual y la tabla de paradas.
         </p>
         <MapaRutas rutas={rutas} seleccionada={seleccion} />
       </section>
-      <section className="panel">
-        <h2>Plan generado</h2>
+      <section className="panel" aria-labelledby="titulo-plan">
+        <h2 id="titulo-plan">Plan generado</h2>
         {rutas[0]?.comparacion ? (
           <output className="exito">
             Costo verde frente al vecino más cercano: {rutas[0].comparacion.mejora_porcentaje ?? 0} %.
@@ -153,12 +158,9 @@ export function RutasPage() {
           <p>No hay rutas para la fecha seleccionada.</p>
         ) : (
           rutas.map((ruta) => (
-            <article key={ruta.id_ruta} className="panel">
-              <button type="button" className="secundario" onClick={() => setSeleccion(ruta.id_ruta)}>
-                Ver en el mapa
-              </button>
-              <h3>
-                {ruta.placa ?? "Vehículo"} · {ruta.conductor ?? "Conductor"}{" "}
+            <article key={ruta.id_ruta} className="panel" aria-labelledby={`titulo-${ruta.id_ruta}`}>
+              <h3 id={`titulo-${ruta.id_ruta}`}>
+                {nombreRuta(ruta)}{" "}
                 <span className={`insignia ${ruta.estado}`}>{etiqueta(ruta.estado)}</span>
               </h3>
               <p>
@@ -175,17 +177,30 @@ export function RutasPage() {
               ) : (
                 <p className="muted">Sin descanso insertado: la conducción continua es menor a 4 horas.</p>
               )}
-              <div className="tabla-contenedor">
+              <button
+                type="button"
+                className="secundario"
+                aria-pressed={seleccion === ruta.id_ruta}
+                aria-label={`${
+                  seleccion === ruta.id_ruta ? "Visible en el mapa" : "Ver en el mapa"
+                } ${nombreRuta(ruta)}`}
+                onClick={() => setSeleccion(ruta.id_ruta)}
+              >
+                {seleccion === ruta.id_ruta ? "Visible en el mapa" : "Ver en el mapa"}
+              </button>
+              <TablaDesplazable
+                etiqueta={`Secuencia de ${nombreRuta(ruta)}. Si no cabe, desplácela en horizontal con el teclado.`}
+              >
                 <table>
                   <caption className="muted">Secuencia de entregas</caption>
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Cliente</th>
-                      <th>Referencia</th>
-                      <th>ETA</th>
-                      <th>Tramo</th>
-                      <th>Congestión</th>
+                      <th scope="col">#</th>
+                      <th scope="col">Cliente</th>
+                      <th scope="col">Referencia</th>
+                      <th scope="col">ETA</th>
+                      <th scope="col">Tramo</th>
+                      <th scope="col">Congestión</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -205,9 +220,13 @@ export function RutasPage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </TablaDesplazable>
               {generar && ruta.estado === "BORRADOR" ? (
-                <button type="button" onClick={() => confirmar(ruta.id_ruta)}>
+                <button
+                  type="button"
+                  aria-label={`Confirmar ruta ${nombreRuta(ruta)}`}
+                  onClick={() => confirmar(ruta.id_ruta)}
+                >
                   Confirmar ruta
                 </button>
               ) : null}
