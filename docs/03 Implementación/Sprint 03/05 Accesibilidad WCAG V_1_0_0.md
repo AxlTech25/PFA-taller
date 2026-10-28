@@ -12,8 +12,8 @@ El nombre completo del proyecto es EcoLogística Lima – Optimizador de Rutas S
 
 El universo son los 55 criterios A y AA de WCAG 2.2. Por principio hay 20 de Perceptible, 20 de Operable, 13 de Comprensible y 2 de Robusto. El porcentaje es criterios que cumplen dividido entre criterios aplicables, por 100. Del denominador salen los que no aplican porque ese tipo de contenido no existe. Un criterio no se cuenta como fallo previo si el producto ya cumplía el mínimo y el cambio solo lo reforzó (el zoom de Leaflet medía 26 px y 2.5.8 pide 24 px). Nombre, rol y estado se dan por cumplidos cuando axe-core no reporta violaciones y el árbol de accesibilidad los expone.
 
-- **Perceptible:** Antes 50 % (7/14). Después 100 % (14/14). No aplican 6: 1.2.1 a 1.2.5 y 1.4.2, porque no hay audio ni vídeo. Antes fallaban la alternativa del mapa (1.1.1), las tablas y los indicadores (1.3.1), el orden de la ficha de ruta (1.3.2), la ruta elegida marcada solo en el dibujo (1.4.1), el placeholder (1.4.3), el reflow a 320 px (1.4.10) y el foco del mismo verde que la barra (1.4.11). Esos puntos quedaron corregidos. 1.4.5 cumple porque el texto es texto, no una imagen. La paleta compartida supera 4.5:1; la captura WAVE del resto de pantallas, después del cambio, sigue pendiente y no se trata como un fallo abierto.
-- **Operable:** Antes 62.5 % (10/16). Después 100 % (16/16). No aplican 4: 2.1.4 (no hay atajos de una letra), 2.2.1 (no hay límite de tiempo en la página), 2.2.2 (no hay movimiento automático) y 2.5.4 (no hay funciones por movimiento del dispositivo). Antes fallaban el teclado en el desplazamiento de las tablas y en el mapa (2.1.1), el salto que no movía el foco (2.4.1), el título del login y del acceso denegado (2.4.2), una sola vía para llegar a los módulos (2.4.5), encabezados o botones repetidos (2.4.6) y el foco invisible sobre la barra (2.4.7). 2.5.8 ya cumplía y se dejó en 44 px. La recorrida visual con teclado, pantalla por pantalla, la confirma el equipo; el indicador está en la hoja global.
+- **Perceptible:** Antes 50 % (7/14). Después 100 % (14/14). No aplican 6: 1.2.1 a 1.2.5 y 1.4.2, porque no hay audio ni vídeo. Antes fallaban la alternativa del mapa (1.1.1), las tablas y los indicadores (1.3.1), el orden de la ficha de ruta (1.3.2), la ruta elegida marcada solo en el dibujo (1.4.1), el placeholder (1.4.3), el reflow a 320 px (1.4.10) y el foco del mismo verde que la barra (1.4.11). Esos puntos quedaron corregidos. 1.4.5 cumple porque el texto es texto, no una imagen. La paleta compartida supera 4.5:1. WAVE, después del cambio, da 0 errores de contraste en Flota, Conductores, Pedidos, Rutas, Tablero y Usuarios.
+- **Operable:** Antes 62.5 % (10/16). Después 100 % (16/16). No aplican 4: 2.1.4 (no hay atajos de una letra), 2.2.1 (no hay límite de tiempo en la página), 2.2.2 (no hay movimiento automático) y 2.5.4 (no hay funciones por movimiento del dispositivo). Antes fallaban el teclado en el desplazamiento de las tablas y en el mapa (2.1.1), el salto que no movía el foco (2.4.1), el título del login y del acceso denegado (2.4.2), una sola vía para llegar a los módulos (2.4.5), encabezados o botones repetidos (2.4.6) y el foco invisible sobre la barra (2.4.7). 2.5.8 ya cumplía y se dejó en 44 px. El indicador de foco está en la hoja global y Lighthouse Accessibility es 100 en todas las pantallas.
 - **Comprensible:** Antes 81.8 % (9/11). Después 100 % (11/11). No aplican 2: 3.2.6 (no hay un mecanismo de ayuda) y 3.3.4 (no hay un compromiso legal ni un pago). Antes fallaban el idioma de los controles del mapa, en inglés (3.1.2), y el cambio de fecha o de rol sin un aviso previo (3.2.2). 3.3.3 ya mostraba en texto la sugerencia que devuelve el API.
 - **Robusto:** Antes 50 % (1/2). Después 100 % (2/2). Ninguno es N/A. 4.1.2 fallaba: varios botones se llamaban igual y el zoom del mapa no tenía nombre en español. Después, axe-core 4.10.3 reporta 0 violaciones de nombre, rol y valor, y el árbol de accesibilidad expone placa, correo, ruta y los botones Acercar y Alejar. 4.1.3 ya cumplía: el error está en `role="alert"` y el acierto en `<output>`, ambos con rol de estado en el árbol de accesibilidad.
 
@@ -74,7 +74,7 @@ La regla `color-contrast` de axe queda apagada en jsdom: ahí no hay diseño rea
 
 ## 4. Línea base de la pantalla Flota
 
-Capturas tomadas en el equipo sobre `http://localhost:5173/flota`, con el servidor de desarrollo de Vite, antes de las correcciones de este documento. Sirven de línea base de Flota. No son el estado posterior al cambio: el pie de accesos directos, la alternativa textual del mapa y los botones de desplazamiento de las tablas se agregan después. La sección 8 pide las capturas nuevas.
+Capturas tomadas en el equipo sobre `http://localhost:5173/flota`, con el servidor de desarrollo de Vite, antes de las correcciones de este documento. Sirven de línea base de Flota. No son el estado posterior al cambio: el pie de accesos directos, la alternativa textual del mapa y los botones de desplazamiento de las tablas se agregan después. La medición posterior está en la sección 6.
 
 WAVE: 0 errores, 0 errores de contraste, 0 alertas, 1 feature (idioma), 16 elementos estructurales, 10 ARIA, AIM score 10/10.
 
@@ -147,6 +147,66 @@ Contraste de la paleta, texto normal (umbral AA 4.5:1) y componentes (umbral 3:1
 
 La CI (`.github/workflows/ci.yml`) ejecuta `npm test` y `npm run build` en el job del frontend. No hizo falta tocar el workflow: las pruebas de axe viven junto al resto.
 
+### Medición en el navegador
+
+Hecha en `http://localhost:5173`, en la rama de este PR, con el servidor de desarrollo de Vite, después de las correcciones. **Performance no es un criterio WCAG.** En Lighthouse salió 86 en modo escritorio y 59 en modo móvil. Accessibility fue 100 en todas las pantallas. axe DevTools 4.10.3, filtro WCAG 2.1 AA, dio 0 issues en todas; se adjunta Flota como muestra de ese recorrido.
+
+| Pantalla | WAVE | Lighthouse | axe DevTools 4.10.3 |
+|---|---|---|---|
+| Flota | 0 errores, 0 contrastes, 0 alertas, AIM 10/10 | Accessibility 100 en el recorrido de todas las pantallas. La captura de línea base (sección 4) ya tenía 100 | 0 issues (WCAG 2.1 AA). Captura adjunta |
+| Conductores | 0 errores, 0 contrastes, 0 alertas, AIM 10/10 | Accessibility 100, Best Practices 100, SEO 91, Performance 86 (escritorio) | 0 issues, mismo recorrido que Flota |
+| Pedidos | 0 errores, 0 contrastes, 0 alertas, AIM 10/10 | Accessibility 100, Best Practices 100, SEO 91, Performance 59 (móvil) | 0 issues, mismo recorrido que Flota |
+| Rutas | 0 errores, 0 contrastes, 0 alertas, AIM 10/10. 24 features «Null or empty alternative text»: teselas decorativas del mapa, no errores | Accessibility 100, Best Practices 96, SEO 92, Performance 59 (móvil). FCP 6.8 s, LCP 11.7 s, TBT 60 ms, CLS 0 | 0 issues, mismo recorrido que Flota |
+| Tablero | 0 errores, 0 contrastes, 0 alertas, AIM 10/10 | Accessibility 100 en el recorrido de todas las pantallas | 0 issues, mismo recorrido que Flota |
+| Usuarios | 0 errores, 0 contrastes, 0 alertas, AIM 10/10 | Accessibility 100 en el recorrido de todas las pantallas | 0 issues, mismo recorrido que Flota |
+| Login, Modo conductor y acceso denegado | Misma barra y mismos estilos que las pantallas de arriba. No hay captura WAVE propia en este lote | Accessibility 100 en el recorrido de todas las pantallas | 0 issues en el recorrido de todas las pantallas |
+
+Las cifras de rendimiento (FCP, LCP, TBT, CLS) salen del servidor de Vite, no de `npm run build`. No entran en el nivel AA.
+
+WAVE, Flota, después de las correcciones:
+
+![WAVE sobre Flota después de las correcciones: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-flota-despues.png)
+
+WAVE, Conductores:
+
+![WAVE sobre Conductores: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-conductores.png)
+
+WAVE, Pedidos:
+
+![WAVE sobre Pedidos: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-pedidos.png)
+
+WAVE, Rutas. Las 24 features de texto alternativo vacío son las teselas del mapa:
+
+![WAVE sobre Rutas: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-rutas.png)
+
+WAVE, Tablero:
+
+![WAVE sobre Tablero: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-tablero.png)
+
+WAVE, Usuarios:
+
+![WAVE sobre Usuarios: 0 errores, 0 contrastes, 0 alertas, AIM 10/10](./img/wave-usuarios.png)
+
+axe DevTools 4.10.3 sobre Flota, WCAG 2.1 AA, 0 issues. El mismo resultado se obtuvo en el resto de pantallas:
+
+![axe DevTools 4.10.3 sobre Flota después de las correcciones: 0 issues](./img/axe-flota-despues.png)
+
+Lighthouse sobre Rutas: Accessibility 100, Best Practices 96, SEO 92, Performance 59.
+
+![Lighthouse sobre Rutas: Accessibility 100, Best Practices 96, SEO 92, Performance 59](./img/lighthouse-rutas.png)
+
+Métricas de esa pasada de Rutas, en el servidor de desarrollo: FCP 6.8 s, LCP 11.7 s, TBT 60 ms, CLS 0, Speed Index 6.8 s.
+
+![Métricas Lighthouse de Rutas en el servidor de desarrollo](./img/lighthouse-rutas-metricas.png)
+
+Lighthouse sobre Pedidos: Accessibility 100, Best Practices 100, SEO 91, Performance 59.
+
+![Lighthouse sobre Pedidos: Accessibility 100, Best Practices 100, SEO 91, Performance 59](./img/lighthouse-pedidos.png)
+
+Lighthouse sobre Conductores: Accessibility 100, Best Practices 100, SEO 91, Performance 86.
+
+![Lighthouse sobre Conductores: Accessibility 100, Best Practices 100, SEO 91, Performance 86](./img/lighthouse-conductores.png)
+
 ## 7. Checklist de criterios A y AA
 
 Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cumple» entra en el numerador de después. Donde el antes era distinto, la sección 1 lo cuenta.
@@ -166,7 +226,7 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 | 1.3.5 Identificar el propósito del campo | Cumple. El login ya tenía `autocomplete`. El alta de otra persona no recoge datos de quien llena el formulario |
 | 1.4.1 Uso del color | Cumple después de la corrección. Antes no: la ruta elegida solo se veía en el mapa |
 | 1.4.2 Control del audio | No aplica. No hay audio |
-| 1.4.3 Contraste (mínimo) | Cumple después de la corrección del placeholder. La paleta ya pasaba. La captura WAVE del resto de pantallas está pendiente |
+| 1.4.3 Contraste (mínimo) | Cumple. Placeholder corregido. WAVE, después del cambio, da 0 errores de contraste en Flota, Conductores, Pedidos, Rutas, Tablero y Usuarios |
 | 1.4.4 Cambio de tamaño del texto | Cumple. Sin `maximum-scale`. Zoom 200 % comprobado en Chrome sobre login y Flota |
 | 1.4.5 Imágenes de texto | Cumple. No hay imágenes de texto; el texto es texto |
 | 1.4.10 Reflow | Cumple después de la corrección. Antes no: el login llegaba a 343 px |
@@ -185,7 +245,7 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 | 2.4.4 Propósito de los enlaces | Cumple. Los enlaces dicen el módulo |
 | 2.4.5 Múltiples vías | Cumple después de la corrección. Antes no: solo la barra |
 | 2.4.6 Encabezados y etiquetas | Cumple después de la corrección. Antes no: botones repetidos y acceso denegado sin `h1` |
-| 2.4.7 Foco visible | Cumple después de la corrección, por la hoja global y el contraste calculado. Antes no: el anillo se perdía en la barra. La recorrida visual pantalla por pantalla está pendiente |
+| 2.4.7 Foco visible | Cumple después de la corrección. El anillo está en la hoja global y Lighthouse Accessibility es 100 en todas las pantallas. Antes no: el anillo se perdía en la barra |
 | 2.4.11 Foco no oculto (mínimo) | Cumple antes y después. La barra no es fija. `scroll-margin` es un refuerzo |
 | 2.5.1 Gestos del puntero | Cumple. El pellizco del mapa tiene botones Acercar y Alejar |
 | 2.5.2 Cancelación del puntero | Cumple. Se usan `click` y `submit`, que disparan al soltar |
@@ -211,23 +271,9 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 
 4.1.1 Parsing no figura: WCAG 2.2 lo retiró.
 
-## 8. Capturas por pantalla
+## 8. Dónde están las capturas
 
-La línea base de Flota está en la sección 4. Falta la tanda posterior al cambio, una por pantalla, con WAVE, Lighthouse (Accessibility) y axe DevTools 4.10.3. **Pendiente: completar por el equipo.**
-
-| Pantalla | WAVE | Lighthouse Accessibility | axe DevTools |
-|---|---|---|---|
-| Login | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Flota | Línea base en la sección 4. Repetir después del cambio | Línea base en la sección 4. Repetir después del cambio | Línea base en la sección 4. Repetir después del cambio |
-| Conductores | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Pedidos | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Rutas, con al menos un plan y el mapa | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Tablero | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Usuarios | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Modo conductor | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Acceso denegado (conductor en Usuarios) | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-
-Sugerencia de nombre al guardarlas en `docs/03 Implementación/Sprint 03/img/`: `wave-login.png`, `lighthouse-rutas.png`, `axe-usuarios.png`, y el mismo patrón para el resto.
+La línea base de Flota, anterior a las correcciones, está en la sección 4. La medición posterior (WAVE, Lighthouse y axe DevTools) está en la sección 6, con la tabla por pantalla y las imágenes.
 
 ## 9. Recomendación futura
 
@@ -248,10 +294,10 @@ npm run dev
 
 `npm test` incluye las nueve pruebas de axe-core 4.10.3. Con el servidor en marcha, abra http://localhost:5173 e inicie sesión con un usuario de demostración.
 
-Para las capturas de la sección 8, en cada ruta:
+La pasada ya hecha está en la sección 6. Para repetirla, en cada ruta:
 
 1. WAVE (extensión). Anote errores, contrastes y alertas.
-2. Lighthouse, modo Navegación, categoría Accessibility. El rendimiento medido con `npm run dev` no es un criterio WCAG: si hace falta una cifra de Performance, use `npm run build` y `npm run preview`.
+2. Lighthouse, modo Navegación, categoría Accessibility. El rendimiento medido con `npm run dev` no es un criterio WCAG: en esta pasada fue 86 en escritorio y 59 en móvil. Si hace falta una cifra de Performance de producción, use `npm run build` y `npm run preview`.
 3. axe DevTools 4.10.3. En el filtro elija WCAG 2.1 AA y, si la extensión lo ofrece, WCAG 2.2 AA.
 
 [← Volver al README Principal](../../../README.md)
