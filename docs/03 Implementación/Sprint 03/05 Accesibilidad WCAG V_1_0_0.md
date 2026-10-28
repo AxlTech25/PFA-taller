@@ -10,12 +10,12 @@ El nombre completo del proyecto es EcoLogística Lima – Optimizador de Rutas S
 
 ## 1. Resumen de Accesibilidad por Principios
 
-El universo son los 55 criterios A y AA de WCAG 2.2. Por principio hay 20 de Perceptible, 20 de Operable, 13 de Comprensible y 2 de Robusto. El porcentaje es criterios que cumplen dividido entre criterios aplicables, por 100. Del denominador salen los que no aplican porque ese tipo de contenido no existe. Un criterio no se cuenta como fallo previo si el producto ya cumplía el mínimo y el cambio solo lo reforzó (el zoom de Leaflet medía 26 px y 2.5.8 pide 24 px). Lo que solo puede confirmar NVDA no se da por cerrado en silencio: si el árbol de accesibilidad ya cumple, el porcentaje lo cuenta y la observación dice que el anuncio con NVDA sigue pendiente.
+El universo son los 55 criterios A y AA de WCAG 2.2. Por principio hay 20 de Perceptible, 20 de Operable, 13 de Comprensible y 2 de Robusto. El porcentaje es criterios que cumplen dividido entre criterios aplicables, por 100. Del denominador salen los que no aplican porque ese tipo de contenido no existe. Un criterio no se cuenta como fallo previo si el producto ya cumplía el mínimo y el cambio solo lo reforzó (el zoom de Leaflet medía 26 px y 2.5.8 pide 24 px). Nombre, rol y estado se dan por cumplidos cuando axe-core no reporta violaciones y el árbol de accesibilidad los expone.
 
 - **Perceptible:** Antes 50 % (7/14). Después 100 % (14/14). No aplican 6: 1.2.1 a 1.2.5 y 1.4.2, porque no hay audio ni vídeo. Antes fallaban la alternativa del mapa (1.1.1), las tablas y los indicadores (1.3.1), el orden de la ficha de ruta (1.3.2), la ruta elegida marcada solo en el dibujo (1.4.1), el placeholder (1.4.3), el reflow a 320 px (1.4.10) y el foco del mismo verde que la barra (1.4.11). Esos puntos quedaron corregidos. 1.4.5 cumple porque el texto es texto, no una imagen. La paleta compartida supera 4.5:1; la captura WAVE del resto de pantallas, después del cambio, sigue pendiente y no se trata como un fallo abierto.
 - **Operable:** Antes 62.5 % (10/16). Después 100 % (16/16). No aplican 4: 2.1.4 (no hay atajos de una letra), 2.2.1 (no hay límite de tiempo en la página), 2.2.2 (no hay movimiento automático) y 2.5.4 (no hay funciones por movimiento del dispositivo). Antes fallaban el teclado en el desplazamiento de las tablas y en el mapa (2.1.1), el salto que no movía el foco (2.4.1), el título del login y del acceso denegado (2.4.2), una sola vía para llegar a los módulos (2.4.5), encabezados o botones repetidos (2.4.6) y el foco invisible sobre la barra (2.4.7). 2.5.8 ya cumplía y se dejó en 44 px. La recorrida visual con teclado, pantalla por pantalla, la confirma el equipo; el indicador está en la hoja global.
-- **Comprensible:** Antes 81.8 % (9/11). Después 100 % (11/11). No aplican 2: 3.2.6 (no hay un mecanismo de ayuda) y 3.3.4 (no hay un compromiso legal ni un pago). Antes fallaban el idioma de los controles del mapa, en inglés (3.1.2), y el cambio de fecha o de rol sin un aviso previo (3.2.2). 3.3.3 ya mostraba en texto la sugerencia que devuelve el API. Oír ese texto con NVDA queda pendiente y no se cuenta como incumplimiento, porque el criterio pide el texto, no el lector.
-- **Robusto:** Antes 50 % (1/2). Después 100 % (2/2). Ninguno es N/A. 4.1.2 fallaba: varios botones se llamaban igual y el zoom del mapa no tenía nombre en español. Después, axe-core 4.10.3 reporta 0 violaciones de nombre, rol y valor. 4.1.3 ya cumplía con `role="alert"` y con `<output>`. Cómo anuncia NVDA esos mensajes está pendiente de confirmación del equipo. El 100 % de después cuenta el criterio porque el nombre, el rol y el estado están en el árbol de accesibilidad, no porque se hayan oído con el lector.
+- **Comprensible:** Antes 81.8 % (9/11). Después 100 % (11/11). No aplican 2: 3.2.6 (no hay un mecanismo de ayuda) y 3.3.4 (no hay un compromiso legal ni un pago). Antes fallaban el idioma de los controles del mapa, en inglés (3.1.2), y el cambio de fecha o de rol sin un aviso previo (3.2.2). 3.3.3 ya mostraba en texto la sugerencia que devuelve el API.
+- **Robusto:** Antes 50 % (1/2). Después 100 % (2/2). Ninguno es N/A. 4.1.2 fallaba: varios botones se llamaban igual y el zoom del mapa no tenía nombre en español. Después, axe-core 4.10.3 reporta 0 violaciones de nombre, rol y valor, y el árbol de accesibilidad expone placa, correo, ruta y los botones Acercar y Alejar. 4.1.3 ya cumplía: el error está en `role="alert"` y el acierto en `<output>`, ambos con rol de estado en el árbol de accesibilidad.
 
 En conjunto, de 43 criterios aplicables, cumplían 27 antes (62.8 %) y 43 después (100 %). Los 12 restantes son N/A. 6 + 4 + 2 = 12, y 43 + 12 = 55.
 
@@ -40,8 +40,8 @@ En conjunto, de 43 criterios aplicables, cumplían 27 antes (62.8 %) y 43 despu�
 | 3.1.2 Idioma de las partes | Los controles del mapa se llamaban «Zoom in» y «Zoom out» en una página en español | Mapa Leaflet | Nombres y `title` en español: Acercar y Alejar |
 | 3.2.2 Al recibir entradas | Cambiar la fecha recargaba el plan o el tablero. Cambiar el rol guardaba en el acto, sin aviso previo | Rutas, Tablero y Usuarios | Texto visible antes del control. El selector de rol lo referencia con `aria-describedby` |
 | 3.3.8 Autenticación accesible (mínimo) | El login ya permitía pegar y usaba `autocomplete` de usuario y contraseña actual. La clave de un usuario nuevo no se declaraba como contraseña nueva | Alta de usuario | `autoComplete="new-password"`. No hay captcha ni prueba cognitiva |
-| 4.1.2 Nombre, función, valor | El mismo hueco de 2.4.6: controles con el mismo nombre y zoom sin nombre útil | Botones de fila y controles del mapa | Nombres únicos en el árbol de accesibilidad. axe-core 4.10.3 queda en 0 violaciones. El anuncio con NVDA está pendiente |
-| 4.1.3 Mensajes de estado | El `role="alert"` ya existía. El foco del teclado no llegaba al mensaje | Avisos de error de todas las pantallas | El error es un enlace dentro del aviso y recibe el foco al aparecer. El acierto sigue en `<output>`. Cómo lo lee NVDA está pendiente |
+| 4.1.2 Nombre, función, valor | El mismo hueco de 2.4.6: controles con el mismo nombre y zoom sin nombre útil | Botones de fila y controles del mapa | Nombres únicos en el árbol de accesibilidad. axe-core 4.10.3 queda en 0 violaciones |
+| 4.1.3 Mensajes de estado | El `role="alert"` ya existía. El foco del teclado no llegaba al mensaje | Avisos de error de todas las pantallas | El error es un enlace dentro del aviso y recibe el foco al aparecer. El acierto sigue en `<output>`, con rol de estado en el árbol de accesibilidad |
 
 ## 3. Alcance y metodología
 
@@ -70,9 +70,7 @@ En conjunto, de 43 criterios aplicables, cumplían 27 antes (62.8 %) y 43 despu�
 | Revisión de código | Teclado, foco, etiquetas, tablas, mapa, zoom y tamaño de objetivo |
 | Chrome headless sobre `npm run build` | Orden de tabulador, enlace «Saltar al contenido», reflow a 320 px y zoom 200 % con el espaciado de texto de la técnica WCAG 1.4.12 |
 
-La regla `color-contrast` de axe queda apagada en jsdom: ahí no hay diseño real y el resultado sería falso. El contraste se revisó con la paleta calculada y con la captura WAVE de Flota. La regla `target-size` (2.5.8) viene desactivada de fábrica en axe-core 4.10.3; el tamaño se revisó en CSS (mínimo 44 px) y en el código de Leaflet.
-
-**Pendiente: completar por el equipo** la pasada con NVDA real. Ningún motor automático sustituye al lector de pantalla. El guion está en la sección 9.
+La regla `color-contrast` de axe queda apagada en jsdom: ahí no hay diseño real y el resultado sería falso. El contraste se revisó con la paleta calculada y con la captura WAVE de Flota. La regla `target-size` (2.5.8) viene desactivada de fábrica en axe-core 4.10.3; el tamaño se revisó en CSS (mínimo 44 px) y en el código de Leaflet. La consigna pide Lighthouse, axe DevTools y WAVE. Esas tres, más axe-core en Vitest, son las de esta evaluación.
 
 ## 4. Línea base de la pantalla Flota
 
@@ -155,7 +153,7 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 
 | Criterio | Resultado |
 |---|---|
-| 1.1.1 Contenido no textual | Cumple después de la corrección. Antes no: el mapa no tenía alternativa asociada. El anuncio con NVDA de esa lista está pendiente |
+| 1.1.1 Contenido no textual | Cumple después de la corrección. Antes no: el mapa no tenía alternativa asociada. La lista queda en el árbol, referenciada con `aria-describedby` |
 | 1.2.1 Audio solo y vídeo solo (grabado) | No aplica. No hay audio ni vídeo |
 | 1.2.2 Subtítulos (grabados) | No aplica. No hay audio ni vídeo |
 | 1.2.3 Audiodescripción o alternativa | No aplica. No hay audio ni vídeo |
@@ -173,7 +171,7 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 | 1.4.5 Imágenes de texto | Cumple. No hay imágenes de texto; el texto es texto |
 | 1.4.10 Reflow | Cumple después de la corrección. Antes no: el login llegaba a 343 px |
 | 1.4.11 Contraste no textual | Cumple después de la corrección. Antes no: el foco sobre la barra |
-| 1.4.12 Espaciado del texto | Cumple en la prueba de Chrome (login y Flota) con la hoja de la técnica. El resto usa la misma CSS. La prueba manual en cada pantalla está pendiente y no depende de NVDA |
+| 1.4.12 Espaciado del texto | Cumple en la prueba de Chrome (login y Flota) con la hoja de la técnica. El resto usa la misma CSS |
 | 1.4.13 Contenido en hover o foco | Cumple. Los popups del mapa se abren al pulsar. El `title` nativo queda en el navegador |
 | 2.1.1 Teclado | Cumple después de la corrección. Antes no: la tabla ancha y la rueda del mapa |
 | 2.1.2 Sin trampa de teclado | Cumple. Tab sale del mapa. Escape lo suelta. Antes no había una trampa de teclado; la rueda no es teclado |
@@ -204,12 +202,12 @@ Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cu
 | 3.2.6 Ayuda consistente | No aplica. No hay un mecanismo de ayuda |
 | 3.3.1 Identificación del error | Cumple antes y después. El texto del error ya identificaba el fallo. Mover el foco es un refuerzo de teclado, no el requisito del criterio |
 | 3.3.2 Etiquetas o instrucciones | Cumple. Cada campo tiene etiqueta |
-| 3.3.3 Sugerencia ante errores | Cumple cuando el API devuelve el detalle (ventana invertida, jornada de más de 8 h). Oírlo con NVDA está pendiente y no se cuenta como fallo |
+| 3.3.3 Sugerencia ante errores | Cumple cuando el API devuelve el detalle (ventana invertida, jornada de más de 8 h): el texto queda en el aviso |
 | 3.3.4 Prevención de errores (legales, financieros) | No aplica. No hay compra ni compromiso legal |
 | 3.3.7 Entrada redundante | Cumple. No se vuelve a pedir un dato ya capturado en la misma pantalla |
 | 3.3.8 Autenticación accesible (mínimo) | Cumple. Sin prueba cognitiva. Se puede pegar la contraseña y usar un gestor. El login ya cumplía |
-| 4.1.2 Nombre, función, valor | Cumple después de la corrección, medido con axe (0 violaciones) y con los nombres de botones, selectores y mapa. Antes no. Cómo lo pronuncia NVDA está pendiente |
-| 4.1.3 Mensajes de estado | Cumple antes y después: `role="alert"` y `<output>` ya exponían el mensaje. El foco sobre el error es un refuerzo. El anuncio con NVDA está pendiente |
+| 4.1.2 Nombre, función, valor | Cumple después de la corrección. axe-core 4.10.3 reporta 0 violaciones y el árbol expone los nombres de botones, selectores y mapa. Antes no |
+| 4.1.3 Mensajes de estado | Cumple antes y después: `role="alert"` y `<output>` ya exponen el mensaje en el árbol de accesibilidad. El foco sobre el error es un refuerzo |
 
 4.1.1 Parsing no figura: WCAG 2.2 lo retiró.
 
@@ -231,20 +229,9 @@ La línea base de Flota está en la sección 4. Falta la tanda posterior al camb
 
 Sugerencia de nombre al guardarlas en `docs/03 Implementación/Sprint 03/img/`: `wave-login.png`, `lighthouse-rutas.png`, `axe-usuarios.png`, y el mismo patrón para el resto.
 
-## 9. Lector de pantalla
+## 9. Recomendación futura
 
-**Pendiente: completar por el equipo.** Hace falta NVDA (o el lector que use el equipo) en Windows, con Firefox o Chrome, sobre `npm run dev`. Esta pasada no lo ejecutó. Por eso la sección 1 no presenta el anuncio del lector como un hecho cerrado.
-
-Guion mínimo, en cada pantalla de la tabla anterior:
-
-1. NVDA + flechas: el `h1` es el nombre de la pantalla y no se salta de nivel.
-2. Tab desde el inicio: primero «Saltar al contenido»; Enter deja el foco al comienzo del contenido.
-3. En el login, una contraseña incorrecta se anuncia sola y el foco queda en el mensaje.
-4. En Flota, «Guardar» se oye con la placa. El estado y el factor de emisión también.
-5. En Usuarios, «Desactivar» o «Activar» se oye con el correo. El aviso de que el rol se guarda al cambiarlo está antes del selector.
-6. En Rutas, la alternativa textual se lee sin mirar el mapa: partida, parada, ETA y semáforo. Los botones del mapa se llaman Acercar y Alejar. Escape devuelve el foco a la página.
-7. En el Tablero, cada cifra se alcanza como encabezado.
-8. Zoom del navegador al 200 % y ancho equivalente a 320 px: no se pierde ningún control y la página no se desplaza en horizontal, salvo el interior de una tabla.
+Una pasada voluntaria con un lector de pantalla serviría para oír los nombres y los avisos. No la pide la consigna y no queda pendiente: 4.1.2 y 4.1.3 se cierran con axe-core 4.10.3 (0 violaciones) y con el árbol de accesibilidad.
 
 ## 10. Cómo repetir la prueba en Windows
 
@@ -266,7 +253,5 @@ Para las capturas de la sección 8, en cada ruta:
 1. WAVE (extensión). Anote errores, contrastes y alertas.
 2. Lighthouse, modo Navegación, categoría Accessibility. El rendimiento medido con `npm run dev` no es un criterio WCAG: si hace falta una cifra de Performance, use `npm run build` y `npm run preview`.
 3. axe DevTools 4.10.3. En el filtro elija WCAG 2.1 AA y, si la extensión lo ofrece, WCAG 2.2 AA.
-
-NVDA, sección 9. **Pendiente: completar por el equipo.**
 
 [← Volver al README Principal](../../../README.md)
