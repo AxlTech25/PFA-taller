@@ -9,7 +9,7 @@ Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para Di
 
 ### Cronograma de sprints
 
-Calendario vigente: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md). El Sprint 3 arranca el **16/10/2026**.
+Calendario vigente: [`05 Cronograma de sprints V_1_0_5.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md). El Sprint 3 arranca el **16/10/2026**.
 
 | Sprint | Inicio | Fin | Hito |
 |---|---|---|---|
@@ -33,7 +33,7 @@ Calendario vigente: [`05 Cronograma de sprints V_1_0_0.md`](./docs/02%20Planific
 | 6 | Re-optimización; PDF; confirmar entrega; compensación de carbono; preferencias de cliente (US-009, Could) |
 | Cierre | UAT, documentación y presentación (sin historias nuevas) |
 
-Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10); Sprint 4 el 18/10/2026 (antes de la ventana 30/10–12/11; el Hito 3 sigue el 12/11). Actividades, ID y SP: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md) §3. Responsables: misma fuente, §4.
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10); Sprint 4 el 18/10/2026 (antes de la ventana 30/10–12/11; el Hito 3 sigue el 12/11). Actividades, ID y SP: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) §3. Responsables: misma fuente, §4.
 
 ---
 
@@ -56,15 +56,15 @@ Documentos de constitución, visión, requisitos, arquitectura y restricciones. 
 | # | Artefacto | Archivo |
 |---|---|---|
 | 01 | Selección del enfoque | [01. Selección del enfoque del proyecto V_1_0_2.md](./docs/01%20Inicio/01.%20Selecci%C3%B3n%20del%20enfoque%20del%20proyecto%20V_1_0_2.md) |
-| 02 | Acta de constitución | [02. Acta de constitución V_1_0_6.md](./docs/01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_6.md) |
+| 02 | Acta de constitución | [02. Acta de constitución V_1_0_7.md](./docs/01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_7.md) |
 | 03 | Declaración de la visión | [03. Declaración de la visión V_1_0_1.md](./docs/01%20Inicio/03.%20Declaraci%C3%B3n%20de%20la%20visi%C3%B3n%20V_1_0_1.md) |
-| 04 | Supuestos y restricciones | [04. Registro de supuestos y restricciones V_1_0_2.md](./docs/01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_2.md) |
+| 04 | Supuestos y restricciones | [04. Registro de supuestos y restricciones V_1_0_3.md](./docs/01%20Inicio/04.%20Registro%20de%20supuestos%20y%20restricciones%20V_1_0_3.md) |
 | 05 | Registro de interesados | [05. Registro de interesados V_1_0_1.md](./docs/01%20Inicio/05.%20Registro%20de%20interesados%20V_1_0_1.md) |
-| 06 | Requisitos funcionales | [06. Requisitos funcionales V_1_0_1.md](./docs/01%20Inicio/06.%20Requisitos%20funcionales%20V_1_0_1.md) |
-| 07 | Requisitos no funcionales | [07. Requisitos no funcionales V_1_0_1.md](./docs/01%20Inicio/07.%20Requisitos%20no%20funcionales%20V_1_0_1.md) |
+| 06 | Requisitos funcionales | [06. Requisitos funcionales V_1_0_2.md](./docs/01%20Inicio/06.%20Requisitos%20funcionales%20V_1_0_2.md) |
+| 07 | Requisitos no funcionales | [07. Requisitos no funcionales V_1_0_2.md](./docs/01%20Inicio/07.%20Requisitos%20no%20funcionales%20V_1_0_2.md) |
 | 08 | Usuarios | [08. Usuarios V_1_0_1.md](./docs/01%20Inicio/08.%20Usuarios%20V_1_0_1.md) |
 | 09 | Reglas de negocio | [09. Reglas de negocio V_1_0_1.md](./docs/01%20Inicio/09.%20Reglas%20de%20negocio%20V_1_0_1.md) |
-| 10 | Stack tecnológico | [10. Stack tecnológico V_1_0_2.md](./docs/01%20Inicio/10.%20Stack%20tecnol%C3%B3gico%20V_1_0_2.md) |
+| 10 | Stack tecnológico | [10. Stack tecnológico V_1_0_3.md](./docs/01%20Inicio/10.%20Stack%20tecnol%C3%B3gico%20V_1_0_3.md) |
 | 11 | Base de datos | [11. Base de datos V_1_0_1.md](./docs/01%20Inicio/11.%20Base%20de%20datos%20V_1_0_1.md) |
 | 12 | Modelo C4 | [12. Modelo C4 V_1_0_1.md](./docs/01%20Inicio/12.%20Modelo%20C4%20V_1_0_1.md) |
 | 13 | Restricciones | [13. Restricciones V_1_0_2.md](./docs/01%20Inicio/13.%20Restricciones%20V_1_0_2.md) |
@@ -77,11 +77,11 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 | # | Artefacto | Archivo | Puntaje |
 |---|---|---|---|
-| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_7.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) | 5.0 |
-| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_8.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_8.md) | 5.0 |
+| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_9.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) | 5.0 |
+| 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_10.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
-| 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_0.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md) | — |
+| 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_5.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) | — |
 | — | Evidencias Jira (capturas recortadas) | [evidencias/](./docs/02%20Planificaci%C3%B3n/evidencias/) | — |
 
 ---
@@ -90,7 +90,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Cada sprint tiene los cuatro archivos con el nombre `V_1_0_0.md` que pide la consigna. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Los sprints 1, 2 y 4, y la carpeta de gestión `Sprint 3/`, tienen los cuatro archivos de seguimiento con el nombre `V_1_0_0.md`. La carpeta `Sprint 03/` reúne los entregables de la consigna del curso para ese mismo Sprint 3 (ítems 1, 3, 4 y 5). El ítem 2, la retrospectiva, está en elaboración por el equipo y todavía no tiene archivo. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 ### Sprint 4
 
@@ -114,13 +114,15 @@ Carpeta de gestión: [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implement
 | 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
 | 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 
-Calidad de código, OWASP y accesibilidad (ítems 3, 4 y 5 de la consigna), en [`docs/03 Implementación/Sprint 03/`](./docs/03%20Implementaci%C3%B3n/Sprint%2003/):
+Entregables de la consigna del curso, en [`docs/03 Implementación/Sprint 03/`](./docs/03%20Implementaci%C3%B3n/Sprint%2003/). `Sprint 03/` y `Sprint 3/` son el mismo calendario: la primera guarda estos ítems y la segunda, los informes de gestión.
 
 | # | Artefacto | Archivo |
 |---|---|---|
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 02 | Retrospectiva del Sprint | en elaboración por el equipo |
 | 03 | Evaluación de calidad de código (SonarQube) | [03 Calidad de código V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/03%20Calidad%20de%20c%C3%B3digo%20V_1_0_0.md) |
 | 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/04%20OWASP%20V_1_0_0.md) |
-| 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 Accesibilidad WCAG V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/05%20Accesibilidad%20WCAG%20V_1_0_0.md) |
+| 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 WCAG V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/05%20WCAG%20V_1_0_0.md) |
 
 ### Sprint 2
 
@@ -275,4 +277,4 @@ cd frontend && npm test && npm run build
 
 ## Convención de versionado
 
-Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 cada sprint vive en su carpeta (`Sprint 1/`, `Sprint 2/`) con el nombre de archivo `V_1_0_0.md` que pide la consigna.
+Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 los informes de seguimiento viven en la carpeta del sprint (`Sprint 1/`, `Sprint 2/`, `Sprint 3/`, `Sprint 4/`) con el nombre `V_1_0_0.md`. La consigna del Sprint 3 usa además la carpeta `Sprint 03/`.

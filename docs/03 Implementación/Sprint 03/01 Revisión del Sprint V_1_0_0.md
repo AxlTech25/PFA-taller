@@ -1,19 +1,21 @@
-# Revisión del Sprint
+[← Volver al README Principal](../../../README.md)
 
-**Nombre del proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+# Revisión del sprint
 
-**Líder del proyecto:** Eilene Elizabeth Carhuapoma Fano
+**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.
+
+**Líder del Proyecto:** Eilene Elizabeth Carhuapoma Fano
 
 ---
 
-## Historias de usuario completadas en este Sprint
+## Historias de Usuario completadas en este Sprint
 
-Durante el Sprint 3 se completaron las actividades correspondientes a **13 Story Points (SP)** planificados. Las historias de usuario y el enabler finalizados cumplieron con los criterios establecidos en la *Definition of Done* (DoD) del proyecto, que considera los siguientes aspectos:
+Durante el Sprint 3 se completaron las actividades correspondientes a **13 Story Points (SP)** planificados. Las historias de usuario y el enabler finalizados cumplieron los criterios de abajo. El criterio D4 del DoD global (despliegue en Staging) no forma parte de este cierre: no hay URL de Staging.
 
 1. Cobertura de pruebas unitarias y de integración igual o superior al 80 % en el backend y frontend.
 2. Aprobación de los controles de calidad en SonarQube y CodeQL, sin vulnerabilidades ni errores críticos.
 3. Revisión del código por otro integrante del equipo (*Peer Review*) y fusión de los cambios en el repositorio mediante el PR #15.
-4. Despliegue en el entorno de *Staging* y validación de los escenarios de prueba utilizando Gherkin (*Dado / Cuando / Entonces*).
+4. Validación de los escenarios de prueba utilizando Gherkin (*Dado / Cuando / Entonces*) sobre Docker Compose en la máquina del equipo (`localhost:5173` y `localhost:8000`). No hay URL de Staging: el README deja el despliegue en la nube pendiente (IMP-04) y esta revisión no lo da por hecho.
 
 | ID | Historia / Enabler | SP | Estado | Criterio de aceptación y verificación |
 | --- | --- | --- | --- | --- |
@@ -25,7 +27,9 @@ Durante el Sprint 3 se completaron las actividades correspondientes a **13 Story
 
 ## Demostración del trabajo completado
 
-La demostración del Sprint 3 se realizó en una sesión en vivo, utilizando el entorno del proyecto mediante el comando `docker compose up --build`. Durante la presentación se probaron las principales funcionalidades implementadas, con el propósito de comprobar su funcionamiento y mostrar cómo responden ante diferentes situaciones.
+Demostración a los stakeholders de las funcionalidades implementadas.
+
+La demostración del Sprint 3 se realizó en una sesión en vivo, utilizando el entorno del proyecto mediante el comando `docker compose up --build`. No hubo despliegue en Staging: no existe una dirección pública, y la sesión se mostró en la máquina del equipo. Durante la presentación se probaron las principales funcionalidades implementadas, con el propósito de comprobar su funcionamiento y mostrar cómo responden ante diferentes situaciones.
 
 Para la demostración se consideraron los siguientes perfiles relacionados con el proyecto:
 
@@ -46,15 +50,17 @@ Los escenarios permitieron comprobar la validación de las zonas de cobertura, e
 
 ---
 
-## Pendientes para el siguiente Sprint
+## Pendientes
 
 Al cierre del Sprint 3, quedaron algunas funcionalidades que requieren trabajo adicional para completar su implementación y validación. Estas actividades se incorporarán al Sprint 4, de acuerdo con el estado en el que se encuentran.
 
 | ID | Historia / Enabler | SP | Estado al cierre del Sprint 3 | Actividades pendientes para el Sprint 4 |
 | --- | --- | --- | --- | --- |
 | **US-010** | Motor VRPTW + Green VRP | 13 | Entrega parcial | Completar la integración del algoritmo genético mediante DEAP para procesar una instancia de 150 pedidos y 15 vehículos. Se debe mejorar la optimización de las ventanas horarias y reducir las emisiones de CO₂. |
-| **ENB-001** | SLA del motor (≤ 45 s) | 13 | Entrega parcial | Ejecutar pruebas de carga automatizadas con Locust en el entorno de *Staging* para evaluar el tiempo de respuesta y verificar que el percentil 95 (P95) no supere los 45 segundos. |
+| **ENB-001** | SLA del motor (≤ 45 s) | 13 | Entrega parcial | Ejecutar pruebas de carga automatizadas con Locust para verificar que el percentil 95 (P95) no supere los 45 segundos. No hay URL de Staging donde correrlas: el README y el IMP-04 dejan ese despliegue pendiente. |
 | **US-012** | Mapa interactivo con Leaflet / OSM | 8 | No iniciado | Desarrollar el mapa interactivo con React-Leaflet y OpenStreetMap para visualizar las rutas, utilizando colores para diferenciar los niveles de congestión y las zonas de riesgo. |
 | **US-014** | Dashboard de métricas | 8 | No iniciado | Implementar un tablero de indicadores que permita visualizar el consumo de combustible en litros, las emisiones de CO₂ en kilogramos, el ahorro económico en soles y su equivalencia en árboles. |
 
 Las actividades pendientes se retomarán en el siguiente Sprint para avanzar con la optimización de rutas, evaluar el rendimiento del motor y completar las funcionalidades de visualización y seguimiento de indicadores. Las historias con entrega parcial requieren finalizar su implementación y verificar los criterios de aceptación antes de considerarse completadas.
+
+[← Volver al README Principal](../../../README.md)

@@ -6,15 +6,15 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 21/10/2026  
-**Versión:** 1.0.8  
+**Fecha:** 28/10/2026  
+**Versión:** 1.0.9  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
 
 ## 1. Propósito
 
-Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_8.md)) y se estima en Story Points Fibonacci.
+Este artefacto transforma la línea base de requisitos de la Fase 01 (RF-001 a RF-010 y RNF-001 a RNF-010) en trabajo ágil: **Épicas → Historias de Usuario / Enablers → Criterios de Aceptación BDD**. El backlog resultante alimenta Jira Software ([artefacto 02](./02%20Artefactos%20Jira%20V_1_0_10.md)) y se estima en Story Points Fibonacci.
 
 No se reescriben los requisitos: se descomponen. Cualquier omisión detectada se registra en el historial de control de cambios.
 
@@ -56,7 +56,7 @@ flowchart LR
 | RNF-007, CI | ENB-002 Pipeline CI/CD y análisis estático | ENB-002 | Must | Sprint 1 |
 | Documento 11 | ENB-003 Esquema PostgreSQL + PostGIS | ENB-003 | Must | Sprint 1 |
 | RNF-002, RNF-010 | ENB-004 Hardening OWASP y auditoría | ENB-004 | Must | Sprint 1–6 (transversal) |
-| RNF-003 | ENB-005 Accesibilidad WCAG 2.1 AA | ENB-005 | Must | Sprint 5 |
+| RNF-003 | ENB-005 Accesibilidad WCAG 2.2 AA | ENB-005 | Must | Sprint 5 |
 | Arquitectura C4 | ENB-006 Worker y cola de optimización | ENB-006 | Must | Sprint 3 |
 | RNF-007 | ENB-007 OpenAPI / Swagger vivo | ENB-007 | Must | Sprint 1–6 (DoD) |
 | RNF-005, RNF-009 | ENB-008 Payload liviano 2G/3G | ENB-008 | Should | Sprint 5 |
@@ -85,14 +85,14 @@ Una Historia de Usuario o Enabler solo puede moverse a **Done** si cumple **todo
 
 | # | Criterio | Métrica / evidencia |
 |---|---|---|
-| D1 | Cobertura de pruebas unitarias | ≥ **80 %** en el paquete modificado (Pytest / frontend tests). Reporte de CI adjunto al PR. |
-| D2 | Análisis estático sin vulnerabilidades críticas | **SonarQube o CodeQL** en GitHub Actions: 0 *bugs/vulnerabilities* de severidad Critical. Quality Gate en verde. |
+| D1 | Cobertura de pruebas unitarias | ≥ **80 %** en el paquete modificado (Pytest con pytest-cov / Vitest con @vitest/coverage-v8). Reporte de CI adjunto al PR. |
+| D2 | Análisis estático sin vulnerabilidades críticas | **SonarQube** (instancia local del equipo) o **CodeQL** en GitHub Actions: 0 *bugs/vulnerabilities* de severidad Critical. Quality Gate en verde. |
 | D3 | Revisión de código | *Peer Review* aprobada por **al menos un par técnico** distinto al autor, mediante Pull Request en GitHub. |
 | D4 | Despliegue automatizado | Pipeline ejecuta build + tests + deploy a **Staging**. La US es demostrable en Staging, no solo en local. |
 | D5 | Contrato de API actualizado | Esquema **OpenAPI/Swagger** regenerado (FastAPI) y revisado si la US altera endpoints. |
 | D6 | Criterios Gherkin en verde | Los escenarios de la US/Enabler están automatizados o ejecutados en QA y registrados en el PR. |
 | D7 | Trazabilidad | La tarjeta Jira enlaza RF/RNF/RN y el PR. No se cierra una US huérfana. |
-| D8 | Accesibilidad e idioma | Textos en **español peruano**. Si hay UI, no se introducen regresiones WCAG 2.1 AA evidentes (contraste, labels, foco). |
+| D8 | Accesibilidad e idioma | Textos en **español peruano**. Si hay UI, no se introducen regresiones WCAG 2.2 AA evidentes (contraste, labels, foco). La regresión automática usa axe-core en Vitest. |
 | D9 | Seguridad mínima | Sin secretos en el repo, JWT en endpoints protegidos, logs de acciones críticas (RNF-010) cuando aplique. |
 
 **Definition of Ready (DoR)** — condición para entrar a Sprint Planning:
@@ -713,14 +713,14 @@ Dado un login o una asignación de ruta
 Cuando la acción termina  
 Entonces `log_auditoria` guarda timestamp, usuario, acción e IP.
 
-#### ENB-005 Accesibilidad WCAG 2.1 AA
+#### ENB-005 Accesibilidad WCAG 2.2 AA
 
 **ID:** ENB-005 · **SP:** 5 · **Sprint:** 5 · **RNF-003, C-10**  
 Como Conductor con baja familiaridad tecnológica, quiero contraste, labels y foco visible, para aprender la UI básica en ≤ 10 minutos.
 
 Escenario: Contraste y nombres accesibles  
 Dado el Modo Conductor  
-Cuando se audita con Lighthouse o axe  
+Cuando se audita con Lighthouse, axe DevTools o axe-core en Vitest  
 Entonces no hay violaciones AA de contraste ni controles sin nombre.
 
 Escenario: Navegación por teclado  
@@ -800,7 +800,7 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 17 | US-013 | Zonas de riesgo | US | EP-06 | 5 | 5 | Frontend / DB |
 | 18 | US-014 | Dashboard sostenibilidad | US | EP-07 | 8 | 4 (5 SP) / 5 (3 SP) | Frontend / API |
 | 19 | US-015 | Modo conductor | US | EP-07 | 8 | 5 | Frontend |
-| 20 | ENB-005 | WCAG 2.1 AA | Enabler | — | 5 | 5 | Frontend |
+| 20 | ENB-005 | WCAG 2.2 AA | Enabler | — | 5 | 5 | Frontend |
 | 21 | ENB-008 | Payload 2G/3G | Enabler | — | 5 | 5 | Frontend |
 | 22 | US-009 | Preferencias de cliente | US | EP-04 | 5 | 6 | Frontend / API |
 | 23 | US-011 | Re-optimización dinámica | US | EP-05 | 8 | 6 | Optimizer |
@@ -809,11 +809,11 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 6 | API / Frontend |
 | | | **Total** | | | **156** | | |
 
-US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable: ENB-001 = 8+5, US-010 = 5+8. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP). US-014 (8 SP) se parte en A (Sprint 4, 5 SP) y B (Sprint 5, 3 SP) para el Hito 3. US-009 (Could) queda en el Sprint 6, primera en recortarse. Tabla canónica: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md) §3.
+US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable: ENB-001 = 8+5, US-010 = 5+8. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP). US-014 (8 SP) se parte en A (Sprint 4, 5 SP) y B (Sprint 5, 3 SP) para el Hito 3. US-009 (Could) queda en el Sprint 6, primera en recortarse. Tabla canónica: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md) §3.
 
 ### 8.1 Cronograma de sprints (fechas)
 
-Calendario canónico: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Calendario canónico: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 | Sprint | Inicio | Fin | Hito del Acta |
 |---|---|---|---|
@@ -850,7 +850,7 @@ Criterio de éxito del Sprint 1: un Operador de prueba inicia sesión en Staging
 
 **Cierre en código (30/09/2026):** el compromiso de 26 SP está en `main` (PR #9). La API y la SPA viven en `backend/` y `frontend/` (Compose). El Quality Gate de CI es Ruff + Pytest ≥ 80 % + build Vite; CodeQL/Sonar y Staging en la nube quedan como deuda del DoD (IMP-04 del registro de impedimentos). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%201/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
-Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_8.md](./02%20Artefactos%20Jira%20V_1_0_8.md).
+Detalle de tablero, versión `v1.0.0-MVP` y Roadmap: [02 Artefactos Jira V_1_0_10.md](./02%20Artefactos%20Jira%20V_1_0_10.md).
 
 ---
 
@@ -894,7 +894,7 @@ En Staging, con el menú visible:
 5. Tres contraseñas incorrectas bloquean una cuenta (respuesta 423 / mensaje de bloqueo).
 6. El usuario Conductor **no** puede entrar a Usuarios ni editar flota (403).
 
-Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_8.md](./02%20Artefactos%20Jira%20V_1_0_8.md).
+Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_10.md](./02%20Artefactos%20Jira%20V_1_0_10.md).
 
 **Cierre en código (01/10/2026):** el compromiso de 26 SP (incremento A de US-008, no el B) está en `main` ([PR #10](https://github.com/AxlTech25/PFA-taller/pull/10)). El bloqueo 423 se corrigió el mismo día ([74dac8b](https://github.com/AxlTech25/PFA-taller/commit/74dac8b): `clock_timestamp()` en PostgreSQL). Clientes de demostración en migración `003_clientes_demo.py`. Staging cloud y CodeQL siguen como deuda (IMP-04). El Hito 2 del Acta (29/09/2026) se incumplió por 2 días (IMP-08). Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%202/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
 
@@ -966,7 +966,7 @@ Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-0
 | US-013 | Overlay `zona_restriccion` y ruta alternativa (cierre de US-012) | 5 | Leon Taza, Brayan Angel |
 | US-014 B | Factor de árboles `factor_captura_arbol_kg` (RN-018) | 3 | Huaman Baldeon, Katheryn Elena |
 | US-015 | Modo conductor: secuencia, ETA, alertas; sin dashboard gerencial | 8 | Huaman Baldeon, Katheryn Elena |
-| ENB-005 | Contraste, labels y foco teclado WCAG 2.1 AA | 5 | Huaman Baldeon, Katheryn Elena |
+| ENB-005 | Contraste, labels y foco teclado WCAG 2.2 AA | 5 | Huaman Baldeon, Katheryn Elena |
 | ENB-008 | Sesión de ruta ≤ 150 KB en 2G/3G | 5 | Estrada Flores, Axel Sebastian |
 | **Total** | | **26** | |
 
@@ -1010,6 +1010,7 @@ Orden de recorte si RSK-05 se materializa: US-009 → US-017 → US-016.
 | 1.0.6 | 16/10/2026 | Equipo EcoLogística Lima | Cronograma explícito. Sprint 3 = 16/10/2026 – 29/10/2026; Hito 3 = 12/11/2026; Hito 4 = 13/12/2026. Enlace al artefacto 05. |
 | 1.0.7 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4: ENB-001 / US-010 con algoritmo genético, inicio de US-012 y tablero iniciado. Staging (IMP-04) sigue abierto al 12/11/2026. |
 | 1.0.8 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a lo entregado en S3 (PR #15) y S4 (PR #16). Heurística = vecino más cercano; S4 = AG DEAP + inicio de mapa y dashboard. US-009 al Sprint 6. |
+| 1.0.9 | 28/10/2026 | Equipo EcoLogística Lima | ENB-005 y el DoD D8 pasan a WCAG 2.2 AA. D1 nombra pytest-cov y @vitest/coverage-v8. D2 distingue SonarQube local de CodeQL en GitHub Actions. D8 nombra axe-core en Vitest. El archivo queda en V_1_0_9, alineado al encabezado. |
 
 ---
 
