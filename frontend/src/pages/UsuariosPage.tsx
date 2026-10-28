@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta, Exito, TablaDesplazable } from "../avisos";
 import { etiquetaRol, puedeGestionarUsuarios } from "../permissions";
 import type { Usuario } from "../types";
 
@@ -101,18 +102,12 @@ export function UsuariosPage() {
           Cree cuentas, asigne un rol y desactive accesos. El operador no administra usuarios.
         </p>
       </header>
-      {error ? (
-        <p className="alerta" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {exito ? (
-        <output className="exito">{exito}</output>
-      ) : null}
+      {error ? <Alerta id="alerta-usuarios">{error}</Alerta> : null}
+      {exito ? <Exito>{exito}</Exito> : null}
       {gestionar ? (
-        <section className="panel">
-          <h2>Registrar usuario</h2>
-          <form className="grilla" onSubmit={enviar}>
+        <section className="panel" aria-labelledby="titulo-registrar-usuario">
+          <h2 id="titulo-registrar-usuario">Registrar usuario</h2>
+          <form className="grilla" aria-labelledby="titulo-registrar-usuario" onSubmit={enviar}>
             <label htmlFor="email-usuario">
               Correo{/*
               */}<input
@@ -128,6 +123,7 @@ export function UsuariosPage() {
               */}<input
                 id="password-usuario"
                 type="password"
+                autoComplete="new-password"
                 required
                 minLength={8}
                 value={formulario.password}
@@ -165,20 +161,25 @@ export function UsuariosPage() {
       ) : (
         <p className="aviso">Su rol puede consultar usuarios, no modificarlos.</p>
       )}
-      <section className="panel">
-        <h2>Cuentas</h2>
+      <section className="panel" aria-labelledby="titulo-cuentas">
+        <h2 id="titulo-cuentas">Cuentas</h2>
+        {gestionar ? (
+          <p id="aviso-cambio-usuario" className="ayuda">
+            Al cambiar el rol o pulsar Activar o Desactivar, el cambio se guarda enseguida.
+          </p>
+        ) : null}
         {usuarios.length === 0 ? (
           <p>No hay usuarios registrados.</p>
         ) : (
-          <div className="tabla-contenedor">
+          <TablaDesplazable etiqueta="Tabla de cuentas de usuario. Si no cabe, desplácela en horizontal con el teclado.">
             <table>
               <caption className="muted">Usuarios y roles del sistema</caption>
               <thead>
                 <tr>
-                  <th>Correo</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  {gestionar ? <th>Acciones</th> : null}
+                  <th scope="col">Correo</th>
+                  <th scope="col">Rol</th>
+                  <th scope="col">Estado</th>
+                  {gestionar ? <th scope="col">Acciones</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -189,6 +190,7 @@ export function UsuariosPage() {
                       {gestionar ? (
                         <select
                           aria-label={`Rol de ${usuario.email}`}
+                          aria-describedby="aviso-cambio-usuario"
                           value={usuario.rol}
                           onChange={(event) => cambiarRol(usuario, event.target.value)}
                         >
@@ -207,7 +209,12 @@ export function UsuariosPage() {
                     </td>
                     {gestionar ? (
                       <td>
-                        <button type="button" className="secundario" onClick={() => cambiarEstado(usuario)}>
+                        <button
+                          type="button"
+                          className="secundario"
+                          aria-label={`${usuario.estado === "ACTIVO" ? "Desactivar" : "Activar"} ${usuario.email}`}
+                          onClick={() => cambiarEstado(usuario)}
+                        >
                           {usuario.estado === "ACTIVO" ? "Desactivar" : "Activar"}
                         </button>
                       </td>
@@ -216,7 +223,7 @@ export function UsuariosPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TablaDesplazable>
         )}
       </section>
     </>

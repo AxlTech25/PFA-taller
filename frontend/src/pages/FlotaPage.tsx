@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta, Exito, TablaDesplazable } from "../avisos";
 import { etiqueta, puedeEditarFlota, puedeRegistrarFlota } from "../permissions";
 import type { Vehiculo } from "../types";
 
@@ -129,18 +130,12 @@ export function FlotaPage() {
           Consulte la flota, retire unidades a mantenimiento y actualice el factor de emisión de CO₂.
         </p>
       </header>
-      {error ? (
-        <p className="alerta" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {exito ? (
-        <output className="exito">{exito}</output>
-      ) : null}
+      {error ? <Alerta id="alerta-flota">{error}</Alerta> : null}
+      {exito ? <Exito>{exito}</Exito> : null}
       {registrar ? (
-        <section className="panel">
-          <h2>Registrar vehículo</h2>
-          <form className="grilla" onSubmit={enviar}>
+        <section className="panel" aria-labelledby="titulo-registrar-vehiculo">
+          <h2 id="titulo-registrar-vehiculo">Registrar vehículo</h2>
+          <form className="grilla" aria-labelledby="titulo-registrar-vehiculo" onSubmit={enviar}>
             <label htmlFor="placa">
               Placa{/*
               */}<input
@@ -229,24 +224,24 @@ export function FlotaPage() {
           </form>
         </section>
       ) : null}
-      <section className="panel">
-        <h2>Unidades registradas</h2>
+      <section className="panel" aria-labelledby="titulo-unidades">
+        <h2 id="titulo-unidades">Unidades registradas</h2>
         {vehiculos.length === 0 ? (
           <p>No hay vehículos registrados.</p>
         ) : (
-          <div className="tabla-contenedor">
+          <TablaDesplazable etiqueta="Tabla de unidades registradas. Si no cabe, desplácela en horizontal con el teclado.">
             <table>
               <caption className="muted">Flota disponible para el reparto</caption>
               <thead>
                 <tr>
-                  <th>Placa</th>
-                  <th>Tipo</th>
-                  <th>Capacidad</th>
-                  <th>Consumo</th>
-                  <th>Año</th>
-                  <th>Estado</th>
-                  <th>Factor CO₂</th>
-                  {editar ? <th>Acciones</th> : null}
+                  <th scope="col">Placa</th>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Capacidad</th>
+                  <th scope="col">Consumo</th>
+                  <th scope="col">Año</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Factor CO₂</th>
+                  {editar ? <th scope="col">Acciones</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -306,7 +301,11 @@ export function FlotaPage() {
                       </td>
                       {editar ? (
                         <td>
-                          <button type="button" onClick={() => guardar(vehiculo.id_vehiculo)}>
+                          <button
+                            type="button"
+                            aria-label={`Guardar ${vehiculo.placa}`}
+                            onClick={() => guardar(vehiculo.id_vehiculo)}
+                          >
                             Guardar
                           </button>
                         </td>
@@ -316,7 +315,7 @@ export function FlotaPage() {
                 })}
               </tbody>
             </table>
-          </div>
+          </TablaDesplazable>
         )}
       </section>
     </>

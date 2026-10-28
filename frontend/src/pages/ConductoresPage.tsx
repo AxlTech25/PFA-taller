@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
+import { Alerta, Exito, TablaDesplazable } from "../avisos";
 import { etiqueta, puedeRegistrarConductor } from "../permissions";
 import type { Conductor } from "../types";
 
@@ -73,18 +74,12 @@ export function ConductoresPage() {
           Registre DNI, licencia, horario de disponibilidad y el punto de partida real.
         </p>
       </header>
-      {error ? (
-        <p className="alerta" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {exito ? (
-        <output className="exito">{exito}</output>
-      ) : null}
+      {error ? <Alerta id="alerta-conductores">{error}</Alerta> : null}
+      {exito ? <Exito>{exito}</Exito> : null}
       {registrar ? (
-        <section className="panel">
-          <h2>Registrar conductor</h2>
-          <form className="grilla" onSubmit={enviar}>
+        <section className="panel" aria-labelledby="titulo-registrar-conductor">
+          <h2 id="titulo-registrar-conductor">Registrar conductor</h2>
+          <form className="grilla" aria-labelledby="titulo-registrar-conductor" onSubmit={enviar}>
             <label htmlFor="nombre">
               Nombre{/*
               */}<input
@@ -174,22 +169,22 @@ export function ConductoresPage() {
           </form>
         </section>
       ) : null}
-      <section className="panel">
-        <h2>Conductores registrados</h2>
+      <section className="panel" aria-labelledby="titulo-conductores">
+        <h2 id="titulo-conductores">Conductores registrados</h2>
         {conductores.length === 0 ? (
           <p>No hay conductores registrados.</p>
         ) : (
-          <div className="tabla-contenedor">
+          <TablaDesplazable etiqueta="Tabla de conductores registrados. Si no cabe, desplácela en horizontal con el teclado.">
             <table>
               <caption className="muted">Personal disponible para el reparto</caption>
               <thead>
                 <tr>
-                  <th>Nombre</th>
-                  <th>DNI</th>
-                  <th>Licencia</th>
-                  <th>Horario</th>
-                  <th>Partida</th>
-                  <th>Estado</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">DNI</th>
+                  <th scope="col">Licencia</th>
+                  <th scope="col">Horario</th>
+                  <th scope="col">Partida</th>
+                  <th scope="col">Estado</th>
                 </tr>
               </thead>
               <tbody>
@@ -216,7 +211,7 @@ export function ConductoresPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TablaDesplazable>
         )}
       </section>
     </>

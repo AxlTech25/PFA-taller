@@ -114,12 +114,13 @@ Carpeta de gestión: [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implement
 | 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
 | 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 
-Calidad de código y OWASP (ítems 3 y 4 de la consigna), en [`docs/03 Implementación/Sprint 03/`](./docs/03%20Implementaci%C3%B3n/Sprint%2003/):
+Calidad de código, OWASP y accesibilidad (ítems 3, 4 y 5 de la consigna), en [`docs/03 Implementación/Sprint 03/`](./docs/03%20Implementaci%C3%B3n/Sprint%2003/):
 
 | # | Artefacto | Archivo |
 |---|---|---|
 | 03 | Evaluación de calidad de código (SonarQube) | [03 Calidad de código V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/03%20Calidad%20de%20c%C3%B3digo%20V_1_0_0.md) |
 | 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/04%20OWASP%20V_1_0_0.md) |
+| 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 Accesibilidad WCAG V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/05%20Accesibilidad%20WCAG%20V_1_0_0.md) |
 
 ### Sprint 2
 
