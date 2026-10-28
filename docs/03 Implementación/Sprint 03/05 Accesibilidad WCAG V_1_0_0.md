@@ -1,15 +1,49 @@
 [← Volver al README Principal](../../../README.md)
 
-# Evaluación de accesibilidad WCAG 2.2 AA
+# Evaluación de Accesibilidad Web (WCAG)
 
-**Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha de la evaluación:** 2026-10-28  
-**Versión del análisis:** V_1_0_0  
-**Nivel objetivo:** WCAG 2.2, nivel AA (incluye los criterios A y AA de 2.0, 2.1 y 2.2)
+**Nombre del Proyecto:** EcoLogística Lima  
+**Nivel de Conformidad Objetivo:** WCAG 2.2 Nivel AA  
+**Herramientas Utilizadas:** Lighthouse / axe DevTools / WAVE, más axe-core en Vitest
 
-El acta de constitución cita WCAG 2.1 AA. Esta evaluación cubre 2.2 AA, que añade a ese conjunto los criterios 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7 y 3.3.8. El criterio 4.1.1 (Parsing) se retiró en WCAG 2.2 y no se puntúa.
+El nombre completo del proyecto es EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C. Fecha de la evaluación: 2026-10-28. Versión del análisis: V_1_0_0. El acta de constitución cita WCAG 2.1 AA. Este entregable evalúa 2.2 AA, que conserva ese conjunto y añade 2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7 y 3.3.8. El criterio 4.1.1 (Parsing) se retiró en WCAG 2.2 y no entra en los 55 criterios A+AA.
 
-## 1. Alcance y metodología
+## 1. Resumen de Accesibilidad por Principios
+
+El universo son los 55 criterios A y AA de WCAG 2.2. Por principio hay 20 de Perceptible, 20 de Operable, 13 de Comprensible y 2 de Robusto. El porcentaje es criterios que cumplen dividido entre criterios aplicables, por 100. Del denominador salen los que no aplican porque ese tipo de contenido no existe. Un criterio no se cuenta como fallo previo si el producto ya cumplía el mínimo y el cambio solo lo reforzó (el zoom de Leaflet medía 26 px y 2.5.8 pide 24 px). Lo que solo puede confirmar NVDA no se da por cerrado en silencio: si el árbol de accesibilidad ya cumple, el porcentaje lo cuenta y la observación dice que el anuncio con NVDA sigue pendiente.
+
+- **Perceptible:** Antes 50 % (7/14). Después 100 % (14/14). No aplican 6: 1.2.1 a 1.2.5 y 1.4.2, porque no hay audio ni vídeo. Antes fallaban la alternativa del mapa (1.1.1), las tablas y los indicadores (1.3.1), el orden de la ficha de ruta (1.3.2), la ruta elegida marcada solo en el dibujo (1.4.1), el placeholder (1.4.3), el reflow a 320 px (1.4.10) y el foco del mismo verde que la barra (1.4.11). Esos puntos quedaron corregidos. 1.4.5 cumple porque el texto es texto, no una imagen. La paleta compartida supera 4.5:1; la captura WAVE del resto de pantallas, después del cambio, sigue pendiente y no se trata como un fallo abierto.
+- **Operable:** Antes 62.5 % (10/16). Después 100 % (16/16). No aplican 4: 2.1.4 (no hay atajos de una letra), 2.2.1 (no hay límite de tiempo en la página), 2.2.2 (no hay movimiento automático) y 2.5.4 (no hay funciones por movimiento del dispositivo). Antes fallaban el teclado en el desplazamiento de las tablas y en el mapa (2.1.1), el salto que no movía el foco (2.4.1), el título del login y del acceso denegado (2.4.2), una sola vía para llegar a los módulos (2.4.5), encabezados o botones repetidos (2.4.6) y el foco invisible sobre la barra (2.4.7). 2.5.8 ya cumplía y se dejó en 44 px. La recorrida visual con teclado, pantalla por pantalla, la confirma el equipo; el indicador está en la hoja global.
+- **Comprensible:** Antes 81.8 % (9/11). Después 100 % (11/11). No aplican 2: 3.2.6 (no hay un mecanismo de ayuda) y 3.3.4 (no hay un compromiso legal ni un pago). Antes fallaban el idioma de los controles del mapa, en inglés (3.1.2), y el cambio de fecha o de rol sin un aviso previo (3.2.2). 3.3.3 ya mostraba en texto la sugerencia que devuelve el API. Oír ese texto con NVDA queda pendiente y no se cuenta como incumplimiento, porque el criterio pide el texto, no el lector.
+- **Robusto:** Antes 50 % (1/2). Después 100 % (2/2). Ninguno es N/A. 4.1.2 fallaba: varios botones se llamaban igual y el zoom del mapa no tenía nombre en español. Después, axe-core 4.10.3 reporta 0 violaciones de nombre, rol y valor. 4.1.3 ya cumplía con `role="alert"` y con `<output>`. Cómo anuncia NVDA esos mensajes está pendiente de confirmación del equipo. El 100 % de después cuenta el criterio porque el nombre, el rol y el estado están en el árbol de accesibilidad, no porque se hayan oído con el lector.
+
+En conjunto, de 43 criterios aplicables, cumplían 27 antes (62.8 %) y 43 después (100 %). Los 12 restantes son N/A. 6 + 4 + 2 = 12, y 43 + 12 = 55.
+
+## 2. Hallazgos Principales y Correcciones
+
+| Criterio de Conformidad | Problema Detectado | Componente Afectado | Solución Aplicada |
+|---|---|---|---|
+| 1.1.1 Contenido no textual | El mapa no tenía una alternativa textual asociada. La tabla de paradas existía, pero el mapa no la referenciaba | Mapa Leaflet en Rutas | Lista «Alternativa textual del mapa» (partida, paradas, ETA y semáforo en palabras), enlazada con `aria-describedby` |
+| 1.3.1 Información y relaciones | Encabezados de tabla sin `scope`. Los indicadores del tablero eran un `span` y un `strong`. El acceso denegado no tenía encabezado | Tablas de Flota, Conductores, Pedidos, Usuarios y Rutas; Tablero; acceso denegado | `scope="col"`, `h2`/`h3` en el tablero y `h1` «Acceso denegado» |
+| 1.3.2 Secuencia significativa | El botón «Ver en el mapa» estaba antes del encabezado de la ruta | Ficha de cada ruta | Primero el `h3` con vehículo y conductor, después la acción |
+| 1.4.1 Uso del color | La ruta seleccionada solo se notaba en el dibujo del mapa | Rutas | El botón pasa a «Visible en el mapa» y expone `aria-pressed`. El semáforo ya llevaba el texto Verde, Amarillo o Rojo |
+| 1.4.3 Contraste (mínimo) | El placeholder «frente a la bodega El Ahorro» heredaba el gris del navegador, por debajo de 4.5:1. El resto de la paleta sí cumplía | Campo punto de referencia en Pedidos | `::placeholder` en `#3d5248` (8.40:1 sobre blanco) |
+| 1.4.10 Reflow | A 320 px un correo largo impedía que el campo encogiera y la página medía 343 px. Una tabla ancha podía empujar toda la página | Login y tablas de los módulos | `min-width: 0` en tarjeta, etiquetas y campos. El scroll horizontal queda dentro de la tabla |
+| 1.4.11 Contraste no textual | El anillo de foco usaba `#08553d`, el mismo verde de la barra (contraste 1:1) | Barra de módulos | Anillo doble: 3 px blancos y 3 px `#10241c`. El blanco contrasta 8.83:1 con la barra |
+| 2.1.1 Teclado | La tabla ancha se desplazaba en un contenedor fuera del tabulador. La rueda del mapa hacía zoom aunque el mapa no tuviera el foco y se comía el scroll de la página | Tablas de los módulos y mapa de Rutas | Botones «Desplazar la tabla a la izquierda» y «a la derecha». El zoom con rueda solo actúa con el foco. Escape suelta el mapa |
+| 2.4.1 Evitar bloques | «Saltar al contenido» existía, pero el destino no recibía el foco | Shell de las pantallas autenticadas | El destino es el enlace «Contenido principal». Enter lo enfoca. Permanece oculto hasta recibir el foco |
+| 2.4.2 Página titulada | El login dejaba el título genérico. El acceso denegado conservaba el título de la pantalla anterior | Login y módulo sin permiso | «Iniciar sesión · EcoLogística Lima» y «Acceso denegado · EcoLogística Lima» |
+| 2.4.5 Múltiples vías | La única lista de módulos era la barra | Navegación autenticada | Pie «Accesos directos» con los módulos del rol, en otro `nav` |
+| 2.4.6 Encabezados y etiquetas | «Guardar», «Activar», «Desactivar», «Ver en el mapa» y «Confirmar ruta» se repetían sin decir de qué fila se trataba | Flota, Usuarios y Rutas | El nombre accesible añade placa, correo o vehículo y conductor. El texto visible sigue dentro de ese nombre |
+| 2.4.7 Foco visible | Sobre la barra verde el foco no se distinguía | Barra de módulos | El mismo anillo doble de 1.4.11, definido en `:focus-visible` para toda la interfaz |
+| 2.5.8 Tamaño del objetivo (mínimo) | El zoom de Leaflet medía 26 px y los campos de la tabla 36 px. Cumplían los 24 px del criterio, pero el anillo chocaba con el botón vecino | Controles de zoom y celdas editables | Mínimo de diseño 44×44 px y 6 px entre Acercar y Alejar. No se contó como incumplimiento previo |
+| 3.1.2 Idioma de las partes | Los controles del mapa se llamaban «Zoom in» y «Zoom out» en una página en español | Mapa Leaflet | Nombres y `title` en español: Acercar y Alejar |
+| 3.2.2 Al recibir entradas | Cambiar la fecha recargaba el plan o el tablero. Cambiar el rol guardaba en el acto, sin aviso previo | Rutas, Tablero y Usuarios | Texto visible antes del control. El selector de rol lo referencia con `aria-describedby` |
+| 3.3.8 Autenticación accesible (mínimo) | El login ya permitía pegar y usaba `autocomplete` de usuario y contraseña actual. La clave de un usuario nuevo no se declaraba como contraseña nueva | Alta de usuario | `autoComplete="new-password"`. No hay captcha ni prueba cognitiva |
+| 4.1.2 Nombre, función, valor | El mismo hueco de 2.4.6: controles con el mismo nombre y zoom sin nombre útil | Botones de fila y controles del mapa | Nombres únicos en el árbol de accesibilidad. axe-core 4.10.3 queda en 0 violaciones. El anuncio con NVDA está pendiente |
+| 4.1.3 Mensajes de estado | El `role="alert"` ya existía. El foco del teclado no llegaba al mensaje | Avisos de error de todas las pantallas | El error es un enlace dentro del aviso y recibe el foco al aparecer. El acierto sigue en `<output>`. Cómo lo lee NVDA está pendiente |
+
+## 3. Alcance y metodología
 
 ### Pantallas
 
@@ -30,7 +64,7 @@ El acta de constitución cita WCAG 2.1 AA. Esta evaluación cubre 2.2 AA, que a�
 | Herramienta | Uso en esta evaluación |
 |---|---|
 | axe-core 4.10.3 | Mismo motor que axe DevTools 4.10.3. Corre en Vitest (jsdom) sobre las nueve superficies, con las etiquetas `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` y `wcag22aa`. Entra en `npm test` y, por tanto, en la CI |
-| axe DevTools 4.10.3 | Línea base manual de Flota en el equipo, WCAG 2.1 AA, 0 issues. Captura en la sección 2 |
+| axe DevTools 4.10.3 | Línea base manual de Flota en el equipo, WCAG 2.1 AA, 0 issues. Captura en la sección 4 |
 | WAVE | Línea base manual de Flota: 0 errores, 0 errores de contraste, 0 alertas, AIM 10/10 |
 | Lighthouse | Línea base manual de Flota: Accessibility 100, Best Practices 100, SEO 91, Performance 59 |
 | Revisión de código | Teclado, foco, etiquetas, tablas, mapa, zoom y tamaño de objetivo |
@@ -38,11 +72,11 @@ El acta de constitución cita WCAG 2.1 AA. Esta evaluación cubre 2.2 AA, que a�
 
 La regla `color-contrast` de axe queda apagada en jsdom: ahí no hay diseño real y el resultado sería falso. El contraste se revisó con la paleta calculada y con la captura WAVE de Flota. La regla `target-size` (2.5.8) viene desactivada de fábrica en axe-core 4.10.3; el tamaño se revisó en CSS (mínimo 44 px) y en el código de Leaflet.
 
-**Pendiente: completar por el equipo** la pasada con NVDA real. Ningún motor automático sustituye al lector de pantalla. El guion está en la sección 7.
+**Pendiente: completar por el equipo** la pasada con NVDA real. Ningún motor automático sustituye al lector de pantalla. El guion está en la sección 9.
 
-## 2. Línea base de la pantalla Flota
+## 4. Línea base de la pantalla Flota
 
-Capturas tomadas en el equipo sobre `http://localhost:5173/flota`, con el servidor de desarrollo de Vite, antes de las correcciones de este documento. Sirven de línea base de Flota. No son el estado posterior al cambio: el pie de accesos directos, la alternativa textual del mapa y los botones de desplazamiento de las tablas se agregan después. La sección 6 pide las capturas nuevas.
+Capturas tomadas en el equipo sobre `http://localhost:5173/flota`, con el servidor de desarrollo de Vite, antes de las correcciones de este documento. Sirven de línea base de Flota. No son el estado posterior al cambio: el pie de accesos directos, la alternativa textual del mapa y los botones de desplazamiento de las tablas se agregan después. La sección 8 pide las capturas nuevas.
 
 WAVE: 0 errores, 0 errores de contraste, 0 alertas, 1 feature (idioma), 16 elementos estructurales, 10 ARIA, AIM score 10/10.
 
@@ -62,7 +96,9 @@ axe DevTools 4.10.3, WCAG 2.1 AA: 0 issues automáticos.
 
 Lo que esa pasada de una sola pantalla no ve, y la revisión del resto del sistema sí encontró: el anillo de foco del mismo verde que la barra, botones «Guardar», «Activar» y «Confirmar ruta» repetidos, el mapa sin alternativa textual enlazada, el título de la pestaña en el login y el desborde horizontal del formulario cuando el correo es largo y la ventana mide 320 px.
 
-## 3. Hallazgos y correcciones
+## 5. Detalle de las correcciones
+
+La sección 2 resume el hallazgo y la solución. Esta tabla añade severidad, archivo y estado.
 
 | Criterio | Pantalla | Descripción | Severidad | Corrección | Archivo | Estado |
 |---|---|---|---|---|---|---|
@@ -81,10 +117,10 @@ Lo que esa pasada de una sola pantalla no ve, y la revisión del resto del siste
 | 1.3.2 Secuencia | Rutas | «Ver en el mapa» estaba antes del encabezado de la ruta | Baja | Primero el `h3` con vehículo y conductor, después la acción | `RutasPage.tsx` | Corregido |
 | 2.4.5 Múltiples vías | Autenticadas | La única lista de módulos era la barra | Baja | El pie «Accesos directos» repite los módulos del rol, con otro `nav` y otro nombre | `Shell.tsx` | Corregido |
 | 3.2.2 Al introducir datos | Rutas, Tablero, Usuarios | Cambiar la fecha recarga el plan o los indicadores. Cambiar el rol guarda en el acto | Baja | Un texto visible, antes del control, avisa de ese comportamiento. El selector de rol lo referencia con `aria-describedby` | `RutasPage.tsx`, `DashboardPage.tsx`, `UsuariosPage.tsx` | Corregido |
-| 2.5.8 Tamaño del objetivo | Barra, tablas, zoom del mapa | Los controles de formulario ya medían 44 px. Los de la tabla medían 36 px y el zoom de Leaflet 26 px. 26 px cumple el mínimo de 24 px, pero el anillo de foco chocaba con el botón de al lado | Baja | Nav, campos de tabla y botones quedan en 44 px como mínimo. El zoom de Leaflet pasa a 44×44 px con 6 px de separación | `styles.css` | Corregido |
+| 2.5.8 Tamaño del objetivo | Barra, tablas, zoom del mapa | Los controles de formulario ya medían 44 px. Los de la tabla medían 36 px y el zoom de Leaflet 26 px. 26 px cumple el mínimo de 24 px, pero el anillo de foco chocaba con el botón de al lado | Baja | Nav, campos de tabla y botones quedan en 44 px como mínimo. El zoom de Leaflet pasa a 44×44 px con 6 px de separación. No baja el porcentaje previo de la sección 1 | `styles.css` | Corregido |
 | 1.4.3 Contraste del placeholder | Pedidos | El único placeholder («frente a la bodega El Ahorro») heredaba el gris del navegador, que a menudo no llega a 4.5:1 | Baja | `::placeholder` en `#3d5248` (8.40:1 sobre blanco) | `styles.css` | Corregido |
-| 1.3.5 Propósito del campo, 3.3.8 Autenticación accesible | Login y alta de usuario | El login ya tenía `autocomplete="username"` y `current-password`, y no bloquea el pegado. La contraseña inicial de un usuario nuevo no decía que es una clave nueva | Baja | `autoComplete="new-password"` en el alta. No hay captcha ni prueba cognitiva | `LoginPage.tsx`, `UsuariosPage.tsx` | Corregido |
-| 2.4.11 Foco no oculto | Todas | La barra no es fija ni sticky. Un foco al borde de la ventana podía quedar pegado al límite | Baja | `scroll-margin: 0.75rem` en `:focus-visible`. No se fijó la barra, para no tapar el foco | `styles.css` | Corregido |
+| 1.3.5 Propósito del campo, 3.3.8 Autenticación accesible | Login y alta de usuario | El login ya tenía `autocomplete="username"` y `current-password`, y no bloquea el pegado. La contraseña inicial de un usuario nuevo no decía que es una clave nueva | Baja | `autoComplete="new-password"` en el alta. No hay captcha ni prueba cognitiva. 1.3.5 del login ya cumplía y no entra como fallo previo | `LoginPage.tsx`, `UsuariosPage.tsx` | Corregido |
+| 2.4.11 Foco no oculto | Todas | La barra no es fija ni sticky, así que el criterio ya se cumplía. Un foco al borde de la ventana podía quedar pegado al límite | Baja | `scroll-margin: 0.75rem` en `:focus-visible`. No se fijó la barra. No baja el porcentaje previo de la sección 1 | `styles.css` | Corregido |
 
 Contraste de la paleta, texto normal (umbral AA 4.5:1) y componentes (umbral 3:1):
 
@@ -101,7 +137,7 @@ Contraste de la paleta, texto normal (umbral AA 4.5:1) y componentes (umbral 3:1
 | `#0b3a66` sobre `#e7f0fa` | 10.07 | Estado Asignado |
 | `#6d8178` sobre `#ffffff` | 4.15 | Borde de campos (pasa 3:1, no es texto) |
 
-## 4. Resultado después de las correcciones
+## 6. Resultado después de las correcciones
 
 - Vitest 2.1.9: **64 pruebas en verde**, 9 de ellas de axe-core 4.10.3 (login, Flota con tabla, Conductores, Pedidos, Rutas con mapa y alternativa textual, Tablero, Usuarios, Modo conductor y acceso denegado). Violaciones: **0**.
 - Cobertura `@vitest/coverage-v8` 2.1.9 sobre `frontend/src`: **99.58 %** de líneas y **90.65 %** de ramas.
@@ -113,68 +149,78 @@ Contraste de la paleta, texto normal (umbral AA 4.5:1) y componentes (umbral 3:1
 
 La CI (`.github/workflows/ci.yml`) ejecuta `npm test` y `npm run build` en el job del frontend. No hizo falta tocar el workflow: las pruebas de axe viven junto al resto.
 
-## 5. Checklist de criterios AA
+## 7. Checklist de criterios A y AA
+
+Esta lista es la base de la sección 1. «No aplica» sale del denominador. «Cumple» entra en el numerador de después. Donde el antes era distinto, la sección 1 lo cuenta.
 
 | Criterio | Resultado |
 |---|---|
-| 1.1.1 Contenido no textual | Revisado. El mapa tiene lista textual y la tabla de paradas. No hay imágenes de interfaz sin alternativa |
-| 1.2.1 a 1.2.5 Medios temporales | No aplica. No hay audio ni vídeo |
-| 1.3.1 Información y relaciones | Revisado. Etiquetas, captions, `scope`, encabezados y regiones con nombre |
-| 1.3.2 Secuencia con significado | Revisado. El encabezado de la ruta va antes de la acción |
-| 1.3.3 Características sensoriales | Revisado. El semáforo y la ruta elegida no dependen solo del color o de la posición |
-| 1.3.4 Orientación | Revisado. No se bloquea la orientación |
-| 1.3.5 Identificar el propósito del campo | Revisado en el login. El alta de otra persona no recoge datos de quien llena el formulario; la clave nueva lleva `new-password` |
-| 1.4.1 Uso del color | Revisado |
-| 1.4.2 Control del audio | No aplica |
-| 1.4.3 Contraste mínimo | Revisado en la paleta y en WAVE (línea base de Flota). **Pendiente: completar por el equipo** la captura WAVE del resto de pantallas después del cambio |
-| 1.4.4 Cambio de tamaño del texto | Revisado. Sin `maximum-scale`. Zoom 200 % comprobado en Chrome sobre login y Flota |
-| 1.4.5 Imágenes de texto | No aplica |
-| 1.4.10 Reflow | Revisado a 320 px en las siete rutas del build |
-| 1.4.11 Contraste no textual | Revisado. Borde de campo 4.15:1. Foco doble sobre barra y fondo claro |
-| 1.4.12 Espaciado del texto | Revisado en Chrome con la hoja de la técnica, en login y Flota. **Pendiente: completar por el equipo** la misma prueba a mano en el resto de pantallas |
-| 1.4.13 Contenido en hover o foco | Revisado. Los popups del mapa se abren al pulsar. El `title` nativo del navegador queda en el agente de usuario |
-| 2.1.1 Teclado | Revisado en código y en Chrome (salto, formularios, botones de tabla, zoom del mapa) |
-| 2.1.2 Sin trampa de teclado | Revisado. Escape suelta el mapa. Tab sale de él |
-| 2.1.4 Atajos de teclado de un carácter | No aplica. Las flechas solo actúan con el mapa enfocado |
-| 2.2.1 Tiempo ajustable | No aplica en la interfaz. El bloqueo de 15 minutos es una respuesta del servidor, no un límite de la página |
+| 1.1.1 Contenido no textual | Cumple después de la corrección. Antes no: el mapa no tenía alternativa asociada. El anuncio con NVDA de esa lista está pendiente |
+| 1.2.1 Audio solo y vídeo solo (grabado) | No aplica. No hay audio ni vídeo |
+| 1.2.2 Subtítulos (grabados) | No aplica. No hay audio ni vídeo |
+| 1.2.3 Audiodescripción o alternativa | No aplica. No hay audio ni vídeo |
+| 1.2.4 Subtítulos (en directo) | No aplica. No hay audio ni vídeo |
+| 1.2.5 Audiodescripción (grabada) | No aplica. No hay audio ni vídeo |
+| 1.3.1 Información y relaciones | Cumple después de la corrección. Antes no: tablas, indicadores y acceso denegado |
+| 1.3.2 Secuencia significativa | Cumple después de la corrección. Antes no: el botón precedía al encabezado de la ruta |
+| 1.3.3 Características sensoriales | Cumple. El semáforo y la ruta elegida no dependen solo del color o de la forma. El refuerzo de `aria-pressed` está en 1.4.1 |
+| 1.3.4 Orientación | Cumple. No se bloquea la orientación |
+| 1.3.5 Identificar el propósito del campo | Cumple. El login ya tenía `autocomplete`. El alta de otra persona no recoge datos de quien llena el formulario |
+| 1.4.1 Uso del color | Cumple después de la corrección. Antes no: la ruta elegida solo se veía en el mapa |
+| 1.4.2 Control del audio | No aplica. No hay audio |
+| 1.4.3 Contraste (mínimo) | Cumple después de la corrección del placeholder. La paleta ya pasaba. La captura WAVE del resto de pantallas está pendiente |
+| 1.4.4 Cambio de tamaño del texto | Cumple. Sin `maximum-scale`. Zoom 200 % comprobado en Chrome sobre login y Flota |
+| 1.4.5 Imágenes de texto | Cumple. No hay imágenes de texto; el texto es texto |
+| 1.4.10 Reflow | Cumple después de la corrección. Antes no: el login llegaba a 343 px |
+| 1.4.11 Contraste no textual | Cumple después de la corrección. Antes no: el foco sobre la barra |
+| 1.4.12 Espaciado del texto | Cumple en la prueba de Chrome (login y Flota) con la hoja de la técnica. El resto usa la misma CSS. La prueba manual en cada pantalla está pendiente y no depende de NVDA |
+| 1.4.13 Contenido en hover o foco | Cumple. Los popups del mapa se abren al pulsar. El `title` nativo queda en el navegador |
+| 2.1.1 Teclado | Cumple después de la corrección. Antes no: la tabla ancha y la rueda del mapa |
+| 2.1.2 Sin trampa de teclado | Cumple. Tab sale del mapa. Escape lo suelta. Antes no había una trampa de teclado; la rueda no es teclado |
+| 2.1.4 Atajos de un carácter | No aplica. No hay atajos de una sola letra. Las flechas solo actúan con el mapa enfocado |
+| 2.2.1 Tiempo ajustable | No aplica. No hay un límite de tiempo en la página. El bloqueo de 15 minutos es una respuesta del servidor |
 | 2.2.2 Pausar, detener, ocultar | No aplica. No hay movimiento automático |
-| 2.3.1 Tres destellos | No aplica |
-| 2.4.1 Evitar bloques | Revisado. El salto mueve el foco |
-| 2.4.2 Página titulada | Revisado. Cada módulo, el login y el acceso denegado ponen `document.title` |
-| 2.4.3 Orden del foco | Revisado. Salto, módulos, sesión, contenido, pie |
-| 2.4.4 Propósito de los enlaces | Revisado. Los enlaces dicen el módulo |
-| 2.4.5 Múltiples vías | Revisado. Barra y pie |
-| 2.4.6 Encabezados y etiquetas | Revisado |
-| 2.4.7 Foco visible | Revisado en CSS. **Pendiente: completar por el equipo** la comprobación visual con el teclado en cada pantalla |
-| 2.4.11 Foco no oculto (mínimo) | Revisado. La barra no es fija |
-| 2.5.1 Gestos del puntero | Revisado. El pellizco del mapa tiene botones Acercar y Alejar |
-| 2.5.2 Cancelación del puntero | Revisado. Se usan `click` y `submit`, que disparan al soltar |
-| 2.5.3 Etiqueta en el nombre | Revisado. El texto visible de cada botón está dentro del nombre accesible |
-| 2.5.4 Actuación por movimiento | No aplica |
-| 2.5.7 Movimientos de arrastre | Revisado. El mapa se mueve con flechas y la información está en la tabla |
-| 2.5.8 Tamaño del objetivo (mínimo) | Revisado. Mínimo de diseño 44×44 px, por encima de los 24 px del criterio |
-| 3.1.1 Idioma de la página | Revisado. `<html lang="es">` |
-| 3.1.2 Idioma de un fragmento | Revisado. Acercar y Alejar en español |
-| 3.2.1 Al recibir el foco | Revisado. Enfocar el mapa no cambia de página |
-| 3.2.2 Al recibir entradas | Revisado. Hay aviso antes de la fecha y del cambio de rol |
+| 2.3.1 Tres destellos | Cumple. Nada destella |
+| 2.4.1 Evitar bloques | Cumple después de la corrección. Antes no: el salto no movía el foco |
+| 2.4.2 Página titulada | Cumple después de la corrección. Antes no: login y acceso denegado |
+| 2.4.3 Orden del foco | Cumple. Salto, módulos, sesión, contenido, pie |
+| 2.4.4 Propósito de los enlaces | Cumple. Los enlaces dicen el módulo |
+| 2.4.5 Múltiples vías | Cumple después de la corrección. Antes no: solo la barra |
+| 2.4.6 Encabezados y etiquetas | Cumple después de la corrección. Antes no: botones repetidos y acceso denegado sin `h1` |
+| 2.4.7 Foco visible | Cumple después de la corrección, por la hoja global y el contraste calculado. Antes no: el anillo se perdía en la barra. La recorrida visual pantalla por pantalla está pendiente |
+| 2.4.11 Foco no oculto (mínimo) | Cumple antes y después. La barra no es fija. `scroll-margin` es un refuerzo |
+| 2.5.1 Gestos del puntero | Cumple. El pellizco del mapa tiene botones Acercar y Alejar |
+| 2.5.2 Cancelación del puntero | Cumple. Se usan `click` y `submit`, que disparan al soltar |
+| 2.5.3 Etiqueta en el nombre | Cumple antes y después. El texto visible ya estaba dentro del nombre; el problema de botones iguales es 2.4.6 y 4.1.2 |
+| 2.5.4 Actuación por movimiento | No aplica. No hay funciones que dependan del movimiento del dispositivo |
+| 2.5.7 Movimientos de arrastre | Cumple. El mapa se mueve con flechas y la información está en la tabla |
+| 2.5.8 Tamaño del objetivo (mínimo) | Cumple antes y después. 26 px y 36 px ya superaban 24 px. El diseño quedó en 44 px |
+| 3.1.1 Idioma de la página | Cumple. `<html lang="es">` |
+| 3.1.2 Idioma de las partes | Cumple después de la corrección. Antes no: «Zoom in» y «Zoom out» |
+| 3.2.1 Al recibir el foco | Cumple. Enfocar el mapa no cambia de página |
+| 3.2.2 Al recibir entradas | Cumple después de la corrección. Antes no: la fecha y el rol cambiaban el contenido sin aviso |
+| 3.2.3 Navegación coherente | Cumple. La barra y el pie están en el mismo lugar en cada módulo |
+| 3.2.4 Identificación coherente | Cumple. Los controles con la misma función se nombran igual entre pantallas |
 | 3.2.6 Ayuda consistente | No aplica. No hay un mecanismo de ayuda |
-| 3.3.1 Identificación del error | Revisado. El aviso recibe el foco |
-| 3.3.2 Etiquetas o instrucciones | Revisado |
-| 3.3.3 Sugerencia ante errores | Revisado cuando el mensaje del API lo trae (por ejemplo, ventana invertida o jornada de más de 8 h). **Pendiente: completar por el equipo** oír esos mensajes con NVDA |
-| 3.3.4 Prevención de errores (legales, financieros) | No aplica. No hay compra ni compromiso legal en el formulario |
-| 3.3.7 Entrada redundante | Revisado. No se vuelve a pedir un dato ya capturado en la misma pantalla |
-| 3.3.8 Autenticación accesible (mínimo) | Revisado. Sin prueba cognitiva. Se puede pegar la contraseña y usar un gestor |
-| 4.1.2 Nombre, función, valor | Revisado con axe (0 violaciones) y con los nombres de botones, selectores y mapa |
-| 4.1.3 Mensajes de estado | Revisado. Error con `role="alert"`. Éxito y avisos en `<output>` |
+| 3.3.1 Identificación del error | Cumple antes y después. El texto del error ya identificaba el fallo. Mover el foco es un refuerzo de teclado, no el requisito del criterio |
+| 3.3.2 Etiquetas o instrucciones | Cumple. Cada campo tiene etiqueta |
+| 3.3.3 Sugerencia ante errores | Cumple cuando el API devuelve el detalle (ventana invertida, jornada de más de 8 h). Oírlo con NVDA está pendiente y no se cuenta como fallo |
+| 3.3.4 Prevención de errores (legales, financieros) | No aplica. No hay compra ni compromiso legal |
+| 3.3.7 Entrada redundante | Cumple. No se vuelve a pedir un dato ya capturado en la misma pantalla |
+| 3.3.8 Autenticación accesible (mínimo) | Cumple. Sin prueba cognitiva. Se puede pegar la contraseña y usar un gestor. El login ya cumplía |
+| 4.1.2 Nombre, función, valor | Cumple después de la corrección, medido con axe (0 violaciones) y con los nombres de botones, selectores y mapa. Antes no. Cómo lo pronuncia NVDA está pendiente |
+| 4.1.3 Mensajes de estado | Cumple antes y después: `role="alert"` y `<output>` ya exponían el mensaje. El foco sobre el error es un refuerzo. El anuncio con NVDA está pendiente |
 
-## 6. Capturas por pantalla
+4.1.1 Parsing no figura: WCAG 2.2 lo retiró.
 
-La línea base de Flota está en la sección 2. Falta la tanda posterior al cambio, una por pantalla, con WAVE, Lighthouse (Accessibility) y axe DevTools 4.10.3. **Pendiente: completar por el equipo.**
+## 8. Capturas por pantalla
+
+La línea base de Flota está en la sección 4. Falta la tanda posterior al cambio, una por pantalla, con WAVE, Lighthouse (Accessibility) y axe DevTools 4.10.3. **Pendiente: completar por el equipo.**
 
 | Pantalla | WAVE | Lighthouse Accessibility | axe DevTools |
 |---|---|---|---|
 | Login | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
-| Flota | Línea base en la sección 2. Repetir después del cambio | Línea base en la sección 2. Repetir después del cambio | Línea base en la sección 2. Repetir después del cambio |
+| Flota | Línea base en la sección 4. Repetir después del cambio | Línea base en la sección 4. Repetir después del cambio | Línea base en la sección 4. Repetir después del cambio |
 | Conductores | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
 | Pedidos | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
 | Rutas, con al menos un plan y el mapa | Pendiente: completar por el equipo | Pendiente: completar por el equipo | Pendiente: completar por el equipo |
@@ -185,9 +231,9 @@ La línea base de Flota está en la sección 2. Falta la tanda posterior al camb
 
 Sugerencia de nombre al guardarlas en `docs/03 Implementación/Sprint 03/img/`: `wave-login.png`, `lighthouse-rutas.png`, `axe-usuarios.png`, y el mismo patrón para el resto.
 
-## 7. Lector de pantalla
+## 9. Lector de pantalla
 
-**Pendiente: completar por el equipo.** Hace falta NVDA (o el lector que use el equipo) en Windows, con Firefox o Chrome, sobre `npm run dev`. Esta pasada no lo ejecutó.
+**Pendiente: completar por el equipo.** Hace falta NVDA (o el lector que use el equipo) en Windows, con Firefox o Chrome, sobre `npm run dev`. Esta pasada no lo ejecutó. Por eso la sección 1 no presenta el anuncio del lector como un hecho cerrado.
 
 Guion mínimo, en cada pantalla de la tabla anterior:
 
@@ -200,7 +246,7 @@ Guion mínimo, en cada pantalla de la tabla anterior:
 7. En el Tablero, cada cifra se alcanza como encabezado.
 8. Zoom del navegador al 200 % y ancho equivalente a 320 px: no se pierde ningún control y la página no se desplaza en horizontal, salvo el interior de una tabla.
 
-## 8. Cómo repetir la prueba en Windows
+## 10. Cómo repetir la prueba en Windows
 
 Repositorio en `C:\xampp\htdocs\PFA-taller`. Hace falta Node.js 20 o superior. Los comandos son de PowerShell.
 
@@ -215,12 +261,12 @@ npm run dev
 
 `npm test` incluye las nueve pruebas de axe-core 4.10.3. Con el servidor en marcha, abra http://localhost:5173 e inicie sesión con un usuario de demostración.
 
-Para las capturas de la sección 6, en cada ruta:
+Para las capturas de la sección 8, en cada ruta:
 
 1. WAVE (extensión). Anote errores, contrastes y alertas.
 2. Lighthouse, modo Navegación, categoría Accessibility. El rendimiento medido con `npm run dev` no es un criterio WCAG: si hace falta una cifra de Performance, use `npm run build` y `npm run preview`.
 3. axe DevTools 4.10.3. En el filtro elija WCAG 2.1 AA y, si la extensión lo ofrece, WCAG 2.2 AA.
 
-NVDA, sección 7. **Pendiente: completar por el equipo.**
+NVDA, sección 9. **Pendiente: completar por el equipo.**
 
 [← Volver al README Principal](../../../README.md)
