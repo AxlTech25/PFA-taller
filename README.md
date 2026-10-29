@@ -90,7 +90,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Los sprints 1, 2 y 4, y la carpeta de gestión `Sprint 3/`, tienen los cuatro archivos de seguimiento con el nombre `V_1_0_0.md`. La carpeta `Sprint 03/` reúne los entregables de la consigna del curso para ese mismo Sprint 3 (ítems 1, 3, 4 y 5). El ítem 2, la retrospectiva, está en elaboración por el equipo y todavía no tiene archivo. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Los sprints 1, 2 y 4, y la carpeta de gestión `Sprint 3/`, tienen los cuatro archivos de seguimiento con el nombre `V_1_0_0.md`. La carpeta `Sprint 03/` reúne los entregables de la consigna del curso para ese mismo Sprint 3 (ítems 1 a 5). Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 ### Sprint 4
 
@@ -119,7 +119,7 @@ Entregables de la consigna del curso, en [`docs/03 Implementación/Sprint 03/`](
 | # | Artefacto | Archivo |
 |---|---|---|
 | 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
-| 02 | Retrospectiva del Sprint | en elaboración por el equipo |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 | 03 | Evaluación de calidad de código (SonarQube) | [03 Calidad de código V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/03%20Calidad%20de%20c%C3%B3digo%20V_1_0_0.md) |
 | 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/04%20OWASP%20V_1_0_0.md) |
 | 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 WCAG V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%2003/05%20WCAG%20V_1_0_0.md) |
