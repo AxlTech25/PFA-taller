@@ -24,7 +24,7 @@ Entregables de la consigna en [Sprint 03/](./Sprint%2003/). Los informes de gest
 | # | Artefacto | Archivo |
 |---|---|---|
 | 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./Sprint%2003/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
-| 02 | Retrospectiva del Sprint | en elaboración por el equipo |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./Sprint%2003/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 | 03 | Evaluación de calidad de código (SonarQube) | [03 Calidad de código V_1_0_0.md](./Sprint%2003/03%20Calidad%20de%20c%C3%B3digo%20V_1_0_0.md) |
 | 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./Sprint%2003/04%20OWASP%20V_1_0_0.md) |
 | 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 WCAG V_1_0_0.md](./Sprint%2003/05%20WCAG%20V_1_0_0.md) |
