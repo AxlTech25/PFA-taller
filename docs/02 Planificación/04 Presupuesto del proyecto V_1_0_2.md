@@ -16,7 +16,7 @@
 
 ## 1. Propósito y premisas
 
-Este documento desglosa el presupuesto académico del PFA alineado al [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_6.md): recursos humanos, hardware/software, servicios externos (cloud) y reserva de contingencia derivada del [registro de riesgos](./03%20Registro%20de%20riesgos%20V_1_0_4.md).
+Este documento desglosa el presupuesto académico del PFA alineado al [Acta de Constitución](../01%20Inicio/02.%20Acta%20de%20constituci%C3%B3n%20V_1_0_7.md): recursos humanos, hardware/software, servicios externos (cloud) y reserva de contingencia derivada del [registro de riesgos](./03%20Registro%20de%20riesgos%20V_1_0_4.md).
 
 Todas las cifras están en **soles**. El techo original de la consigna (S/ 500,000) se conserva como referencia; la línea base de ejecución es el rebaseline del Acta: **S/ 13,000**.
 

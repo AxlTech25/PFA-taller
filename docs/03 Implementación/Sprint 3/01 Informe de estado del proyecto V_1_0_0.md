@@ -25,7 +25,7 @@ Este archivo usa el nombre `V_1_0_0.md` que pide la consigna. Vive en `docs/03 I
 | **Costos** | Línea base **S/ 13,000**. Cloud sigue en **S/ 0**: no hay Staging (IMP-04, parte de hosting). Contingencia S/ 1,500 intacta. No se compra infraestructura nueva en este sprint. |
 | **Calidad** | CI de producto: Ruff, Pytest con cobertura ≥ 80 % y build de Vite. Se añade el workflow CodeQL (`.github/workflows/codeql.yml`) para el Quality Gate D2. Pruebas del Gherkin de cobertura, georreferencia aproximada, jornada de 8 h, descanso de 1 h, cola 202 y Redis caído (503 sin job huérfano). |
 
-Detalle (fuente: [01 Transformando a ágil V_1_0_7.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §8 y §11):
+Detalle (fuente: [01 Transformando a ágil V_1_0_9.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) §8 y §11):
 
 | ID | Título | SP | Estado |
 |---|---|---|---|

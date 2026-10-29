@@ -11,12 +11,11 @@ Línea base local sobre la rama `main`, commit `efcfcfb`. Servidor SonarQube Com
 ## 1. Resumen Ejecutivo de Quality Gate
 
 - **Estado del Quality Gate:** PASSED
-- **Issues nuevos:** 0 (requerido 0). Issues aceptados: 0
-- **Cobertura de código nuevo:** 90.0 % (requerido ≥ 80 %; 9 líneas nuevas por cubrir)
-- **Duplicación de código nuevo:** 0.0 % (requerido ≤ 3.0 %; 21 líneas nuevas)
-- **Security hotspots:** 0. Calificación A
+- **Porcentaje de Cobertura de Pruebas (Coverage):** 97.6 %
+- **Duplicación de Código:** 0.0 %
+- **Código nuevo (New Code):** cobertura 90.0 % (requerido ≥ 80 %; 9 líneas nuevas por cubrir) y duplicación 0.0 % (requerido ≤ 3.0 %; 21 líneas nuevas). Issues nuevos: 0 (requerido 0). Issues aceptados: 0. Security hotspots: 0. Calificación A.
 
-El pase es el de la pestaña New Code en la instancia local del equipo. La captura y el detalle están en la sección 6. La verificación independiente en la VM (cobertura global 97.6 %, `python:S2115` en 0, sin BLOCKER) está en la sección 5. La línea base del commit `efcfcfb` —53.1 % de cobertura, 111 issues, 1 vulnerabilidad bloqueante y 616 minutos de deuda— queda en la sección 2.
+El 97.6 % de cobertura y la duplicación 0.0 % son la medición global de la sección 5 (Community Build 26.10.0.133078, commit `aaa13b6`: 3820 líneas a cubrir, 55 sin cubrir, líneas 98.6 %, ramas 90.0 %). El renglón de New Code es el Quality Gate de la pestaña New Code en la instancia local del equipo. La captura y el detalle están en la sección 6. Esa misma verificación de la VM midió el código nuevo en 87.5 % de cobertura y 0.0 % de duplicación, también PASSED, con `python:S2115` en 0 y sin BLOCKER. La línea base del commit `efcfcfb` —53.1 % de cobertura, 111 issues, 1 vulnerabilidad bloqueante y 616 minutos de deuda— queda en la sección 2.
 
 ## 2. Métricas Principales
 
@@ -84,7 +83,7 @@ Severidad de los 111 issues (vulnerabilidad + code smells): Bloqueante 47, Alta 
 
 Un análisis anterior había dejado la cobertura de New Code en «Not computed». El `coverage.xml` llevaba en `<source>` la ruta absoluta del disco donde corrió pytest, y el lcov salía como `SF:src\App.tsx`. Corrección, sin reescribir nada a mano antes de escanear: `relative_files` en `backend/pyproject.toml`; al cerrar pytest, `<source>` queda en `.` y cada `filename` en `backend/app/...` con barras `/`. Al cerrar vitest, `frontend/vite.config.ts` deja cada `SF:` en `frontend/src/...` con barras `/`. `sonar.python.version` queda en 3.12. En la verificación de la sección 5 la cobertura salió calculada.
 
-Medición local de esta revisión: pytest **97.71 %** de líneas sobre `app` (78 pruebas, antes 93.23 % con 67). Vitest (`@vitest/coverage-v8` 2.1.9) **99.54 %** de líneas sobre `frontend/src` (52 pruebas, antes 8.39 %). Las páginas, `App` y la sesión se montan con Testing Library y `fetch` simulado. SonarQube calculó la cobertura global en **97.6 %**.
+Medición local de esta revisión: pytest **97.71 %** de líneas sobre `app` (78 pruebas, antes 93.23 % con 67). Vitest (`@vitest/coverage-v8` 2.1.9) **99.54 %** de líneas sobre `frontend/src` (52 pruebas). La cobertura base del frontend, la de la línea base `efcfcfb`, es **6.3 %** de líneas (vitest, 3 archivos de prueba). El **8.39 %** es otra medición, no esa base: el mismo `@vitest/coverage-v8` 2.1.9 después de cubrir `api.ts`, los roles y el semáforo del mapa, cuando las páginas todavía no se montaban. Las páginas, `App` y la sesión se montan con Testing Library y `fetch` simulado. SonarQube calculó la cobertura global en **97.6 %**.
 
 ## 4. Antes / Después
 
@@ -103,6 +102,8 @@ Medición local de esta revisión: pytest **97.71 %** de líneas sobre `app` (78
 | Cobertura backend (pytest, líneas) | no figuraba aparte de SonarQube | 97.71 % local. `backend/app/core/config.py` en Sonar: 100 % |
 | Pruebas backend | 64 pytest en verde | 78 pytest en verde |
 | Pruebas frontend | 7 vitest en verde | 52 vitest en verde |
+
+La columna Antes de la cobertura del frontend es **6.3 %** de líneas: vitest sobre la línea base `efcfcfb`, con 3 archivos de prueba. El **8.39 %** que antes aparecía como si fuera esa misma base es otra medición. `@vitest/coverage-v8` 2.1.9 lo obtuvo después de cubrir `api.ts`, los roles y el semáforo del mapa, cuando las páginas todavía no se montaban. No sustituye al 6.3 %.
 
 ### Comandos para el re-escaneo
 

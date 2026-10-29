@@ -6,8 +6,8 @@
 # 02. Artefactos Jira Software
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 21/10/2026  
-**Versión:** 1.0.9  
+**Fecha:** 28/10/2026  
+**Versión:** 1.0.10  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth  
 **Producto ALM:** Atlassian Jira Software Cloud  
 **Clave de proyecto:** `ECO`  
@@ -18,7 +18,7 @@
 
 ## 1. Propósito
 
-Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprints 1 a 6 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md).
+Este documento es el informe de **parametrización** de Jira Software para el PFA: jerarquía de trabajo, backlog estimado, hoja de ruta, Sprints 1 a 6 con *Sprint Goal*, tablero Scrum y versión de entrega. El backlog fuente es [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md).
 
 Las cinco evidencias fotográficas exigidas por la consigna se recortan **exclusivamente** al panel de Jira (sin escritorio, barra de tareas, pestañas del navegador ni espacio sobrante). Las capturas viven en [`evidencias/`](./evidencias/). Este informe deja lista la parametrización (claves, SP, Sprint Goal, columnas y release) para cargarla en el sitio Jira del equipo; las PNG recortadas se añaden tras crear el proyecto `ECO` con el guion de la sección 8.
 
@@ -61,13 +61,13 @@ flowchart LR
     B --> A
 ```
 
-Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
+Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md#5-definition-of-done-dod-global-del-proyecto) (cobertura ≥ 80 %, Quality Gate, PR aprobado, Staging, OpenAPI).
 
 ---
 
 ## 3. Evidencia 1 — Roadmap del proyecto
 
-Épicas alineadas a 6 sprints de 2 semanas. El Sprint 3 arranca el **16/10/2026**; el cierre es el **13/12/2026**. Fechas: [05 Cronograma de sprints V_1_0_0.md](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Épicas alineadas a 6 sprints de 2 semanas. El Sprint 3 arranca el **16/10/2026**; el cierre es el **13/12/2026**. Fechas: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 | Sprint Jira | Inicio | Fin |
 |---|---|---|
@@ -148,7 +148,7 @@ Vista general con Story Points, épica, componente y responsable. El orden es el
 | ECO-26 | Story | US-013 Zonas de riesgo | EP-06 | 5 | Brayan Leon | DB |
 | ECO-27 | Story | US-014 Dashboard sostenibilidad | EP-07 | 8 | Katheryn Huaman | Frontend |
 | ECO-28 | Story | US-015 Modo conductor | EP-07 | 8 | Katheryn Huaman | Frontend |
-| ECO-29 | Task | ENB-005 WCAG 2.1 AA | EP-07 | 5 | Katheryn Huaman | Frontend |
+| ECO-29 | Task | ENB-005 WCAG 2.2 AA | EP-07 | 5 | Katheryn Huaman | Frontend |
 | ECO-30 | Task | ENB-008 Payload 2G/3G | EP-07 | 5 | Axel Estrada | Frontend |
 | ECO-31 | Story | US-009 Preferencias de cliente | EP-04 | 5 | Katheryn Huaman | Frontend |
 | ECO-32 | Story | US-011 Re-optimización dinámica | EP-05 | 8 | Jorge Cruz | Optimizer |
@@ -192,7 +192,7 @@ Las cinco PNG de la consigna siguen siendo las del Sprint 1. Este bloque sirve p
 **Sprint:** `ECO Sprint 2`  
 **Fechas:** 16/09/2026 – 29/09/2026 (2 semanas)  
 **Capacidad:** 172 h académicas · compromiso **26 SP**  
-**Fuente:** [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §10.
+**Fuente:** [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) §10.
 
 #### Sprint Goal (texto a pegar en la cabecera de Jira)
 
@@ -275,7 +275,7 @@ En US-008 y ENB-001 / US-010 anotar el incremento en la descripción. No meter U
 | ECO-26 | US-013 Zonas de riesgo | Completo (cierre del mapa) | 5 | Brayan Leon |
 | ECO-27 | US-014 Dashboard sostenibilidad | **B** factor árboles RN-018 | 3 | Katheryn Huaman |
 | ECO-28 | US-015 Modo conductor | Completo | 8 | Katheryn Huaman |
-| ECO-29 | ENB-005 WCAG 2.1 AA | Completo | 5 | Katheryn Huaman |
+| ECO-29 | ENB-005 WCAG 2.2 AA | Completo | 5 | Katheryn Huaman |
 | ECO-30 | ENB-008 Payload 2G/3G | Completo | 5 | Axel Estrada |
 | | **Compromiso** | | **26** | |
 
@@ -302,7 +302,7 @@ No meter US-009 (queda para el Sprint 6: el Sprint 5 ya suma 26 SP). Staging IMP
 
 Recorte MoSCoW: US-009 → US-017 → US-016.
 
-Al crear cada sprint: Backlog → **Crear sprint** → nombre `ECO Sprint n` → pegar el Goal **antes** de iniciarlo → fechas del [cronograma](./05%20Cronograma%20de%20sprints%20V_1_0_0.md).
+Al crear cada sprint: Backlog → **Crear sprint** → nombre `ECO Sprint n` → pegar el Goal **antes** de iniciarlo → fechas del [cronograma](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 ---
 
@@ -396,5 +396,6 @@ Guion operativo (30–40 min) en [`evidencias/README.md`](./evidencias/README.md
 | 1.0.7 | 16/10/2026 | Equipo EcoLogística Lima | Fechas vigentes: Sprint 3 = 16/10–29/10; Hito 3 = 12/11; Hito 4 / release = 13/12. |
 | 1.0.8 | 18/10/2026 | Equipo EcoLogística Lima | El código del Sprint 4 entra el 18/10, antes de abrir `ECO Sprint 4`. En Jira las tarjetas del motor pasan a Done el día del merge (A5). Staging sigue fuera. |
 | 1.0.9 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a S3 (PR #15) y S4 (PR #16). US-009 en `ECO Sprint 6`. |
+| 1.0.10 | 28/10/2026 | Equipo EcoLogística Lima | ECO-29 / ENB-005 queda en WCAG 2.2 AA, el nivel evaluado en el Sprint 3. El archivo queda en V_1_0_10, alineado al encabezado. |
 
 [← Volver al README Principal](../../README.md)

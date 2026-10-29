@@ -29,7 +29,7 @@ El repositorio ya contiene además el Sprint 2 (PR #10, 01/10/2026). **Este info
 
 ## Historias de Usuario completadas en este Sprint
 
-Compromiso del artefacto [01 Transformando a ágil V_1_0_7.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md), sección 9.
+Compromiso del artefacto [01 Transformando a ágil V_1_0_9.md](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md), sección 9.
 
 | ID | Título | SP | Estado | Evidencia en el repositorio |
 |---|---|---|---|---|

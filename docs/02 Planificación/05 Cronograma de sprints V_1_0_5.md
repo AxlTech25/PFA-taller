@@ -6,11 +6,11 @@
 # 05. Cronograma de sprints
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 21/10/2026  
-**Versión:** 1.0.4  
+**Fecha:** 28/10/2026  
+**Versión:** 1.0.5  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
-Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md).
+Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md).
 
 ---
 
@@ -82,7 +82,7 @@ Una fila por actividad. El detalle de SP y responsables está en la sección 4. 
 | **5** | 13/11/2026 – 26/11/2026 | Cerrar mapa: zonas de riesgo y ruta alternativa | US-013 | 5 |
 | | | Factor de árboles `factor_captura_arbol_kg` (RN-018) | US-014 B | 3 |
 | | | Implementar modo conductor (secuencia, ETA, alertas) | US-015 | 8 |
-| | | Cumplir WCAG 2.1 AA (contraste, labels, teclado) | ENB-005 | 5 |
+| | | Cumplir WCAG 2.2 AA (contraste, labels, teclado) | ENB-005 | 5 |
 | | | Ajustar payload de sesión ≤ 150 KB en 2G/3G | ENB-008 | 5 |
 | | | Staging Railway/Render (arrastre IMP-04; sin SP) | IMP-04 | — |
 | | | Catastro INEI si hay archivo (arrastre IMP-11; sin SP) | IMP-11 | — |
@@ -101,7 +101,7 @@ Cada sprint suma **26 SP** (el cierre no suma historias). Recorte MoSCoW en el S
 
 ## 4. Compromiso por sprint (26 SP)
 
-Velocidad: **26 SP / sprint**. Total **156 SP**. Los ítems de 13 SP se parten 8+5; los de 8 que cruzan sprint se parten 5+3. Detalle BDD: [01 Transformando a ágil V_1_0_7.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_7.md) §§9–14.
+Velocidad: **26 SP / sprint**. Total **156 SP**. Los ítems de 13 SP se parten 8+5; los de 8 que cruzan sprint se parten 5+3. Detalle BDD: [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) §§9–14.
 
 ### Sprint 1 — cerrado (PR #9)
 
@@ -162,7 +162,7 @@ Entregado en paralelo, **sin SP:** CodeQL (`.github/workflows/codeql.yml`). **No
 | US-013 | Overlay `zona_restriccion` y ruta alternativa (cierre del mapa) | 5 | Leon Taza, Brayan Angel |
 | US-014 B | Factor de árboles `factor_captura_arbol_kg` (RN-018) | 3 | Huaman Baldeon, Katheryn Elena |
 | US-015 | Modo conductor (secuencia, ETA, alertas) | 8 | Huaman Baldeon, Katheryn Elena |
-| ENB-005 | WCAG 2.1 AA | 5 | Huaman Baldeon, Katheryn Elena |
+| ENB-005 | WCAG 2.2 AA | 5 | Huaman Baldeon, Katheryn Elena |
 | ENB-008 | Payload ≤ 150 KB en 2G/3G | 5 | Estrada Flores, Axel Sebastian |
 | | **Total** | **26** | |
 
@@ -196,6 +196,7 @@ Sin historias nuevas. UAT, documentación, presentación y release `v1.0.3-MVP`.
 | 1.0.2 | 17/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 3 el 17/10/2026, dentro de la ventana. US-008 B, US-007, ENB-006 e inicio de ENB-001 / US-010. |
 | 1.0.3 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4 el 18/10/2026, antes de la ventana 30/10–12/11. Genético, mapa iniciado y tablero iniciado. Staging sigue pendiente al 12/11. |
 | 1.0.4 | 21/10/2026 | Equipo EcoLogística Lima | Tabla de actividades y compromiso de 26 SP alineados a lo entregado en S3 (PR #15) y S4 (PR #16). US-009 al Sprint 6 para no romper el tope de 26 SP del Sprint 5. |
+| 1.0.5 | 28/10/2026 | Equipo EcoLogística Lima | ENB-005 pasa a WCAG 2.2 AA. El archivo se renombra de V_1_0_0 a V_1_0_5 para que el nombre coincida con el encabezado. |
 
 ---
 
