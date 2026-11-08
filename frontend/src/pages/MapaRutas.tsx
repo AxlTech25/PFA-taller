@@ -2,7 +2,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import "leaflet/dist/leaflet.css";
 
 import { Alerta } from "../avisos";
-import { MENSAJE_TILES, etiquetaCongestion, trazado, trazadoPorCalles } from "../mapa";
+import {
+  MENSAJE_TILES,
+  etiquetaCongestion,
+  trazado,
+  trazadoPorCalles,
+  type Trazado,
+} from "../mapa";
 import type { ParadaRuta, Ruta } from "../types";
 
 const COLORES = ["#08553d", "#0b3a66", "#7a1b1b", "#6a4b00", "#3d5248"];
@@ -37,7 +43,7 @@ type LeafletApi = {
   ) => { on: (evento: "tileerror", aviso: () => void) => void; addTo: (lienzo: Lienzo) => void };
   polyline: (
     puntos: [number, number][],
-    opciones: { color: string; weight: number; opacity: number },
+    opciones: { color: string; weight: number; opacity: number; dashArray?: string },
   ) => { addTo: (lienzo: Lienzo) => void };
   circleMarker: (
     punto: [number, number],
@@ -98,19 +104,28 @@ function pintarRuta(
   L: LeafletApi,
   lienzo: Lienzo,
   ruta: Ruta,
-  calles: [number, number][],
+  calles: Trazado,
   indice: number,
   seleccionada: string | null,
   grupo: [number, number][],
 ) {
   const puntos = trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas);
   const enfatizada = ruta.id_ruta === seleccionada || seleccionada == null;
-  L.polyline(calles, {
-    color: COLORES[indice % COLORES.length],
+  const color = COLORES[indice % COLORES.length];
+  L.polyline(calles.linea, {
+    color,
     weight: enfatizada ? 5 : 2,
     opacity: enfatizada ? 0.95 : 0.35,
   }).addTo(lienzo);
-  grupo.push(...calles);
+  for (const enlace of calles.enlaces) {
+    L.polyline(enlace, {
+      color,
+      weight: enfatizada ? 3 : 2,
+      opacity: enfatizada ? 0.9 : 0.35,
+      dashArray: "4 6",
+    }).addTo(lienzo);
+  }
+  grupo.push(...calles.linea, ...puntos);
   if (puntos.length > 0) {
     L.circleMarker(puntos[0], {
       radius: 7,
@@ -130,7 +145,7 @@ function dibujar(
   L: LeafletApi,
   nodo: HTMLElement,
   activas: Ruta[],
-  calles: [number, number][][],
+  calles: Trazado[],
   seleccionada: string | null,
   alFallarTesela: () => void,
 ) {

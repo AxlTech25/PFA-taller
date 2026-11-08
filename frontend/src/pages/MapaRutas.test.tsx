@@ -13,6 +13,7 @@ const estado = vi.hoisted(() => ({
   disableZoom: vi.fn(),
   conControles: true,
   lineas: [] as [number, number][][],
+  punteadas: [] as [number, number][][],
 }));
 
 vi.mock("leaflet", () => ({
@@ -44,8 +45,8 @@ vi.mock("leaflet", () => ({
       },
       addTo: () => undefined,
     }),
-    polyline: (puntos: [number, number][]) => {
-      estado.lineas.push(puntos);
+    polyline: (puntos: [number, number][], opciones: { dashArray?: string }) => {
+      (opciones.dashArray ? estado.punteadas : estado.lineas).push(puntos);
       return { addTo: () => undefined };
     },
     circleMarker: () => ({
@@ -96,6 +97,7 @@ describe("MapaRutas", () => {
     estado.enableZoom.mockClear();
     estado.disableZoom.mockClear();
     estado.lineas = [];
+    estado.punteadas = [];
     olvidarGeometrias();
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("sin red")));
   });
@@ -111,7 +113,14 @@ describe("MapaRutas", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => ({ code: "Ok", routes: [{ geometry: { coordinates: calles } }] }),
+        json: async () => ({
+          code: "Ok",
+          routes: [{ geometry: { coordinates: calles } }],
+          waypoints: [
+            { location: [-76.98, -12.01], distance: 0 },
+            { location: [-76.99, -12.0205], distance: 55 },
+          ],
+        }),
       }),
     );
     render(<MapaRutas rutas={[ruta()]} seleccionada={null} />);
@@ -120,6 +129,12 @@ describe("MapaRutas", () => {
       [-12.01, -76.98],
       [-12.013, -76.981],
       [-12.02, -76.99],
+    ]);
+    expect(estado.punteadas).toEqual([
+      [
+        [-12.0205, -76.99],
+        [-12.02, -76.99],
+      ],
     ]);
   });
 

@@ -10,11 +10,18 @@ import {
   trazadoPorCalles,
 } from "./mapa";
 
-function respuestaOsrm(coordenadas: [number, number][], code = "Ok", ok = true) {
+type Ajuste = { location?: [number, number]; distance?: number };
+
+function respuestaOsrm(
+  coordenadas: [number, number][],
+  code = "Ok",
+  ok = true,
+  waypoints: Ajuste[] = [],
+) {
   return {
     ok,
     status: ok ? 200 : 500,
-    json: async () => ({ code, routes: [{ geometry: { coordinates: coordenadas } }] }),
+    json: async () => ({ code, routes: [{ geometry: { coordinates: coordenadas } }], waypoints }),
   };
 }
 
@@ -30,10 +37,11 @@ describe("trazado por calles", () => {
       ]),
     );
     vi.stubGlobal("fetch", fetchMock);
-    const linea = await trazadoPorCalles([
+    const { linea, enlaces } = await trazadoPorCalles([
       [-12.01, -76.98],
       [-12.02, -76.99],
     ]);
+    expect(enlaces).toEqual([]);
     expect(linea).toEqual([
       [-12.01, -76.98],
       [-12.012, -76.985],
@@ -56,11 +64,61 @@ describe("trazado por calles", () => {
       return respuestaOsrm(pares.map((par) => par.split(",").map(Number) as [number, number]));
     });
     vi.stubGlobal("fetch", fetchMock);
-    const linea = await trazadoPorCalles(puntos, "http://osrm.local");
+    const { linea } = await trazadoPorCalles(puntos, "http://osrm.local");
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(String(fetchMock.mock.calls[0][0]).split(";")).toHaveLength(25);
     expect(String(fetchMock.mock.calls[1][0]).split(";")).toHaveLength(6);
     expect(linea).toEqual(puntos);
+  });
+
+  it("une con un enlace la calle y el punto real cuando OSRM los separa", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        respuestaOsrm(
+          [
+            [-76.9801, -12.0101],
+            [-76.9899, -12.0199],
+          ],
+          "Ok",
+          true,
+          [
+            { location: [-76.9801, -12.0101], distance: 15 },
+            { location: [-76.9899, -12.0199], distance: 1 },
+            { distance: 20 },
+          ],
+        ),
+      ),
+    );
+    const { enlaces } = await trazadoPorCalles([
+      [-12.01, -76.98],
+      [-12.02, -76.99],
+    ]);
+    expect(enlaces).toEqual([
+      [
+        [-12.0101, -76.9801],
+        [-12.01, -76.98],
+      ],
+    ]);
+  });
+
+  it("no repite el enlace del punto que comparten dos tramos", async () => {
+    const puntos: [number, number][] = Array.from({ length: 30 }, (_, i) => [-12 - i / 100, -77]);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        const pares = url.split("/driving/")[1].split("?")[0].split(";");
+        const coordenadas = pares.map((par) => par.split(",").map(Number) as [number, number]);
+        return respuestaOsrm(
+          coordenadas,
+          "Ok",
+          true,
+          coordenadas.map(([lon, lat]) => ({ location: [lon + 0.001, lat], distance: 100 })),
+        );
+      }),
+    );
+    const { enlaces } = await trazadoPorCalles(puntos, "http://osrm.local");
+    expect(enlaces).toHaveLength(30);
   });
 
   it("usa la línea recta si OSRM falla o no encuentra ruta", async () => {
@@ -68,20 +126,24 @@ describe("trazado por calles", () => {
       [-12.01, -76.98],
       [-12.02, -76.99],
     ];
+    const recta = { linea: puntos, enlaces: [] };
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(respuestaOsrm([], "Ok", false)));
-    expect(await trazadoPorCalles(puntos)).toEqual(puntos);
+    expect(await trazadoPorCalles(puntos)).toEqual(recta);
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(respuestaOsrm([[-76.98, -12.01]], "NoRoute")));
-    expect(await trazadoPorCalles(puntos)).toEqual(puntos);
+    expect(await trazadoPorCalles(puntos)).toEqual(recta);
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
-    expect(await trazadoPorCalles(puntos)).toEqual(puntos);
+    expect(await trazadoPorCalles(puntos)).toEqual(recta);
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("sin red")));
-    expect(await trazadoPorCalles(puntos)).toEqual(puntos);
+    expect(await trazadoPorCalles(puntos)).toEqual(recta);
   });
 
   it("no consulta OSRM con menos de dos puntos", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
-    expect(await trazadoPorCalles([[-12.01, -76.98]])).toEqual([[-12.01, -76.98]]);
+    expect(await trazadoPorCalles([[-12.01, -76.98]])).toEqual({
+      linea: [[-12.01, -76.98]],
+      enlaces: [],
+    });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
