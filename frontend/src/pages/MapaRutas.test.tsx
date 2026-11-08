@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { MENSAJE_TILES } from "../mapa";
+import { MENSAJE_TILES, olvidarGeometrias } from "../mapa";
 import type { Ruta } from "../types";
 import { MapaRutas } from "./MapaRutas";
 
@@ -12,6 +12,8 @@ const estado = vi.hoisted(() => ({
   enableZoom: vi.fn(),
   disableZoom: vi.fn(),
   conControles: true,
+  lineas: [] as [number, number][][],
+  punteadas: [] as [number, number][][],
 }));
 
 vi.mock("leaflet", () => ({
@@ -43,7 +45,10 @@ vi.mock("leaflet", () => ({
       },
       addTo: () => undefined,
     }),
-    polyline: () => ({ addTo: () => undefined }),
+    polyline: (puntos: [number, number][], opciones: { dashArray?: string }) => {
+      (opciones.dashArray ? estado.punteadas : estado.lineas).push(puntos);
+      return { addTo: () => undefined };
+    },
     circleMarker: () => ({
       bindPopup: () => ({ addTo: () => undefined }),
       addTo: () => undefined,
@@ -91,6 +96,55 @@ describe("MapaRutas", () => {
     estado.remove.mockClear();
     estado.enableZoom.mockClear();
     estado.disableZoom.mockClear();
+    estado.lineas = [];
+    estado.punteadas = [];
+    olvidarGeometrias();
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("sin red")));
+  });
+
+  it("traza la ruta por las calles que devuelve OSRM", async () => {
+    const calles: [number, number][] = [
+      [-76.98, -12.01],
+      [-76.981, -12.013],
+      [-76.99, -12.02],
+    ];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          code: "Ok",
+          routes: [{ geometry: { coordinates: calles } }],
+          waypoints: [
+            { location: [-76.98, -12.01], distance: 0 },
+            { location: [-76.99, -12.0205], distance: 55 },
+          ],
+        }),
+      }),
+    );
+    render(<MapaRutas rutas={[ruta()]} seleccionada={null} />);
+    await waitFor(() => expect(estado.fitBounds).toHaveBeenCalled());
+    expect(estado.lineas[0]).toEqual([
+      [-12.01, -76.98],
+      [-12.013, -76.981],
+      [-12.02, -76.99],
+    ]);
+    expect(estado.punteadas).toEqual([
+      [
+        [-12.0205, -76.99],
+        [-12.02, -76.99],
+      ],
+    ]);
+  });
+
+  it("dibuja la línea recta si OSRM no responde", async () => {
+    render(<MapaRutas rutas={[ruta()]} seleccionada={null} />);
+    await waitFor(() => expect(estado.fitBounds).toHaveBeenCalled());
+    expect(estado.lineas[0]).toEqual([
+      [-12.01, -76.98],
+      [-12.02, -76.99],
+    ]);
   });
 
   it("avisa si no hay coordenadas para el trazado", () => {

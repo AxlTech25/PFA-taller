@@ -65,6 +65,8 @@ services:
     build: ./frontend
     environment:
       VITE_PROXY_TARGET: http://api:8000
+      # Vacío usa el servidor público de OSRM para trazar las rutas por calles.
+      VITE_OSRM_URL: ${VITE_OSRM_URL:-}
     ports:
       - "5173:5173"
     depends_on:
