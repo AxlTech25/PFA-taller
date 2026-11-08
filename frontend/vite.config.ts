@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-import { respuestaSpa } from "./src/proxy";
+import { respuestaSpa } from "./src/proxy.ts";
 
 const destino = process.env.VITE_PROXY_TARGET || "http://localhost:8000";
 const raizFrontend = dirname(fileURLToPath(import.meta.url));
@@ -80,7 +80,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "lcov"],
       reportsDirectory: "coverage",
-      all: true,
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
         "src/**/*.test.ts",
