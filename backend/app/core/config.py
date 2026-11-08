@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def resolver_database_url(self) -> Self:
         if self.database_url:
+            # Railway y otros proveedores entregan postgres:// o postgresql://;
+            # sin driver, SQLAlchemy buscaría psycopg2, que no está instalado.
+            for prefijo in ("postgres://", "postgresql://"):
+                if self.database_url.startswith(prefijo):
+                    self.database_url = "postgresql+psycopg://" + self.database_url[len(prefijo) :]
             return self
         if not self.postgres_password:
             raise ValueError(
