@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import "leaflet/dist/leaflet.css";
 
 import { Alerta } from "../avisos";
-import { MENSAJE_TILES, etiquetaCongestion, trazado } from "../mapa";
+import { MENSAJE_TILES, etiquetaCongestion, trazado, trazadoPorCalles } from "../mapa";
 import type { ParadaRuta, Ruta } from "../types";
 
 const COLORES = ["#08553d", "#0b3a66", "#7a1b1b", "#6a4b00", "#3d5248"];
@@ -98,18 +98,19 @@ function pintarRuta(
   L: LeafletApi,
   lienzo: Lienzo,
   ruta: Ruta,
+  calles: [number, number][],
   indice: number,
   seleccionada: string | null,
   grupo: [number, number][],
 ) {
   const puntos = trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas);
   const enfatizada = ruta.id_ruta === seleccionada || seleccionada == null;
-  L.polyline(puntos, {
+  L.polyline(calles, {
     color: COLORES[indice % COLORES.length],
     weight: enfatizada ? 5 : 2,
     opacity: enfatizada ? 0.95 : 0.35,
   }).addTo(lienzo);
-  grupo.push(...puntos);
+  grupo.push(...calles);
   if (puntos.length > 0) {
     L.circleMarker(puntos[0], {
       radius: 7,
@@ -129,6 +130,7 @@ function dibujar(
   L: LeafletApi,
   nodo: HTMLElement,
   activas: Ruta[],
+  calles: [number, number][][],
   seleccionada: string | null,
   alFallarTesela: () => void,
 ) {
@@ -141,7 +143,7 @@ function dibujar(
   teselas.addTo(lienzo);
   const grupo: [number, number][] = [];
   activas.forEach((ruta, indice) => {
-    pintarRuta(L, lienzo, ruta, indice, seleccionada, grupo);
+    pintarRuta(L, lienzo, ruta, calles[indice], indice, seleccionada, grupo);
   });
   if (grupo.length > 0) lienzo.fitBounds(grupo, { padding: [24, 24] });
   return { lienzo, limpiar: prepararInteraccion(lienzo, nodo) };
@@ -206,13 +208,20 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
     let mapa: Lienzo | null = null;
     let limpiar = () => {};
 
-    void import("leaflet")
-      .then((modulo) => {
+    const calles = Promise.all(
+      activas.map((ruta) =>
+        trazadoPorCalles(trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas)),
+      ),
+    );
+
+    void Promise.all([import("leaflet"), calles])
+      .then(([modulo, geometrias]) => {
         if (cancelado || !contenedor.current) return;
         const dibujo = dibujar(
           modulo.default as unknown as LeafletApi,
           contenedor.current,
           activas,
+          geometrias,
           seleccionada,
           () => setTilesCaidos(true),
         );
