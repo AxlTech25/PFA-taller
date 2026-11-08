@@ -10,6 +10,13 @@ def test_database_url_explicita_tiene_prioridad(monkeypatch):
     assert cfg.database_url == "postgresql+psycopg://u:p@db:5432/app"
 
 
+@pytest.mark.parametrize("esquema", ["postgres", "postgresql"])
+def test_database_url_sin_driver_usa_psycopg(monkeypatch, esquema):
+    monkeypatch.setenv("DATABASE_URL", f"{esquema}://u:p@db.railway.internal:5432/railway")
+    cfg = Settings(_env_file=None)
+    assert cfg.database_url == "postgresql+psycopg://u:p@db.railway.internal:5432/railway"
+
+
 def test_la_clave_de_postgres_sale_del_entorno(monkeypatch):
     monkeypatch.delenv("DATABASE_URL", raising=False)
     monkeypatch.setenv("POSTGRES_USER", "ecologistica")

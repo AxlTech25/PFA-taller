@@ -275,6 +275,51 @@ cd frontend && npm test && npm run build
 
 `TEST_DATABASE_URL` apunta a una base de pruebas. El conftest la crea si el usuario de PostgreSQL puede hacerlo y luego aplica Alembic. No use la base de desarrollo como base de pruebas: los tests revierten sus datos, pero la migración sí permanece.
 
+### 5. Staging en Railway (IMP-04)
+
+Un proyecto de Railway con cinco servicios. Los tres de código salen de este repositorio; Railway los vuelve a desplegar en cada push a la rama elegida.
+
+| Servicio | Origen | Dominio público |
+|---|---|---|
+| `db` | Imagen Docker `postgis/postgis:16-3.4` (el Postgres de Railway no trae PostGIS) | No |
+| `Redis` | Base de datos Redis de Railway | No |
+| `api` | Repo, Root Directory `backend` | No |
+| `worker` | Repo, Root Directory `backend` (misma imagen que la API) | No |
+| `web` | Repo, Root Directory `frontend`, `Dockerfile.prod` | **Sí**: es la URL de Staging |
+
+1. **New Project → Deploy from GitHub repo** y elija `AxlTech25/PFA-taller`. Renombre ese primer servicio a `api`.
+2. **db:** *+ Create → Docker Image* → `postgis/postgis:16-3.4`. Agregue un volumen montado en `/var/lib/postgresql/data` y estas variables:
+   ```
+   POSTGRES_USER=ecologistica
+   POSTGRES_PASSWORD=<clave larga generada>
+   POSTGRES_DB=ecologistica
+   PGDATA=/var/lib/postgresql/data/pgdata
+   ```
+3. **Redis:** *+ Create → Database → Redis*.
+4. **api:** *Settings → Root Directory* `backend`, *Healthcheck Path* `/health`. Variables:
+   ```
+   DATABASE_URL=postgresql://${{db.POSTGRES_USER}}:${{db.POSTGRES_PASSWORD}}@${{db.RAILWAY_PRIVATE_DOMAIN}}:5432/${{db.POSTGRES_DB}}
+   REDIS_URL=${{Redis.REDIS_URL}}
+   PORT=8000
+   APP_ENV=staging
+   JWT_SECRET=<clave aleatoria de 32 caracteres o más>
+   SEED_ON_STARTUP=true
+   SEED_ADMIN_PASSWORD=<clave>
+   SEED_OPERADOR_PASSWORD=<clave>
+   SEED_GERENTE_PASSWORD=<clave>
+   ```
+   Al arrancar espera a la base, aplica Alembic y carga los usuarios de demostración.
+5. **worker:** *+ Create → GitHub Repo* (el mismo), Root Directory `backend`, sin healthcheck. Variables: las mismas `DATABASE_URL` y `REDIS_URL` de la API, más `PROCESO=worker`. Espera a que la API termine las migraciones.
+6. **web:** *+ Create → GitHub Repo* (el mismo), Root Directory `frontend`. Variables:
+   ```
+   RAILWAY_DOCKERFILE_PATH=Dockerfile.prod
+   API_URL=http://${{api.RAILWAY_PRIVATE_DOMAIN}}:8000
+   ```
+   Luego *Settings → Networking → Generate Domain*. Caddy sirve la SPA compilada y reenvía la API por la red privada, en el mismo origen: no hace falta configurar CORS.
+7. Opcional: en *Settings → Watch Paths* ponga `backend/**` en `api` y `worker`, y `frontend/**` en `web`, para que un cambio de un lado no redespliegue el otro.
+
+Si `web` responde 502 al iniciar sesión, el entorno de Railway es de los antiguos con red privada solo IPv6: agregue `HOST=::` a la API.
+
 ## Convención de versionado
 
 Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 los informes de seguimiento viven en la carpeta del sprint (`Sprint 1/`, `Sprint 2/`, `Sprint 3/`, `Sprint 4/`) con el nombre `V_1_0_0.md`. La consigna del Sprint 3 usa además la carpeta `Sprint 3/`.

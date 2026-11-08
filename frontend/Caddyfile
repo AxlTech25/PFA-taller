@@ -1,0 +1,34 @@
+# SPA compilada + proxy a la API en el mismo origen (sin CORS).
+# API_URL: dirección interna de la API, p. ej. http://api.railway.internal:8000
+{
+	admin off
+}
+
+:{$PORT:8080} {
+	encode gzip
+
+	# Swagger y el contrato OpenAPI son de la API aunque el navegador pida HTML.
+	@documentacion path /docs /docs/* /openapi.json
+	handle @documentacion {
+		reverse_proxy {$API_URL}
+	}
+
+	# /rutas, /pedidos, /usuarios... son a la vez páginas del SPA y endpoints.
+	# Una navegación (GET/HEAD que acepta HTML) recibe la SPA; el resto va a la API.
+	@api {
+		path /auth /auth/* /usuarios /usuarios/* /vehiculos /vehiculos/* /conductores /conductores/* /pedidos /pedidos/* /clientes /clientes/* /optimizaciones /optimizaciones/* /rutas /rutas/* /indicadores /indicadores/* /health
+		not {
+			method GET HEAD
+			header Accept *text/html*
+		}
+	}
+	handle @api {
+		reverse_proxy {$API_URL}
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
