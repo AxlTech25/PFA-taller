@@ -22,6 +22,7 @@ node_modules/
 dist/
 frontend/coverage/
 .vite/
+.lighthouseci/
 
 # IDE y SO
 .idea/

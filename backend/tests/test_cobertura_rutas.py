@@ -184,7 +184,7 @@ def test_job_asincrono_y_heuristica_en_borrador(client, db, cola):
     assert [parada["id_pedido"] for parada in ruta["paradas"]][0] == segundo["id_pedido"]
     assert len(ruta["paradas"]) == 2
     assert ruta["descansos"] == []
-    pedidos = client.get("/pedidos", headers=headers).json()
+    pedidos = client.get("/pedidos", headers=headers).json()["items"]
     estados = {item["id_pedido"]: item["estado"] for item in pedidos}
     assert estados[primero["id_pedido"]] == "PENDIENTE"
     assert estados[segundo["id_pedido"]] == "PENDIENTE"

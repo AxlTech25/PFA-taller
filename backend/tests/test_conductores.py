@@ -29,7 +29,7 @@ def test_operador_registra_conductor_activo(client, db):
     assert cuerpo["dni"] == "45678912"
     listado = client.get("/conductores", headers=headers)
     assert listado.status_code == 200
-    assert any(item["dni"] == "45678912" for item in listado.json())
+    assert any(item["dni"] == "45678912" for item in listado.json()["items"])
     db.expire_all()
     evento = db.scalar(select(LogAuditoria).where(LogAuditoria.accion == "crear_conductor"))
     assert evento is not None
@@ -76,10 +76,10 @@ def test_conductor_solo_ve_su_ficha_y_no_registra(client, db):
     db.commit()
     mio = client.get("/conductores", headers=autenticar(client, propio.email))
     assert mio.status_code == 200
-    assert len(mio.json()) == 1
-    assert mio.json()[0]["dni"] == "45678912"
+    assert len(mio.json()["items"]) == 1
+    assert mio.json()["items"][0]["dni"] == "45678912"
     vacio = client.get("/conductores", headers=autenticar(client, ajeno.email))
-    assert vacio.json() == []
+    assert vacio.json()["items"] == []
     denegado = client.post(
         "/conductores",
         headers=autenticar(client, propio.email),
@@ -98,7 +98,7 @@ def test_auditor_recibe_conductor_sin_datos_personales(client, db):
     )
     listado = client.get("/conductores", headers=autenticar(client, auditor.email))
     assert listado.status_code == 200
-    fila = listado.json()[0]
+    fila = listado.json()["items"][0]
     assert fila["dni"] is None
     assert fila["lat_punto_partida"] is None
     assert fila["nombre"] == "Conductor"

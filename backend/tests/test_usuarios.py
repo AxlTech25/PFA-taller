@@ -82,7 +82,7 @@ def test_gerente_lista_pero_no_crea_y_el_admin_no_se_desactiva(client, db):
     conductor = crear_usuario(db, email="conductor.lista@distrirapido.example.com", rol="CONDUCTOR")
     listado = client.get("/usuarios", headers=autenticar(client, gerente.email))
     assert listado.status_code == 200
-    assert any(item["email"] == admin.email for item in listado.json())
+    assert any(item["email"] == admin.email for item in listado.json()["items"])
     denegado = client.post(
         "/usuarios",
         headers=autenticar(client, gerente.email),

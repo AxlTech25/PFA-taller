@@ -36,7 +36,8 @@ def test_operador_registra_pedido_pendiente_con_consentimiento(client, db):
     clientes = client.get("/clientes", headers=headers)
     assert clientes.status_code == 200
     assert any(
-        item["email"] == CORREO_OK and item["consentimiento_datos"] for item in clientes.json()
+        item["email"] == CORREO_OK and item["consentimiento_datos"]
+        for item in clientes.json()["items"]
     )
     alta = client.post("/pedidos", headers=headers, json=_alta(str(cliente.id_cliente)))
     assert alta.status_code == 201
@@ -45,7 +46,7 @@ def test_operador_registra_pedido_pendiente_con_consentimiento(client, db):
     assert cuerpo["estado"] == "PENDIENTE"
     assert cuerpo["nombre_cliente"] == "Bodega El Ahorro"
     listado = client.get("/pedidos", headers=headers)
-    assert any(item["id_pedido"] == cuerpo["id_pedido"] for item in listado.json())
+    assert any(item["id_pedido"] == cuerpo["id_pedido"] for item in listado.json()["items"])
     db.expire_all()
     evento = db.scalar(select(LogAuditoria).where(LogAuditoria.accion == "crear_pedido"))
     assert evento is not None
@@ -125,12 +126,16 @@ def test_ventana_invalida_peso_y_roles(client, db):
     assert creado.status_code == 201
     anonimo = client.get("/pedidos", headers=autenticar(client, auditor.email))
     assert anonimo.status_code == 200
-    fila = next(item for item in anonimo.json() if item["id_pedido"] == creado.json()["id_pedido"])
+    fila = next(
+        item for item in anonimo.json()["items"] if item["id_pedido"] == creado.json()["id_pedido"]
+    )
     assert fila["direccion"] is None
     assert fila["latitud"] is None
-    assert client.get("/pedidos", headers=autenticar(client, conductor.email)).json() == []
+    assert client.get("/pedidos", headers=autenticar(client, conductor.email)).json()["items"] == []
     clientes = client.get("/clientes", headers=autenticar(client, auditor.email))
-    assert all(item["email"] is None and item["telefono"] is None for item in clientes.json())
+    assert all(
+        item["email"] is None and item["telefono"] is None for item in clientes.json()["items"]
+    )
     assert client.get("/clientes", headers=autenticar(client, conductor.email)).status_code == 403
     assert client.post(
         "/pedidos",

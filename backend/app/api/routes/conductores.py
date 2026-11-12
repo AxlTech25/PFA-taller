@@ -7,18 +7,20 @@ from app.core.deps import ESCRITURA_CONDUCTORES, LECTURA_CONDUCTORES, ip_de, req
 from app.db.session import get_db
 from app.models.entities import Usuario
 from app.schemas.conductor import ConductorCreado, ConductorCreate, ConductorOut
+from app.schemas.pagina import Pagina
 from app.services import conductores as servicio
 
 router = APIRouter(prefix="/conductores", tags=["Conductores"])
 
 
-@router.get("", response_model=list[ConductorOut])
+@router.get("", response_model=Pagina[ConductorOut])
 def listar(
     db: Annotated[Session, Depends(get_db)],
     actor: Annotated[Usuario, Depends(require_roles(*LECTURA_CONDUCTORES))],
-    limite: Annotated[int, Query(ge=1, le=200)] = 100,
-) -> list:
-    return servicio.listar_conductores(db, actor, limite)
+    page: Annotated[int, Query(ge=1)] = 1,
+    limite: Annotated[int, Query(ge=1, le=50)] = 12,
+) -> dict:
+    return servicio.listar_conductores(db, actor, page, limite)
 
 
 @router.post("", response_model=ConductorCreado, status_code=status.HTTP_201_CREATED)

@@ -1,6 +1,15 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { ApiError, api } from "./api";
+import { vaciarConsultas } from "./consulta";
 import type { Sesion } from "./types";
 
 const CLAVE = "ecologistica.sesion";
@@ -27,9 +36,16 @@ function leer(): Sesion | null {
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [sesion, setSesion] = useState<Sesion | null>(() => leer());
+  const tokenVisto = useRef(sesion?.access_token ?? "");
+  const tokenActual = sesion?.access_token ?? "";
+  if (tokenVisto.current !== tokenActual) {
+    tokenVisto.current = tokenActual;
+    vaciarConsultas();
+  }
 
   const cerrar = useCallback(() => {
     sessionStorage.removeItem(CLAVE);
+    vaciarConsultas();
     setSesion(null);
   }, []);
 
@@ -45,7 +61,10 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const llamar = useCallback(
     async <T,>(path: string, options: RequestInit = {}) => {
       try {
-        return await api<T>(path, options, sesion?.access_token);
+        const datos = await api<T>(path, options, sesion?.access_token);
+        const metodo = (options.method ?? "GET").toUpperCase();
+        if (metodo !== "GET" && metodo !== "HEAD") vaciarConsultas();
+        return datos;
       } catch (error) {
         if (error instanceof ApiError && error.status === 401) cerrar();
         throw error;

@@ -25,6 +25,7 @@ from app.optimizacion.evaluacion import DEPOSITO_SJL, distancia_km
 from app.optimizacion.heuristica import _parametro
 from app.optimizacion.jornada import MENSAJE_JORNADA, descansos_requeridos
 from app.services.auditoria import registrar
+from app.services.paginacion import paginar_entidades
 
 MENSAJE_ENCOLADO = (
     "La optimización quedó en cola. Consulte el resultado con el identificador del trabajo."
@@ -231,13 +232,14 @@ def salida_job(db: Session, job: JobOptimizacion, rol: str) -> dict:
     }
 
 
-def listar_rutas(db: Session, actor: Usuario, fecha: date | None) -> list[dict]:
+def listar_rutas(db: Session, actor: Usuario, fecha: date | None, page: int, limite: int) -> dict:
     consulta = select(Ruta).order_by(Ruta.fecha.desc(), Ruta.generada_en.desc())
     if fecha is not None:
         consulta = consulta.where(Ruta.fecha == fecha)
-    filas = list(db.scalars(consulta.limit(100)).all())
+    pagina = paginar_entidades(db, consulta, page, limite)
     mapa = _mapa(db)
-    return [salida_ruta(db, fila, actor.rol, mapa) for fila in filas]
+    pagina["items"] = [salida_ruta(db, fila, actor.rol, mapa) for fila in pagina["items"]]
+    return pagina
 
 
 def confirmar(db: Session, id_ruta: uuid.UUID, actor: Usuario, ip: str | None) -> dict:

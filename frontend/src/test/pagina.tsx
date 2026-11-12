@@ -4,6 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 
 import { AuthProvider } from "../auth";
+import { vaciarConsultas } from "../consulta";
 import type { Sesion } from "../types";
 
 export const CLAVE = "ecologistica.sesion";
@@ -26,6 +27,7 @@ export function guardarSesion(rol: string | null) {
 }
 
 export function montar(ui: ReactElement, rol: string | null = "ADMIN", ruta = "/"): RenderResult {
+  vaciarConsultas();
   guardarSesion(rol);
   return render(
     <MemoryRouter initialEntries={[ruta]}>

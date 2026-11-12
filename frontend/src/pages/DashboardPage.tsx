@@ -3,14 +3,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta } from "../avisos";
+import { fechaHoy } from "../fechas";
 import type { Indicadores } from "../types";
-
-function fechaHoy(): string {
-  const fecha = new Date();
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  const dia = String(fecha.getDate()).padStart(2, "0");
-  return `${fecha.getFullYear()}-${mes}-${dia}`;
-}
 
 function soles(valor: number): string {
   return new Intl.NumberFormat("es-PE", {

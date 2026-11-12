@@ -107,6 +107,30 @@ a { color: var(--primario); }
   font-size: 1.6rem;
 }
 
+.marca-logo {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.marca-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.paginador {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.8rem;
+}
+
+.paginador button:disabled {
+  opacity: 0.55;
+}
+
 .subtitulo, .ayuda, .muted {
   color: var(--muted);
 }

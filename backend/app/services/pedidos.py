@@ -3,14 +3,17 @@ from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 
 from app.models.entities import Cliente, Pedido, Usuario
-from app.optimizacion.cobertura import MENSAJE_FUERA_COBERTURA, distrito_en
+from app.optimizacion.cobertura import MENSAJE_FUERA_COBERTURA, distrito_en, distritos_en
 from app.schemas.pedido import PedidoCreate
 from app.services.auditoria import registrar
 from app.services.integridad import mensaje_integridad
+from app.services.paginacion import normalizar, paginar_entidades, paginar_filas
 from app.services.sanitizacion import exigir_textos_seguros
+
+_SIN_DISTRITO = object()
 
 MENSAJE_CONSENTIMIENTO = (
     "El cliente no ha otorgado el consentimiento para el tratamiento de sus datos. "
@@ -28,10 +31,23 @@ def _float(valor) -> float | None:
     return float(valor)
 
 
-def listar_clientes(db: Session, actor: Usuario, limite: int) -> list[dict]:
-    filas = list(db.scalars(select(Cliente).order_by(Cliente.nombre).limit(limite)).all())
+def listar_clientes(db: Session, actor: Usuario, page: int, limite: int) -> dict:
+    consulta = (
+        select(Cliente)
+        .options(
+            load_only(
+                Cliente.id_cliente,
+                Cliente.nombre,
+                Cliente.telefono,
+                Cliente.email,
+                Cliente.consentimiento_datos,
+            )
+        )
+        .order_by(Cliente.nombre)
+    )
+    pagina = paginar_entidades(db, consulta, page, limite)
     anonimo = actor.rol == "AUDITOR"
-    return [
+    pagina["items"] = [
         {
             "id_cliente": fila.id_cliente,
             "nombre": fila.nombre,
@@ -39,8 +55,9 @@ def listar_clientes(db: Session, actor: Usuario, limite: int) -> list[dict]:
             "email": None if anonimo else fila.email,
             "consentimiento_datos": fila.consentimiento_datos,
         }
-        for fila in filas
+        for fila in pagina["items"]
     ]
+    return pagina
 
 
 def _nombre_cliente(db: Session, id_cliente) -> str | None:
@@ -48,12 +65,24 @@ def _nombre_cliente(db: Session, id_cliente) -> str | None:
     return cliente.nombre if cliente else None
 
 
-def salida_pedido(db: Session, pedido: Pedido, rol: str) -> dict:
+def salida_pedido(
+    db: Session,
+    pedido: Pedido,
+    rol: str,
+    nombre_cliente: str | None = None,
+    distrito: object = _SIN_DISTRITO,
+) -> dict:
     anonimo = rol == "AUDITOR"
+    if nombre_cliente is None:
+        nombre_cliente = _nombre_cliente(db, pedido.id_cliente)
+    if distrito is _SIN_DISTRITO:
+        distrito = None
+        if not anonimo:
+            distrito = distrito_en(db, float(pedido.latitud), float(pedido.longitud))
     return {
         "id_pedido": pedido.id_pedido,
         "id_cliente": pedido.id_cliente,
-        "nombre_cliente": _nombre_cliente(db, pedido.id_cliente),
+        "nombre_cliente": nombre_cliente,
         "direccion": None if anonimo else pedido.direccion,
         "punto_referencia": None if anonimo else pedido.punto_referencia,
         "latitud": None if anonimo else _float(pedido.latitud),
@@ -66,19 +95,60 @@ def salida_pedido(db: Session, pedido: Pedido, rol: str) -> dict:
         "tipo_producto": pedido.tipo_producto,
         "estado": pedido.estado,
         "georreferencia_aproximada": pedido.georreferencia_aproximada,
-        "distrito": None
-        if anonimo
-        else distrito_en(db, float(pedido.latitud), float(pedido.longitud)),
+        "distrito": None if anonimo else distrito,
     }
 
 
-def listar_pedidos(db: Session, actor: Usuario, limite: int) -> list[dict]:
+def listar_pedidos(db: Session, actor: Usuario, page: int, limite: int) -> dict:
     if actor.rol == "CONDUCTOR":
-        return []
-    filas = list(
-        db.scalars(select(Pedido).order_by(Pedido.creado_en.desc()).limit(limite)).all()
+        pagina, tamano = normalizar(page, limite)
+        return {
+            "items": [],
+            "total": 0,
+            "page": pagina,
+            "page_size": tamano,
+            "total_pages": 0,
+        }
+    consulta = (
+        select(Pedido, Cliente.nombre)
+        .join(Cliente, Cliente.id_cliente == Pedido.id_cliente)
+        .options(
+            load_only(
+                Pedido.id_pedido,
+                Pedido.id_cliente,
+                Pedido.direccion,
+                Pedido.punto_referencia,
+                Pedido.latitud,
+                Pedido.longitud,
+                Pedido.peso_kg,
+                Pedido.volumen_m3,
+                Pedido.ventana_inicio,
+                Pedido.ventana_fin,
+                Pedido.prioridad,
+                Pedido.tipo_producto,
+                Pedido.estado,
+                Pedido.georreferencia_aproximada,
+                Pedido.creado_en,
+            )
+        )
+        .order_by(Pedido.creado_en.desc(), Pedido.id_pedido)
     )
-    return [salida_pedido(db, fila, actor.rol) for fila in filas]
+    filas, meta = paginar_filas(db, consulta, page, limite)
+    anonimo = actor.rol == "AUDITOR"
+    puntos = [
+        (float(pedido.latitud), float(pedido.longitud))
+        for pedido, _nombre in filas
+        if not anonimo
+    ]
+    zonas = [] if anonimo else distritos_en(db, puntos)
+    items = []
+    for indice, (pedido, nombre) in enumerate(filas):
+        zona = None if anonimo else zonas[indice]
+        items.append(
+            salida_pedido(db, pedido, actor.rol, nombre_cliente=nombre, distrito=zona)
+        )
+    meta["items"] = items
+    return meta
 
 
 def crear_pedido(db: Session, datos: PedidoCreate, actor: Usuario, ip: str | None) -> Pedido:

@@ -3,6 +3,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta, Exito, TablaDesplazable } from "../avisos";
+import { consultar } from "../consulta";
+import { comoPagina, rutaPagina } from "../listado";
+import { Paginador } from "../Paginador";
 import { etiquetaRol, puedeGestionarUsuarios } from "../permissions";
 import type { Usuario } from "../types";
 
@@ -18,6 +21,8 @@ const vacio = {
 export function UsuariosPage() {
   const { llamar, sesion } = useAuth();
   const gestionar = sesion ? puedeGestionarUsuarios(sesion.rol) : false;
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [formulario, setFormulario] = useState(vacio);
   const [error, setError] = useState("");
@@ -25,12 +30,16 @@ export function UsuariosPage() {
 
   useEffect(() => {
     document.title = "Usuarios · EcoLogística Lima";
-    llamar<Usuario[]>("/usuarios")
-      .then(setUsuarios)
+    consultar(llamar, rutaPagina("/usuarios", pagina))
+      .then((data) => {
+        const lista = comoPagina<Usuario>(data);
+        setUsuarios(lista.items);
+        setTotalPaginas(lista.total_pages);
+      })
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : "No se pudo cargar los usuarios."),
       );
-  }, [llamar]);
+  }, [llamar, pagina]);
 
   function actualizarCampo(campo: string, valor: string) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }));
@@ -225,6 +234,7 @@ export function UsuariosPage() {
             </table>
           </TablaDesplazable>
         )}
+        <Paginador page={pagina} totalPages={totalPaginas} onPage={setPagina} />
       </section>
     </>
   );

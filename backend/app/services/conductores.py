@@ -3,12 +3,13 @@ from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 
 from app.models.entities import Conductor, Usuario
 from app.schemas.conductor import ConductorCreate
 from app.services.auditoria import registrar
 from app.services.integridad import mensaje_integridad
+from app.services.paginacion import paginar_entidades
 from app.services.sanitizacion import exigir_textos_seguros
 
 
@@ -38,12 +39,31 @@ def salida_conductor(conductor: Conductor, rol: str) -> dict:
     }
 
 
-def listar_conductores(db: Session, actor: Usuario, limite: int) -> list[dict]:
-    consulta = select(Conductor).order_by(Conductor.nombre)
+def listar_conductores(db: Session, actor: Usuario, page: int, limite: int) -> dict:
+    consulta = (
+        select(Conductor)
+        .options(
+            load_only(
+                Conductor.id_conductor,
+                Conductor.id_usuario,
+                Conductor.dni,
+                Conductor.nombre,
+                Conductor.licencia_categoria,
+                Conductor.anios_experiencia,
+                Conductor.disponibilidad_inicio,
+                Conductor.disponibilidad_fin,
+                Conductor.lat_punto_partida,
+                Conductor.lon_punto_partida,
+                Conductor.estado,
+            )
+        )
+        .order_by(Conductor.nombre)
+    )
     if actor.rol == "CONDUCTOR":
         consulta = consulta.where(Conductor.id_usuario == actor.id_usuario)
-    filas = list(db.scalars(consulta.limit(limite)).all())
-    return [salida_conductor(fila, actor.rol) for fila in filas]
+    pagina = paginar_entidades(db, consulta, page, limite)
+    pagina["items"] = [salida_conductor(fila, actor.rol) for fila in pagina["items"]]
+    return pagina
 
 
 def crear_conductor(

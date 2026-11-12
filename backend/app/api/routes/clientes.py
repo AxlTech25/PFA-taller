@@ -7,6 +7,7 @@ from app.core.deps import LECTURA_CLIENTES, require_roles
 from app.db.session import get_db
 from app.models.entities import Usuario
 from app.schemas.cliente import ClienteOut
+from app.schemas.pagina import Pagina
 from app.services import pedidos as servicio
 
 router = APIRouter(prefix="/clientes", tags=["Pedidos"])
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/clientes", tags=["Pedidos"])
 
 @router.get(
     "",
-    response_model=list[ClienteOut],
+    response_model=Pagina[ClienteOut],
     summary="Catálogo de demostración",
     description=(
         "Catálogo de demostración, sin altas. Lista los clientes sembrados para "
@@ -24,6 +25,7 @@ router = APIRouter(prefix="/clientes", tags=["Pedidos"])
 def listar(
     db: Annotated[Session, Depends(get_db)],
     actor: Annotated[Usuario, Depends(require_roles(*LECTURA_CLIENTES))],
-    limite: Annotated[int, Query(ge=1, le=200)] = 100,
-) -> list:
-    return servicio.listar_clientes(db, actor, limite)
+    page: Annotated[int, Query(ge=1)] = 1,
+    limite: Annotated[int, Query(ge=1, le=50)] = 12,
+) -> dict:
+    return servicio.listar_clientes(db, actor, page, limite)

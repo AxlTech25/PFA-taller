@@ -3,12 +3,13 @@ from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 
 from app.models.entities import Usuario, Vehiculo
 from app.schemas.vehiculo import VehiculoCreate, VehiculoUpdate
 from app.services.auditoria import registrar
 from app.services.integridad import mensaje_integridad
+from app.services.paginacion import paginar_entidades
 from app.services.sanitizacion import EntradaRechazada, rechazar_entrada, revisar_texto
 
 
@@ -26,8 +27,25 @@ def _foto(vehiculo: Vehiculo) -> dict:
     }
 
 
-def listar_vehiculos(db: Session, limite: int) -> list[Vehiculo]:
-    return list(db.scalars(select(Vehiculo).order_by(Vehiculo.placa).limit(limite)).all())
+def listar_vehiculos(db: Session, page: int, limite: int) -> dict:
+    consulta = (
+        select(Vehiculo)
+        .options(
+            load_only(
+                Vehiculo.id_vehiculo,
+                Vehiculo.placa,
+                Vehiculo.tipo,
+                Vehiculo.capacidad_kg,
+                Vehiculo.capacidad_m3,
+                Vehiculo.consumo_km_l,
+                Vehiculo.factor_emision_co2,
+                Vehiculo.anio_fabricacion,
+                Vehiculo.estado,
+            )
+        )
+        .order_by(Vehiculo.placa)
+    )
+    return paginar_entidades(db, consulta, page, limite)
 
 
 def obtener_vehiculo(db: Session, id_vehiculo) -> Vehiculo:

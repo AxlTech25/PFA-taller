@@ -17,7 +17,7 @@ from app.api.routes import (
 )
 from app.core.config import settings
 from app.core.errores import traducir_validacion
-from app.core.middleware import SecurityHeadersMiddleware
+from app.core.middleware import RespuestaEficienteMiddleware, SecurityHeadersMiddleware
 
 app = FastAPI(
     title="EcoLogística Lima",
@@ -31,6 +31,7 @@ app = FastAPI(
 # CORSMiddleware va al final: en Starlette el último agregado es el más externo
 # y así las cabeceras CORS cubren también la respuesta del middleware de seguridad.
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RespuestaEficienteMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
