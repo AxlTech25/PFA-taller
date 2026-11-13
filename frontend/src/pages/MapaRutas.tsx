@@ -278,7 +278,7 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
   return (
     <div className="mapa-y-texto">
       <ListaTextual rutas={rutas} seleccionada={seleccionada} />
-      {cuerpo}
+      <div className="mapa-reserva">{cuerpo}</div>
     </div>
   );
 }

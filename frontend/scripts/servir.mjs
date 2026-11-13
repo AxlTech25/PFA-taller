@@ -1,12 +1,31 @@
-import { createServer } from "node:http";
+import { createServer, request as httpRequest } from "node:http";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 
-const dist = fileURLToPath(new URL("../dist/", import.meta.url));
+const dist = process.env.DIST_DIR
+  ? `${process.env.DIST_DIR.replace(/[/\\]+$/, "")}/`
+  : fileURLToPath(new URL("../dist/", import.meta.url));
 const puerto = Number(process.env.PORT || 4173);
+// Solo se reenvía a la API de esta máquina. Un valor distinto no activa el proxy:
+// el host no puede salir de una variable ni de la petición.
+const proxyLocal = process.env.API_UPSTREAM === "http://127.0.0.1:8000";
+const rutasApi = [
+  "/auth/login",
+  "/usuarios",
+  "/vehiculos",
+  "/conductores",
+  "/pedidos",
+  "/clientes",
+  "/optimizaciones",
+  "/rutas",
+  "/indicadores",
+  "/health",
+  "/openapi.json",
+  "/docs",
+];
 
 const tipos = {
   ".html": "text/html; charset=utf-8",
@@ -57,7 +76,69 @@ function negociar(accept, datos, ruta) {
   return { cuerpo: datos, algoritmo: null };
 }
 
+function esApi(req) {
+  if (!proxyLocal) return false;
+  // La navegación del documento pide text/html. Esas rutas (/rutas, /pedidos…)
+  // coinciden con la API y tienen que devolver la aplicación, no el JSON.
+  const accept = String(req.headers.accept || "");
+  if (accept.includes("text/html")) return false;
+  return rutaLocal(req.url) !== null;
+}
+
+function rutaLocal(urlRecibida) {
+  let relativa;
+  try {
+    relativa = new URL(urlRecibida || "/", "http://auditoria.local");
+  } catch {
+    return null;
+  }
+  if (relativa.hostname !== "auditoria.local" || relativa.username || relativa.password) return null;
+  const canonica = rutasApi.find((ruta) => ruta === relativa.pathname);
+  if (!canonica) return null;
+  const pares = [];
+  for (const clave of ["page", "limite", "fecha"]) {
+    const valor = relativa.searchParams.get(clave);
+    if (valor === null) continue;
+    if (!/^[0-9A-Za-z_+.-]{1,40}$/.test(valor)) return null;
+    pares.push(`${clave}=${encodeURIComponent(valor)}`);
+  }
+  if (pares.length === 0) return canonica;
+  return `${canonica}?${pares.join("&")}`;
+}
+
+function proxy(req, res) {
+  const ruta = rutaLocal(req.url);
+  if (!ruta) {
+    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Ruta no permitida");
+    return;
+  }
+  const saliente = httpRequest(
+    {
+      protocol: "http:",
+      hostname: "127.0.0.1",
+      port: 8000,
+      method: req.method,
+      path: ruta,
+      headers: { ...req.headers, host: "127.0.0.1:8000" },
+    },
+    (respuesta) => {
+      res.writeHead(respuesta.statusCode || 502, respuesta.headers);
+      respuesta.pipe(res);
+    },
+  );
+  saliente.on("error", () => {
+    if (!res.headersSent) res.writeHead(502, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("API no disponible");
+  });
+  req.pipe(saliente);
+}
+
 const server = createServer((req, res) => {
+  if (esApi(req)) {
+    proxy(req, res);
+    return;
+  }
   const ruta = resolver(req.url || "/");
   if (!ruta) {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });

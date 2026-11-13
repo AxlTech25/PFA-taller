@@ -4,7 +4,7 @@
 
 **Proyecto:** EcoLogística Lima – optimizador de rutas sostenibles para DistriRápido S.A.C.  
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Versión:** 1.0.1  
+**Versión:** 1.0.2  
 **Fecha:** 12 de noviembre de 2026  
 **Fecha de modificación:** 13/11/2026  
 **Equipo:** EcoLogística Lima — Carhuapoma Fano, Eilene Elizabeth; Cruz Salazar, Jorge Luiz; Estrada Flores, Axel Sebastian; Huaman Baldeon, Katheryn Elena; Leon Taza, Brayan Angel.  
@@ -352,11 +352,51 @@ Una segunda medición, solo del estado posterior, usó el servidor estático del
 
 En el preset móvil simulado (RTT 150 ms, 1 638 kbps, CPU ×4), el mismo servidor y Lighthouse 12.6.1 dieron, el 12 de noviembre de 2026 a las 01:59 UTC: performance 100, FCP 1 351,7659 ms, LCP 1 351,7659 ms, TBT 0 ms, CLS 0 y 64 250 bytes. El FCP móvil no cumple el umbral de 1,0 s. El LCP numérico sí cumple 1,4 s. El informe principal de la actividad es el de escritorio, porque la consola de planificación se usa en un puesto de trabajo y es la condición en la que existen el antes y el después.
 
-### Por qué Lighthouse solo mide `/login`
+## 1.7 Todas las pantallas, en frío y en una sesión
 
-El par antes/después y el flujo `.github/workflows/green-audit.yml` auditan una sola URL, `http://127.0.0.1:4173/login`. No se añadieron Flota, Pedidos ni Rutas a `lighthouserc.cjs`.
+La sección 1.4 sigue siendo el par del 12 de noviembre, solo `/login`, con `vite preview`. El 13 de noviembre se midió el resto de la consola. No hay pantalla de clientes: el listado vive dentro de Pedidos. El flujo de CI ahora levanta PostgreSQL/PostGIS, aplica las migraciones, siembra un administrador, un conductor y una ruta del día con una parada, arranca la API y sirve el frontend con `servir.mjs` haciendo de proxy. La sesión va en la cookie `ecologistica_sesion`, porque Lighthouse abre otra pestaña y `sessionStorage` no la acompaña. Cada URL se mide en frío (caché HTTP vaciada) con Lighthouse 12.1.0, el que trae `@lhci/cli@0.14.0`, preset de escritorio. El antes es el commit `f9a079b`, servido por el mismo `servir.mjs` para que la compresión no explique la diferencia. Los JSON y HTML están en `evidencias/lighthouse-antes-<pantalla>.*` y `evidencias/lighthouse-despues-<pantalla>.*`. El resumen está en [lighthouse-antes-resumen.json](./evidencias/lighthouse-antes-resumen.json) y [lighthouse-despues-resumen.json](./evidencias/lighthouse-despues-resumen.json).
 
-Esas pantallas exigen una sesión en `sessionStorage` y, al montarse, llaman a la API. El job de auditoría instala Node, compila el frontend y sirve el estático con `frontend/scripts/servir.mjs`. Ese servidor no hace de proxy hacia FastAPI y el job no levanta PostgreSQL. Una visita sin sesión a `/flota` vuelve al inicio de sesión, así que una segunda URL mediría el mismo documento. Autenticar dentro de Lighthouse CI exigiría PostGIS, Alembic, un usuario de prueba y un script de login. El job fallaría si la base o el login fallan, por una causa distinta del peso de la página. Por eso las aserciones siguen en `/login`, la única pantalla que carga sin la API y la única con un par antes/después bajo el mismo procedimiento.
+| Pantalla | Momento | Score | FCP (ms) | LCP (ms) | TBT (ms) | CLS | Peso (bytes) | Peticiones |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| `/login` | Antes | 100 | 322,7863 | 322,7863 | 0 | 0 | 77 238 | 3 |
+| `/login` | Después | 100 | 321,1227 | 361,1227 | 0 | 0 | 64 356 | 4 |
+| `/dashboard` | Antes | 100 | 324,9092 | 324,9092 | 0 | 0 | 77 984 | 4 |
+| `/dashboard` | Después | 100 | 348,0221 | 455,2354 | 0 | 0 | 67 330 | 7 |
+| `/flota` | Antes | 100 | 323,7259 | 365,5889 | 0 | 0,003680 | 78 434 | 4 |
+| `/flota` | Después | 100 | 349,2974 | 457,4758 | 0 | 0,003680 | 69 082 | 7 |
+| `/conductores` | Antes | 100 | 325,5644 | 368,3466 | 0 | 0 | 77 858 | 4 |
+| `/conductores` | Después | 100 | 347,3308 | 453,9292 | 0 | 0 | 68 096 | 7 |
+| `/pedidos` | Antes | 100 | 330,0060 | 376,0090 | 0 | 0 | 78 768 | 5 |
+| `/pedidos` | Después | 100 | 351,1614 | 465,4582 | 0 | 0 | 70 345 | 9 |
+| `/usuarios` | Antes | 100 | 323,2469 | 364,8703 | 0 | 0 | 78 107 | 4 |
+| `/usuarios` | Después | 100 | 347,5370 | 454,2592 | 0 | 0 | 68 444 | 7 |
+| `/modo` | Antes | 100 | 321,3086 | 321,3086 | 0 | 0 | 77 238 | 3 |
+| `/modo` | Después | 100 | 346,1909 | 411,4290 | 0 | 0 | 65 462 | 5 |
+| `/rutas` | Antes | 97 | 328,1308 | 372,1962 | 0 | 0,105814 | 745 517 | 24 |
+| `/rutas` | Después | 100 | 368,1905 | 580,5048 | 0 | 0,038150 | 746 019 | 29 |
+
+En todas las pantallas el score es al menos 97, el FCP queda bajo 0,37 s, el LCP bajo 0,59 s, el TBT es 0 y el peso queda bajo 1,1 MB. El inicio de sesión baja 12 882 bytes (77 238 − 64 356). Las pantallas de listado bajan entre 8 y 11 kB porque el CSS de Leaflet ya no viaja en la hoja inicial. Suben las peticiones: Vite separa un runtime y el chunk de cada página.
+
+La única meta de la rúbrica que no se cumple es el CLS de `/rutas`. Antes era 0,105814. Reservar 28 rem para el mapa, también en el estado vacío, lo bajó a 0,038150. Sigue por encima de 0,02. Lighthouse le da score 1 porque su umbral «bueno» es 0,1: el resto del desplazamiento lo producen las teselas y los controles de Leaflet al pintarse. El flujo acepta hasta 0,1 solo en `/rutas` y mantiene 0,02 en las demás. No se aflojó el peso: 746 019 bytes caben en 1,1 MB. Redis no entra en el job: abrir el mapa no encola una optimización.
+
+### Sesión completa y SWDM v4
+
+Una sesión recorre las ocho URL en el mismo documento, con la caché caliente. Los bytes son la suma de `encodedDataLength` (cuerpo y cabeceras), el mismo criterio que el `transferSize` de Lighthouse. No es la suma de la tabla: esa suma contaría ocho veces el JavaScript de entrada.
+
+| Momento | Bytes de la sesión |
+|---|---:|
+| Antes (`f9a079b`) | 546 697 |
+| Después | 560 178 |
+
+La diferencia es +13 481 bytes (+2,47 %). Casi todo el recorrido son teselas de OpenStreetMap: 458 748 bytes antes y 470 376 después. Sin el mapa, el resto de la sesión son 87 949 bytes antes y 89 802 después. Partir el código aligera la primera pantalla y, en un recorrido que abre todos los módulos, esos chunks se descargan igual.
+
+Se usan los mismos coeficientes de la sección 1.5: 0,300 kWh/GB, 494 g/kWh, factor de visita media 0,755 y `GB = bytes / 1 000 000 000`.
+
+Antes, 546 697 bytes: `GB = 0,000546697`. Primera visita `0,000546697 × 0,300 × 494 = 0,0810204954 g`. Visita media `× 0,755 = 0,061170474027 g`.
+
+Después, 560 178 bytes: `GB = 0,000560178`. Primera visita `0,000560178 × 0,300 × 494 = 0,0830183796 g`. Visita media `× 0,755 = 0,062678876598 g`.
+
+La visita media de la sesión sube 0,001508402571 g. Con el supuesto de 36 000 sesiones al año son 54,30 g CO₂e más, no menos. El ahorro de la sección 1.5 sigue siendo el de la pantalla de acceso medida el 12 de noviembre. No describe un recorrido que abre el mapa.
 
 ## 1.5 Análisis con el Sustainable Web Design Model v4
 
@@ -471,3 +511,4 @@ El nombre del archivo sigue en `V_1_0_0`, igual que el resto de los informes de 
 |---|---|---|---|
 | 1.0.0 | 12/11/2026 | Equipo EcoLogística Lima | Informe inicial, con el par Lighthouse de escritorio y el cálculo SWDM v4. |
 | 1.0.1 | 13/11/2026 | Equipo EcoLogística Lima | Código ANTES/DESPUÉS de las áreas 3, 6 y 7; líder del proyecto; nueva medición de API, 304, OpenAPI y Brotli; explicación de las etiquetas en kB frente a `transferSize`; redondeo de la fila de emisión; origen de los factores 0,75 / 0,25 / 0,02. |
+| 1.0.2 | 13/11/2026 | Equipo EcoLogística Lima | Lighthouse de las ocho pantallas, con API y mapa. La sesión completa no baja de peso: la dominan las teselas. El CLS de `/rutas` baja de 0,106 a 0,038 y sigue sobre 0,02. |

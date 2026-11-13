@@ -13,6 +13,7 @@ import { vaciarConsultas } from "./consulta";
 import type { Sesion } from "./types";
 
 const CLAVE = "ecologistica.sesion";
+const COOKIE = "ecologistica_sesion";
 
 type AuthContextValue = {
   sesion: Sesion | null;
@@ -23,15 +24,36 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function leer(): Sesion | null {
-  const crudo = sessionStorage.getItem(CLAVE);
+function parsear(crudo: string | null): Sesion | null {
   if (!crudo) return null;
   try {
-    return JSON.parse(crudo) as Sesion;
+    const datos = JSON.parse(crudo) as Sesion;
+    if (!datos.access_token || !datos.rol) return null;
+    return datos;
   } catch {
-    sessionStorage.removeItem(CLAVE);
     return null;
   }
+}
+
+function leerCookie(): string | null {
+  const prefijo = `${COOKIE}=`;
+  const parte = document.cookie.split("; ").find((item) => item.startsWith(prefijo));
+  if (!parte) return null;
+  try {
+    return decodeURIComponent(parte.slice(prefijo.length));
+  } catch {
+    return null;
+  }
+}
+
+function leer(): Sesion | null {
+  const guardado = sessionStorage.getItem(CLAVE);
+  const deSesion = parsear(guardado);
+  if (deSesion) return deSesion;
+  if (guardado) sessionStorage.removeItem(CLAVE);
+  // La auditoría de Lighthouse deja la sesión en una cookie: sessionStorage
+  // no sobrevive al cambio de pestaña que hace Lighthouse CI.
+  return parsear(leerCookie());
 }
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
