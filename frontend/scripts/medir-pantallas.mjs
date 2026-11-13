@@ -41,7 +41,8 @@ const pantallas = [
 
 const moduloLighthouse = require("lighthouse");
 const lighthouse = moduloLighthouse.default || moduloLighthouse;
-const escritorio = require("lighthouse/core/config/desktop-config.js").default;
+const moduloEscritorio = require("lighthouse/core/config/desktop-config.js");
+const escritorio = moduloEscritorio.default || moduloEscritorio;
 const puppeteer = require("puppeteer-core");
 
 async function token(pagina, credencial) {
@@ -74,6 +75,30 @@ function resumen(lhr) {
     cls: lhr.audits["cumulative-layout-shift"].numericValue,
     transferSize: total.transferSize,
     requests: total.requestCount,
+    diagnosticos: [
+      "unused-javascript",
+      "modern-image-formats",
+      "image-delivery-insight",
+      "render-blocking-resources",
+      "render-blocking-insight",
+      "layout-shifts",
+      "non-composited-animations",
+      "largest-contentful-paint-element",
+      "prioritize-lcp-image",
+      "lcp-lazy-loaded",
+      "lcp-discovery-insight",
+    ].map((id) => {
+      const auditoria = lhr.audits[id];
+      if (!auditoria) return null;
+      return {
+        id,
+        score: auditoria.score,
+        mode: auditoria.scoreDisplayMode,
+        title: auditoria.title,
+        display: auditoria.displayValue || null,
+        error: auditoria.errorMessage || null,
+      };
+    }).filter(Boolean),
   };
 }
 

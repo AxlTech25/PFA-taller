@@ -150,7 +150,7 @@ export function RutasPage() {
         </p>
         <MapaRutas rutas={rutas} seleccionada={seleccion} />
       </section>
-      <section className="panel" aria-labelledby="titulo-plan">
+      <section className="panel panel-plan" aria-labelledby="titulo-plan">
         <h2 id="titulo-plan">Plan generado</h2>
         {rutas[0]?.comparacion ? (
           <output className="exito">

@@ -69,5 +69,5 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y /tmp/chrome.deb
           fi
-          npm install -g @lhci/cli@0.14.0
+          npm install -g @lhci/cli@0.16.1
           lhci autorun --config=./lighthouserc.cjs
