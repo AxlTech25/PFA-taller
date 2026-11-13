@@ -75,18 +75,42 @@ function negociar(accept, datos, ruta) {
   return { cuerpo: datos, algoritmo: null };
 }
 
+function caminoPermitido(camino) {
+  return prefijosApi.some((prefijo) => camino === prefijo || camino.startsWith(`${prefijo}/`));
+}
+
 function esApi(req) {
   if (!apiUpstream) return false;
   // La navegación del documento pide text/html. Esas rutas (/rutas, /pedidos…)
   // coinciden con la API y tienen que devolver la aplicación, no el JSON.
   const accept = String(req.headers.accept || "");
   if (accept.includes("text/html")) return false;
-  const camino = (req.url || "/").split("?")[0];
-  return prefijosApi.some((prefijo) => camino === prefijo || camino.startsWith(`${prefijo}/`));
+  return urlDeApi(req.url) !== null;
+}
+
+function urlDeApi(urlRecibida) {
+  const base = new URL(apiUpstream);
+  let relativa;
+  try {
+    // Base fija: una URL absoluta o con otro host no se acepta como ruta de la API.
+    relativa = new URL(urlRecibida || "/", "http://auditoria.local");
+  } catch {
+    return null;
+  }
+  if (relativa.hostname !== "auditoria.local" || relativa.username || relativa.password) return null;
+  const destino = new URL(`${relativa.pathname}${relativa.search}`, base);
+  if (destino.origin !== base.origin || destino.username || destino.password) return null;
+  if (!caminoPermitido(destino.pathname)) return null;
+  return destino;
 }
 
 function proxy(req, res) {
-  const destino = new URL(req.url || "/", apiUpstream);
+  const destino = urlDeApi(req.url);
+  if (!destino) {
+    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Ruta no permitida");
+    return;
+  }
   const libreria = destino.protocol === "https:" ? httpsRequest : httpRequest;
   const cabeceras = { ...req.headers, host: destino.host };
   const saliente = libreria(
