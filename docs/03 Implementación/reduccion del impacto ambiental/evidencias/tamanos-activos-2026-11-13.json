@@ -1,0 +1,51 @@
+{
+  "fecha": "2026-11-13",
+  "vite": "8.3.6",
+  "antes": {
+    "commit": "f9a079b",
+    "archivos": {
+      "assets/index-BDhcsrlj.js": 228848,
+      "assets/index-dOuTtAU1.css": 21303,
+      "assets/leaflet-src-D0a3vfIC.js": 148602
+    },
+    "etiqueta_vite": {
+      "js": "228,84 kB",
+      "js_gzip": "71,97 kB",
+      "css": "21,30 kB",
+      "css_gzip": "8,16 kB"
+    },
+    "vite_preview_gzip_cuerpo_js": 71152,
+    "lighthouse_resourceSize_js": 228848,
+    "lighthouse_transferSize_js": 71567,
+    "nota": "228848 y 21303 coinciden con resourceSize de lighthouse-antes.json. 71,97 kB es la columna gzip de Vite, no el transferSize 71567. El cuerpo gzip medido hoy con vite preview fue 71152 bytes, en Transfer-Encoding chunked."
+  },
+  "despues": {
+    "archivos": {
+      "assets/index-DwllJXwe.js": 191197,
+      "assets/index-DwllJXwe.js.gz": 62629,
+      "assets/index-DwllJXwe.js.br": 59975,
+      "assets/index-CFXIjgCs.css": 6436,
+      "assets/index-CFXIjgCs.css.gz": 2070,
+      "assets/RutasPage-vh-t_kPv.css": 15095,
+      "assets/rolldown-runtime-WkwZ5CU-.js": 599,
+      "index.html": 620
+    },
+    "etiqueta_vite": {
+      "js": "191,19 kB",
+      "js_gzip": "63,41 kB",
+      "css": "6,43 kB",
+      "css_gzip": "2,07 kB",
+      "rutas_css": "15,09 kB"
+    },
+    "vite_preview_gzip_cuerpo_js": 62629,
+    "servir_brotli": {
+      "content_length": 59975,
+      "cabeceras_http11": 313,
+      "suma": 60288,
+      "lighthouse_ci_transferSize": 60288
+    },
+    "lighthouse_despues_transferSize_js": 63036,
+    "lighthouse_resourceSize_js": 191197,
+    "nota": "59975 + 313 = 60288, medido contra servir.mjs el 13/11/2026. 15 095 bytes es el CSS de Rutas, que Vite imprime como 15,09 kB; no viaja en /login. 63,41 kB es la columna gzip de Vite; el archivo .gz y el cuerpo de vite preview pesan 62629 bytes. El transferSize de lighthouse-despues.json para ese script es 63036."
+  }
+}

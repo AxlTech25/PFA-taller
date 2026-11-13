@@ -3,8 +3,10 @@
 # Informe de reducción del impacto ambiental
 
 **Proyecto:** EcoLogística Lima – optimizador de rutas sostenibles para DistriRápido S.A.C.  
-**Versión:** 1.0.0  
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
+**Versión:** 1.0.1  
 **Fecha:** 12 de noviembre de 2026  
+**Fecha de modificación:** 13/11/2026  
 **Equipo:** EcoLogística Lima — Carhuapoma Fano, Eilene Elizabeth; Cruz Salazar, Jorge Luiz; Estrada Flores, Axel Sebastian; Huaman Baldeon, Katheryn Elena; Leon Taza, Brayan Angel.  
 **Stack medido:** React 18, TypeScript y Vite en `frontend/`; FastAPI y SQLAlchemy 2 sobre Python 3.12 en `backend/app`; PostgreSQL 16 con PostGIS.
 
@@ -25,7 +27,7 @@ El propósito de este documento es:
 
 La auditoría se hizo el 12 de noviembre de 2026 sobre la compilación de producción anterior al cambio (`npm run build` y `vite preview` en `http://127.0.0.1:4173/login`). Lighthouse 12.6.1, preset de escritorio, un solo recorrido, throttling simulado de escritorio (RTT 40 ms, 10 240 kbps, CPU ×1). La pantalla es el inicio de sesión, que no llama a la API. El informe completo está en [lighthouse-antes.json](./evidencias/lighthouse-antes.json) y [lighthouse-antes.html](./evidencias/lighthouse-antes.html).
 
-La API se midió aparte, con Uvicorn en `http://127.0.0.1:8000`, PostgreSQL 16 y PostGIS en el mismo host, y los usuarios de demostración. Cada listado se llamó 20 veces con `Accept-Encoding: identity`. La media que se informa es la media aritmética de las seis medias.
+La API se volvió a medir el 13 de noviembre de 2026 porque la serie del 12 de noviembre (2,3117 ms) no tenía las veinte muestras guardadas. El procedimiento es el mismo: Uvicorn en `http://127.0.0.1:8000`, PostgreSQL 16.15 con PostGIS 3.4.2, `Accept-Encoding: identity` y 20 llamadas por listado. El código anterior es el commit `f9a079b`. En la base había 4 vehículos, 2 clientes y un usuario GERENTE creado para la medición; conductores, pedidos y rutas estaban vacíos porque las migraciones de demostración no los siembran. La media es la media aritmética de las seis medias. Las muestras están en [api-antes-2026-11-13.json](./evidencias/api-antes-2026-11-13.json).
 
 | Indicador | Valor medido |
 |---|---|
@@ -37,11 +39,11 @@ La API se midió aparte, con Uvicorn en `http://127.0.0.1:8000`, PostgreSQL 16 y
 | Peso transferido | 80 875 bytes |
 | Peticiones HTTP de la pantalla | 3 (documento, CSS y JS) |
 | Imágenes de la pantalla | 0 |
-| Media de los seis listados de la API | 2,3117 ms |
+| Media de los seis listados de la API | 2,7300 ms |
 
-Las seis medias de la API, en milisegundos, fueron: vehículos 2,59; conductores 2,42; pedidos 2,06; clientes 2,00; rutas 2,61; usuarios 2,19. Su suma es 13,87 y 13,87 / 6 = 2,3117.
+Las seis medias anteriores, en milisegundos y a 4 decimales, fueron: vehículos 3,2706; conductores 2,5686; pedidos 2,4148; clientes 2,3081; rutas 3,2351; usuarios 2,5830. Su suma es 16,3802 y 16,3802 / 6 = 2,730033, que la tabla redondea a 2,7300 ms. Conductores, pedidos y rutas devolvieron 2 bytes (`[]`).
 
-El bundle de esa compilación pesaba 228,84 kB de JavaScript de entrada (71,97 kB gzip) y 21,30 kB de CSS (8,16 kB gzip), porque `App.tsx` importaba todas las páginas y el CSS de Leaflet viajaba con la hoja principal. Los listados devolvían un arreglo, con `limite` predeterminado de 100 y tope de 200. `select(Usuario)` leía también `password_hash`. No había `Cache-Control` ni `ETag` en la API, ni compresión de las respuestas.
+El archivo de esa compilación, reconstruido el 13 de noviembre de 2026, es `assets/index-BDhcsrlj.js` (228 848 bytes) y `assets/index-dOuTtAU1.css` (21 303 bytes). Esos tamaños son el `resourceSize` de [lighthouse-antes.json](./evidencias/lighthouse-antes.json). Vite imprime «228,84 kB» y «21,30 kB» al dividir entre 1 000 y redondear. La columna gzip de Vite dice 71,97 kB y 8,16 kB: es la etiqueta del reporter, no el `transferSize`. El `transferSize` del JavaScript en ese JSON es 71 567 bytes. El mismo archivo, servido el 13 de noviembre de 2026 con `vite preview` y `Accept-Encoding: gzip`, entregó un cuerpo de 71 152 bytes en `Transfer-Encoding: chunked`; Chrome suma además las cabeceras y el entramado de los trozos. El detalle está en [tamanos-activos-2026-11-13.json](./evidencias/tamanos-activos-2026-11-13.json). `App.tsx` importaba todas las páginas y el CSS de Leaflet viajaba con la hoja principal. Los listados devolvían un arreglo, con `limite` predeterminado de 100 y tope de 200. `select(Usuario)` leía también `password_hash`. No había `Cache-Control` ni `ETag` en la API, ni compresión de las respuestas.
 
 La pantalla ya era ligera. Por eso el puntaje de Lighthouse partía de 100 y el margen de mejora está en el peso, en el alcance de las consultas y en el límite de crecimiento, no en un salto de 38 a 96 puntos como el del ejemplo de cátedra.
 
@@ -142,6 +144,16 @@ export function opcionesTesela(attribution: string) {
 }
 ```
 
+`ImagenAdaptativa`, en `frontend/src/imagen.tsx`, emite el `<picture>` que la rúbrica pide. No está montado en ninguna pantalla: el único import fuera de su módulo está en `frontend/src/imagen.test.tsx`. Montarlo en el inicio de sesión, sin una fotografía que servir, habría añadido bytes.
+
+```tsx
+<picture>
+  {avif ? <source srcSet={avif} type="image/avif" /> : null}
+  {webp ? <source srcSet={webp} type="image/webp" /> : null}
+  <img src={src} alt={alt} width={width} height={height} loading={loading} decoding="async" />
+</picture>
+```
+
 OpenStreetMap publica esas teselas en PNG. El navegador no puede negociar AVIF contra ese servidor sin un proxy, y un proxy de teselas queda fuera del alcance de esta actividad. La pantalla de acceso sigue sin imágenes: Lighthouse contó 0 bytes de imagen antes y después.
 
 ### 4. Code splitting con React.lazy y Suspense
@@ -168,7 +180,7 @@ const FlotaPage = lazy(() => import("./pages/FlotaPage").then((m) => ({ default:
 const RutasPage = lazy(() => import("./pages/RutasPage").then((m) => ({ default: m.RutasPage })));
 ```
 
-El inicio de sesión sigue en el grafo inicial. El resto cuelga de `<Suspense>` dentro de `Shell`. La compilación posterior deja el JavaScript de entrada en 191,19 kB (63,41 kB gzip) y la hoja de la entrada en 6,43 kB (2,07 kB gzip). El CSS de Leaflet, 15,09 kB, queda en el chunk de Rutas y no se pide en `/login`.
+El inicio de sesión sigue en el grafo inicial. El resto cuelga de `<Suspense>` dentro de `Shell`. La compilación posterior deja `assets/index-DwllJXwe.js` en 191 197 bytes (Vite imprime 191,19 kB) y `assets/index-CFXIjgCs.css` en 6 436 bytes (Vite imprime 6,43 kB). Esos tamaños son el `resourceSize` de [lighthouse-despues.json](./evidencias/lighthouse-despues.json). El gzip de nivel 6 de ese JavaScript pesa 62 629 bytes: es el archivo `.gz` y también el cuerpo que entregó `vite preview` el 13 de noviembre. Vite imprime «63,41 kB» en la columna gzip; esa etiqueta no es el archivo ni el `transferSize` de 63 036 bytes registrado el 12 de noviembre para ese script. El CSS de Leaflet está en `assets/RutasPage-vh-t_kPv.css`, 15 095 bytes (Vite imprime 15,09 kB), y no se pide en `/login`.
 
 ### 5. Bibliotecas pesadas y API nativa
 
@@ -208,7 +220,13 @@ export function fechaHoy(ahora: Date = new Date()): string {
 
 **Diagnóstico.** No había archivos SVG ni un sprite de iconos. La marca era solo el texto del título, así que no existía una petición de icono que eliminar. El cambio aplicable es dibujar la marca en el propio documento, con ancho y alto explícitos, para no añadir una solicitud ni un desplazamiento de layout.
 
-**Antes**, el inicio de sesión abría la tarjeta con el párrafo «DistriRápido S.A.C.» y el `h1`, sin figura.
+**Antes**, en `frontend/src/pages/LoginPage.tsx`, la tarjeta abría así, sin figura:
+
+```tsx
+<section className="tarjeta" aria-labelledby="titulo-login">
+  <p className="muted">DistriRápido S.A.C.</p>
+  <h1 id="titulo-login" className="marca">EcoLogística Lima</h1>
+```
 
 **Después**
 
@@ -231,11 +249,62 @@ El título sigue siendo el nombre accesible. El SVG está oculto a la tecnologí
 
 **Diagnóstico.** Las respuestas de la API no traían `Cache-Control` ni `ETag`. El cliente volvía a pedir el mismo listado en cada montaje del componente. No se incorporó TanStack Query: la biblioteca pesa más de lo que este cliente necesita (YAGNI) y el criterio admite un caché equivalente.
 
-**Antes.** `SecurityHeadersMiddleware` solo añadía cabeceras de seguridad. `llamar` siempre ejecutaba `fetch`.
+**Antes.** `SecurityHeadersMiddleware` solo añadía cabeceras de seguridad. Ese bloque sigue en el archivo y no escribe `ETag` ni `Cache-Control`:
 
-**Después.** `RespuestaEficienteMiddleware` calcula un ETag débil con SHA-256 del cuerpo sin comprimir. En un `GET` 200 distinto de `/health` envía `Cache-Control: private, max-age=30, must-revalidate` y `Vary: Accept-Encoding, Authorization`. Si `If-None-Match` coincide, responde 304 con cuerpo vacío. `/health` queda en `no-store` para no ocultar una caída. El dato autenticado no se marca como público.
+```python
+headers["X-Content-Type-Options"] = "nosniff"
+headers["X-Frame-Options"] = "DENY"
+headers["Referrer-Policy"] = "no-referrer"
+headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+```
 
-En el cliente, `consultar` guarda la respuesta GET 30 segundos. Una mutación vacía esa memoria. La prueba de conductores y de flota sigue viendo el error de red porque cada montaje de prueba limpia el caché.
+En el cliente, `FlotaPage` pedía la colección en cada montaje. `llamar` ejecuta `fetch` a través de `api`:
+
+```tsx
+llamar<Vehiculo[]>("/vehiculos")
+  .then((lista) => {
+    setVehiculos(lista);
+```
+
+**Después.** `RespuestaEficienteMiddleware`, en `_emitir`, calcula un ETag débil con SHA-256 del cuerpo sin comprimir. En un `GET` 200 distinto de `/health` envía la caché privada y, si `If-None-Match` coincide, responde 304 con cuerpo vacío. `/health` queda en `no-store`.
+
+```python
+if metodo == "GET" and ruta not in _SIN_CACHE and int(inicio["status"]) == 200:
+    etag = _etag(cuerpo)
+    headers["ETag"] = etag
+    headers["Cache-Control"] = "private, max-age=30, must-revalidate"
+    _vary(headers)
+    if _coincide(peticion.get("if-none-match", ""), etag):
+        inicio["status"] = 304
+        headers["Content-Length"] = "0"
+```
+
+`_vary` añade `Accept-Encoding, Authorization`. El dato autenticado no se marca como público.
+
+En el cliente, `frontend/src/consulta.ts` guarda la respuesta 30 segundos. `FlotaPage` ya no llama a `llamar` directo para el listado:
+
+```tsx
+consultar(llamar, rutaPagina("/vehiculos", pagina))
+```
+
+```tsx
+export async function consultar<T>(
+  pedir: (path: string) => Promise<T>,
+  path: string,
+  forzar = false,
+): Promise<T> {
+  const ahora = Date.now();
+  const previo = memoria.get(path);
+  if (!forzar && previo && previo.expira > ahora) {
+    return previo.datos as T;
+  }
+  const datos = await pedir(path);
+  memoria.set(path, { expira: ahora + VIGENCIA_MS, datos });
+  return datos;
+}
+```
+
+`VIGENCIA_MS` es 30 000. Una mutación vacía esa memoria. No se incorporó TanStack Query. La prueba de conductores y de flota sigue viendo el error de red porque cada montaje de prueba limpia el caché.
 
 ### 8. Compresión Brotli y Gzip
 
@@ -255,9 +324,9 @@ def codificar(cuerpo: bytes, accept_encoding: str) -> tuple[bytes, str | None]:
     return cuerpo, None
 ```
 
-Sobre los 32 944 bytes de `/openapi.json`, calidad Brotli 5 produce 4 075 bytes y Gzip nivel 5 produce 4 381 bytes. Se prefiere Brotli cuando el cliente lo anuncia. El paquete `brotli==1.1.0` está en `backend/requirements.txt`.
+Sobre `/openapi.json`, medido de nuevo el 13 de noviembre de 2026 contra Uvicorn: 32 944 bytes sin codificar, 4 075 bytes con Brotli calidad 5 y 4 381 bytes con Gzip nivel 5. Las tres respuestas están en [api-despues-2026-11-13.json](./evidencias/api-despues-2026-11-13.json). Se prefiere Brotli cuando el cliente lo anuncia. El paquete `brotli==1.1.0` está en `backend/requirements.txt`.
 
-Los activos que sirve el propio frontend se precomprimen al compilar (`.br` y `.gz` a partir de 1 024 bytes) y `frontend/scripts/servir.mjs` los entrega con `Content-Encoding`. El JavaScript de entrada medido en ese servidor pesó 59 975 bytes en Brotli, con `Cache-Control: public, max-age=31536000, immutable`. El HTML de entrada queda en `no-cache` porque no lleva hash en el nombre.
+Los activos que sirve el propio frontend se precomprimen al compilar (`.br` y `.gz` a partir de 1 024 bytes) y `frontend/scripts/servir.mjs` los entrega con `Content-Encoding`. El archivo `assets/index-DwllJXwe.js.br` pesa 59 975 bytes. Contra ese servidor, el 13 de noviembre, `Content-Length` fue 59 975 y las cabeceras HTTP/1.1 sumaron 313 bytes. 59 975 + 313 = 60 288, que es el `transferSize` de ese script en [lighthouse-ci.json](./evidencias/lighthouse-ci.json). La cabecera de caché de ese activo es `Cache-Control: public, max-age=31536000, immutable`. El HTML de entrada queda en `no-cache` porque no lleva hash en el nombre.
 
 ## 1.4 Tabla comparativa
 
@@ -272,14 +341,22 @@ Las dos filas de Lighthouse son el mismo procedimiento: Lighthouse 12.6.1, prese
 | CLS | 0 | 0 | 0 | 0 % |
 | Peso transferido | 80 875 bytes | 67 259 bytes | −13 616 bytes | −16,84 % |
 | Peticiones | 3 | 4 | +1 | +33,33 % |
-| Media de los seis listados | 2,3117 ms | 3,0250 ms | +0,7133 ms | +30,86 % |
-| Emisión media por visita | 0,009049 g CO₂e | 0,007526 g CO₂e | −0,001524 g | −16,84 % |
+| Media de los seis listados | 2,7300 ms | 3,6340 ms | +0,9040 ms | +33,11 % |
+| Emisión media por visita | 0,009049184625 g CO₂e | 0,007525676769 g CO₂e | −0,001523507856 g | −16,84 % |
 
-13 616 / 80 875 = 0,1683586. El peso y la emisión bajan en la misma proporción porque el modelo atribuye las emisiones a los bytes transferidos. El LCP de este recorrido subió 41 ms y el FCP 1 ms. Siguen muy por debajo de los umbrales de la rúbrica en escritorio. La petición adicional es el runtime que Vite separa al partir las rutas. El tiempo de API sube porque cada `GET` ahora calcula el ETag y arma el sobre de paginación; con cuatro vehículos el ahorro de columnas no compensa ese trabajo en localhost. El 304 del listado de vehículos se comprobó (cuerpo vacío) y su media de 20 llamadas fue 3,11 ms: en este volumen la revalidación no es más barata que responder el JSON.
+13 616 / 80 875 = 0,1683586. El peso y la emisión bajan en la misma proporción porque el modelo atribuye las emisiones a los bytes transferidos. La fila de emisión usa los gramos de la sección 1.5 sin redondear, para que 0,009049184625 − 0,007525676769 = 0,001523507856. La versión 1.0.0 escribía −0,001524 g, que es el redondeo del ahorro exacto, y no cerraba con 0,009049 − 0,007526. El LCP de este recorrido subió 41 ms y el FCP 1 ms. Siguen muy por debajo de los umbrales de la rúbrica en escritorio. La petición adicional es el runtime que Vite separa al partir las rutas.
+
+El tiempo de API de la tabla es la medición del 13 de noviembre, no la del 12. 3,6340 − 2,7300 = 0,9040 y 0,9040 / 2,7300 = 0,331135, esto es +33,11 %. Sube porque cada `GET` ahora calcula el ETag y arma el sobre de paginación; con cuatro vehículos el ahorro de columnas no compensa ese trabajo en localhost. Las seis medias posteriores, a 4 decimales, fueron: vehículos 4,2293; conductores 3,1938; pedidos 4,5751; clientes 3,1319; rutas 3,5950; usuarios 3,0790. Su suma es 21,8041 y 21,8041 / 6 = 3,634017, que la tabla redondea a 3,6340 ms. El 304 del listado de vehículos se comprobó (cuerpo de 0 bytes) y su media de 20 llamadas fue 3,5197 ms. En este volumen la revalidación no es más barata que responder el JSON. Las muestras están en [api-despues-2026-11-13.json](./evidencias/api-despues-2026-11-13.json).
 
 Una segunda medición, solo del estado posterior, usó el servidor estático del repositorio y Lighthouse 12.1.0 dentro de Lighthouse CI: performance 100, FCP 323,7459 ms, LCP 363,7459 ms, TBT 0 ms, CLS 0, 64 250 bytes y 4 peticiones. No tiene par anterior con ese servidor, así que no entra en la tabla. Sirve para comprobar que Brotli y las aserciones del flujo de integración pasan.
 
 En el preset móvil simulado (RTT 150 ms, 1 638 kbps, CPU ×4), el mismo servidor y Lighthouse 12.6.1 dieron, el 12 de noviembre de 2026 a las 01:59 UTC: performance 100, FCP 1 351,7659 ms, LCP 1 351,7659 ms, TBT 0 ms, CLS 0 y 64 250 bytes. El FCP móvil no cumple el umbral de 1,0 s. El LCP numérico sí cumple 1,4 s. El informe principal de la actividad es el de escritorio, porque la consola de planificación se usa en un puesto de trabajo y es la condición en la que existen el antes y el después.
+
+### Por qué Lighthouse solo mide `/login`
+
+El par antes/después y el flujo `.github/workflows/green-audit.yml` auditan una sola URL, `http://127.0.0.1:4173/login`. No se añadieron Flota, Pedidos ni Rutas a `lighthouserc.cjs`.
+
+Esas pantallas exigen una sesión en `sessionStorage` y, al montarse, llaman a la API. El job de auditoría instala Node, compila el frontend y sirve el estático con `frontend/scripts/servir.mjs`. Ese servidor no hace de proxy hacia FastAPI y el job no levanta PostgreSQL. Una visita sin sesión a `/flota` vuelve al inicio de sesión, así que una segunda URL mediría el mismo documento. Autenticar dentro de Lighthouse CI exigiría PostGIS, Alembic, un usuario de prueba y un script de login. El job fallaría si la base o el login fallan, por una causa distinta del peso de la página. Por eso las aserciones siguen en `/login`, la única pantalla que carga sin la API y la única con un par antes/después bajo el mismo procedimiento.
 
 ## 1.5 Análisis con el Sustainable Web Design Model v4
 
@@ -303,9 +380,11 @@ La fórmula publicada de la visita media es:
 
 `media = primera × proporción de visitantes nuevos + primera × proporción de retorno × (1 − proporción de caché)`
 
-Los valores por defecto que usa la implementación de referencia CO₂.js, de la Green Web Foundation, son 0,75 de visitantes nuevos, 0,25 de retorno y 0,02 de datos que el retorno vuelve a descargar. Ese 0,02 es `1 − 0,98`, así que la proporción de caché de datos es 0,98. El factor de la visita media queda:
+Los tres factores no salen del texto de la página del SWDM, que deja las proporciones como variables. Salen de las constantes de CO₂.js, la implementación de referencia de la Green Web Foundation, en [`src/constants/index.js`](https://github.com/thegreenwebfoundation/co2.js/blob/main/src/constants/index.js): `FIRST_TIME_VIEWING_PERCENTAGE = 0.75`, `RETURNING_VISITOR_PERCENTAGE = 0.25` y `PERCENTAGE_OF_DATA_LOADED_ON_SUBSEQUENT_LOAD = 0.02`. El modelo versión 3 las aplica por defecto. El `perVisit` de la versión 4, si no se le pasan opciones, calcula solo la primera visita (factor 1, retorno 0 y recarga 0). Este informe aplica las constantes a la fórmula de la visita media publicada en la página del modelo. El 0,02 es la fracción que el retorno vuelve a descargar, esto es `1 − 0,98`, así que la proporción de caché de datos es 0,98. El factor de la visita media queda:
 
 `0,75 + 0,25 × 0,02 = 0,755`
+
+Usar 1 en lugar de 0,755 cambia los gramos absolutos y deja igual el −16,84 %, porque el factor multiplica los dos escenarios.
 
 El ejemplo de cátedra multiplica por 0,815 kWh/GB y por 442 g/kWh, y además el producto 0,008203 × 0,815 × 442 no da los 2,15 g que publica. Esos coeficientes no son los de la versión 4 y esa aritmética no se reproduce aquí.
 
@@ -374,9 +453,21 @@ Condición común del par antes/después: 12 de noviembre de 2026, Lighthouse 12
 | JSON del servidor Brotli (Lighthouse CI 12.1.0) | [lighthouse-ci.json](./evidencias/lighthouse-ci.json) |
 | HTML de esa corrida | [lighthouse-ci.html](./evidencias/lighthouse-ci.html) |
 | JSON móvil simulado, solo el después | [lighthouse-movil-despues.json](./evidencias/lighthouse-movil-despues.json) |
+| API anterior, 20 muestras, 13/11/2026 | [api-antes-2026-11-13.json](./evidencias/api-antes-2026-11-13.json) |
+| API posterior, 304 y OpenAPI, 13/11/2026 | [api-despues-2026-11-13.json](./evidencias/api-despues-2026-11-13.json) |
+| Tamaños de los activos y su relación con `transferSize` | [tamanos-activos-2026-11-13.json](./evidencias/tamanos-activos-2026-11-13.json) |
 
 ![Pantalla de acceso después de la intervención](./evidencias/login-despues.png)
 
 Los umbrales de la rúbrica (performance ≥ 90, FCP ≤ 1,0 s, LCP ≤ 1,4 s, TBT ≤ 85 ms, CLS ≤ 0,02 y peso ≤ 1,1 MB) se cumplen en el preset de escritorio, antes y después. En el preset móvil simulado, medido solo después, el FCP de 1,352 s no cumple 1,0 s. El resto de umbrales móviles sí se cumple, con LCP numérico de 1,352 s.
 
 La relación con ISO/IEC 25010, los cuatro principios de la Green Software Foundation, las pautas reales de W3C WSG y la matriz de las ocho optimizaciones está en el [informe de estándares](./02%20Estandares%20Ingenier%C3%ADa%20de%20software%20V_1_0_0.md).
+
+## Historial de control de cambios
+
+El nombre del archivo sigue en `V_1_0_0`, igual que el resto de los informes de `docs/03 Implementación`. La versión vive en la cabecera.
+
+| Versión | Fecha | Autor | Descripción |
+|---|---|---|---|
+| 1.0.0 | 12/11/2026 | Equipo EcoLogística Lima | Informe inicial, con el par Lighthouse de escritorio y el cálculo SWDM v4. |
+| 1.0.1 | 13/11/2026 | Equipo EcoLogística Lima | Código ANTES/DESPUÉS de las áreas 3, 6 y 7; líder del proyecto; nueva medición de API, 304, OpenAPI y Brotli; explicación de las etiquetas en kB frente a `transferSize`; redondeo de la fila de emisión; origen de los factores 0,75 / 0,25 / 0,02. |

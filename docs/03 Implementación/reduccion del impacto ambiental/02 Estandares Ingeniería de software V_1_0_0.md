@@ -3,8 +3,10 @@
 # Estándares de ingeniería de software y guía de desarrollo verde
 
 **Proyecto:** EcoLogística Lima – optimizador de rutas sostenibles para DistriRápido S.A.C.  
-**Versión:** 1.0.0  
+**Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
+**Versión:** 1.0.1  
 **Fecha:** 12 de noviembre de 2026  
+**Fecha de modificación:** 13/11/2026  
 **Equipo:** EcoLogística Lima — Carhuapoma Fano, Eilene Elizabeth; Cruz Salazar, Jorge Luiz; Estrada Flores, Axel Sebastian; Huaman Baldeon, Katheryn Elena; Leon Taza, Brayan Angel.
 
 Este documento justifica las ocho refactorizaciones del [informe de impacto](./01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md) frente a ISO/IEC 25010, los cuatro principios de la Green Software Foundation y las Web Sustainability Guidelines (WSG) 1.0. La numeración de las pautas se tomó del Draft Note del 21 de mayo de 2026, [https://www.w3.org/TR/2026/DNOTE-web-sustainability-guidelines-20260521/](https://www.w3.org/TR/2026/DNOTE-web-sustainability-guidelines-20260521/), que es la edición numerada más reciente consultada. El ejemplo de cátedra asigna a 1.2, 2.4 y 3.1 unos títulos que ese documento no usa. Abajo se cita lo que cada identificador dice en realidad y, además, la pauta cuyo texto gobierna cada cambio.
@@ -26,12 +28,12 @@ Se usa el modelo de calidad del producto. La característica de eficiencia de de
 
 ### Green Software Foundation
 
-Los cuatro principios publicados en [principles.green](https://principles.green/) son eficiencia de carbono, eficiencia energética, conciencia de carbono y eficiencia de hardware.
+Los cuatro principios que usa este informe están publicados, en ese orden, en la introducción del material de formación de la Green Software Foundation: [introduction.md](https://github.com/Green-Software-Foundation/training/blob/main/docs/introduction.md). Son eficiencia de carbono, eficiencia energética, conciencia de carbono y eficiencia de hardware. El mismo archivo añade la medición y los compromisos climáticos; la rúbrica pide los cuatro primeros. El dominio `principles.green`, citado en la versión 1.0.0, ya no muestra esos principios.
 
 | Principio | Aplicación en este trabajo | Límite declarado |
 |---|---|---|
 | Eficiencia de carbono | Menos bytes por visita. El SWDM v4 pasa de 0,009049 g a 0,007526 g CO₂e por visita media. | El modelo no mide el CPU del worker de optimización de rutas. |
-| Eficiencia energética | Consultas con menos columnas, una sola consulta de distritos, compresión por encima de 1 KiB y caché de 30 s. | En localhost, el ETag sube la media de los listados de 2,312 ms a 3,025 ms. Se informa así. |
+| Eficiencia energética | Consultas con menos columnas, una sola consulta de distritos, compresión por encima de 1 KiB y caché de 30 s. | En localhost, el 13/11/2026, el ETag sube la media de los listados de 2,7300 ms a 3,6340 ms. Se informa así. |
 | Conciencia de carbono | El informe fija el factor de red en 494 g/kWh y el de hosting verde en 0, porque el host no está verificado. | La API no desplaza trabajos según la intensidad horaria de la red. Una ruta se calcula cuando el operador la pide. |
 | Eficiencia de hardware | El navegador del puesto de planificación no descarga Leaflet ni las páginas secundarias al iniciar sesión. `detectRetina: false` evita el PNG de tesela al doble de resolución. | El mapa sigue necesitando Leaflet cuando el operador abre Rutas. |
 
@@ -126,3 +128,12 @@ La columna WSG cita la pauta del Draft Note del 21 de mayo de 2026 cuyo texto co
 | 8 | Brotli calidad 5 y Gzip nivel 5 en API y en activos propios | Eficiencia: capacidad | Eficiencia de carbono | 4.3 Reduce data transfer with compression |
 
 La fila 6 comparte la pauta 2.11 con la fila 3 porque ambas deciden el formato del gráfico: una no introduce un ráster y la otra incrusta el vector crítico. La fila 4 también se apoya en la pauta 3.8 (diferir lo no crítico), que no se repite en la celda para mantener un identificador principal por fila.
+
+## Historial de control de cambios
+
+El nombre del archivo sigue en `V_1_0_0`, igual que el resto de los informes de `docs/03 Implementación`. La versión vive en la cabecera.
+
+| Versión | Fecha | Autor | Descripción |
+|---|---|---|---|
+| 1.0.0 | 12/11/2026 | Equipo EcoLogística Lima | Estándares, guía verde, flujo de Lighthouse CI y matriz de las ocho optimizaciones. |
+| 1.0.1 | 13/11/2026 | Equipo EcoLogística Lima | Líder del proyecto. La fuente de los cuatro principios pasa al `introduction.md` del material de la Green Software Foundation. La media de los listados queda en la medición del 13/11/2026. |
