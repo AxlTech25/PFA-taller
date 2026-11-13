@@ -37,7 +37,15 @@ type Lienzo = {
 };
 
 type LeafletApi = {
-  map: (nodo: HTMLElement, opciones: { scrollWheelZoom: boolean }) => Lienzo;
+  map: (
+    nodo: HTMLElement,
+    opciones: {
+      scrollWheelZoom: boolean;
+      fadeAnimation: boolean;
+      zoomAnimation: boolean;
+      markerZoomAnimation: boolean;
+    },
+  ) => Lienzo;
   tileLayer: (
     url: string,
     opciones: { attribution: string; maxZoom: number; detectRetina: false; updateWhenIdle: boolean },
@@ -150,7 +158,12 @@ function dibujar(
   seleccionada: string | null,
   alFallarTesela: () => void,
 ) {
-  const lienzo = L.map(nodo, { scrollWheelZoom: false });
+  const lienzo = L.map(nodo, {
+    scrollWheelZoom: false,
+    fadeAnimation: false,
+    zoomAnimation: false,
+    markerZoomAnimation: false,
+  });
   const teselas = L.tileLayer(
     "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     opcionesTesela("&copy; OpenStreetMap"),

@@ -1,0 +1,528 @@
+{
+  "etiqueta": "despues103",
+  "origen": "http://127.0.0.1:4173",
+  "pantallas": [
+    {
+      "id": "login",
+      "camino": "/login",
+      "url": "http://127.0.0.1:4173/login",
+      "requestedUrl": "http://127.0.0.1:4173/login",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:20.743Z",
+      "score": 1,
+      "fcp": 160.68245,
+      "lcp": 370.04735,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 64681,
+      "requests": 5,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 26 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "tablero",
+      "camino": "/dashboard",
+      "url": "http://127.0.0.1:4173/dashboard",
+      "requestedUrl": "http://127.0.0.1:4173/dashboard",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:26.348Z",
+      "score": 1,
+      "fcp": 160.86205,
+      "lcp": 416.58615000000003,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 67573,
+      "requests": 8,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 22 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "flota",
+      "camino": "/flota",
+      "url": "http://127.0.0.1:4173/flota",
+      "requestedUrl": "http://127.0.0.1:4173/flota",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:31.889Z",
+      "score": 1,
+      "fcp": 283.3689,
+      "lcp": 454.7378,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 69323,
+      "requests": 8,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 21 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "conductores",
+      "camino": "/conductores",
+      "url": "http://127.0.0.1:4173/conductores",
+      "requestedUrl": "http://127.0.0.1:4173/conductores",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:37.245Z",
+      "score": 1,
+      "fcp": 160.80155,
+      "lcp": 414.2062,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 68343,
+      "requests": 8,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0.5,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 21 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "pedidos",
+      "camino": "/pedidos",
+      "url": "http://127.0.0.1:4173/pedidos",
+      "requestedUrl": "http://127.0.0.1:4173/pedidos",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:42.602Z",
+      "score": 1,
+      "fcp": 160.66315,
+      "lcp": 457.6526,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 70590,
+      "requests": 10,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 21 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "usuarios",
+      "camino": "/usuarios",
+      "url": "http://127.0.0.1:4173/usuarios",
+      "requestedUrl": "http://127.0.0.1:4173/usuarios",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:48.020Z",
+      "score": 1,
+      "fcp": 160.78025,
+      "lcp": 454.121,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 68688,
+      "requests": 8,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 22 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "modo",
+      "camino": "/modo",
+      "url": "http://127.0.0.1:4173/modo",
+      "requestedUrl": "http://127.0.0.1:4173/modo",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:53.409Z",
+      "score": 1,
+      "fcp": 160.6525,
+      "lcp": 368.9575,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 65705,
+      "requests": 6,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 25 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    },
+    {
+      "id": "rutas",
+      "camino": "/rutas",
+      "url": "http://127.0.0.1:4173/rutas",
+      "requestedUrl": "http://127.0.0.1:4173/rutas",
+      "lighthouseVersion": "13.6.0",
+      "fetchTime": "2026-11-13T07:19:58.663Z",
+      "score": 1,
+      "fcp": 160.96605,
+      "lcp": 537.8642,
+      "tbt": 0,
+      "cls": 0,
+      "transferSize": 746304,
+      "requests": 30,
+      "diagnosticos": [
+        {
+          "id": "unused-javascript",
+          "score": 0,
+          "mode": "metricSavings",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 24 KiB",
+          "error": null
+        },
+        {
+          "id": "image-delivery-insight",
+          "score": 0.5,
+          "mode": "metricSavings",
+          "title": "Improve image delivery",
+          "display": "Est savings of 412 KiB",
+          "error": null
+        },
+        {
+          "id": "render-blocking-insight",
+          "score": 1,
+          "mode": "metricSavings",
+          "title": "Render-blocking requests",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "layout-shifts",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid large layout shifts",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "non-composited-animations",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "Avoid non-composited animations",
+          "display": null,
+          "error": null
+        },
+        {
+          "id": "lcp-discovery-insight",
+          "score": null,
+          "mode": "notApplicable",
+          "title": "LCP request discovery",
+          "display": null,
+          "error": null
+        }
+      ]
+    }
+  ],
+  "sesionBytes": 575533,
+  "respuestas": 87
+}

@@ -1,11 +1,20 @@
-import { lazy, useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { Alerta } from "./avisos";
 import { useAuth } from "./auth";
-import { LoginPage } from "./pages/LoginPage";
-import { Shell } from "./pages/Shell";
 import { modulosVisibles, type Modulo } from "./permissions";
+
+function Espera() {
+  return (
+    <p className="espera" role="status">
+      Cargando módulo…
+    </p>
+  );
+}
+
+const LoginPage = lazy(() => import("./pages/LoginPage").then((m) => ({ default: m.LoginPage })));
+const Shell = lazy(() => import("./pages/Shell").then((m) => ({ default: m.Shell })));
 
 const FlotaPage = lazy(() => import("./pages/FlotaPage").then((m) => ({ default: m.FlotaPage })));
 const ConductoresPage = lazy(() =>
@@ -53,8 +62,21 @@ function Modulo({ modulo, children }: Readonly<{ modulo: Modulo; children: React
 export function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route element={<Shell />}>
+      <Route
+        path="/login"
+        element={
+          <Suspense fallback={<Espera />}>
+            <LoginPage />
+          </Suspense>
+        }
+      />
+      <Route
+        element={
+          <Suspense fallback={<Espera />}>
+            <Shell />
+          </Suspense>
+        }
+      >
         <Route path="/" element={<Inicio />} />
         <Route
           path="/flota"

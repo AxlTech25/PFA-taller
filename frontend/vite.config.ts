@@ -66,6 +66,15 @@ if (!globalConHook.__ecologisticaLcov) {
   process.on("exit", normalizarLcov);
 }
 
+function cssEnLinea(html: string, dist: string) {
+  return html.replace(/<link rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/, (_etiqueta, href: string) => {
+    const archivo = resolve(dist, String(href).replace(/^\//, ""));
+    if (!existsSync(archivo)) return _etiqueta;
+    const css = readFileSync(archivo, "utf8").replace(/<\/style/gi, "<\\/style");
+    return `<style>${css}</style>`;
+  });
+}
+
 function comprimirDist() {
   const recorrer = (directorio: string) => {
     for (const nombre of readdirSync(directorio)) {
@@ -90,6 +99,10 @@ function comprimirDist() {
     apply: "build" as const,
     closeBundle() {
       const dist = resolve(raizFrontend, "dist");
+      const html = join(dist, "index.html");
+      if (existsSync(html)) {
+        writeFileSync(html, cssEnLinea(readFileSync(html, "utf8"), dist));
+      }
       if (existsSync(dist)) recorrer(dist);
     },
   };

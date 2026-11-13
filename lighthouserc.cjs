@@ -7,14 +7,7 @@ const comun = {
   "resource-summary:total:transferSize": ["error", { maxNumericValue: 1100000 }],
 };
 
-// El mapa mide CLS 0,038: las teselas y los controles de Leaflet se pintan
-// después del primer frame. Queda por debajo de 0,1 (Lighthouse lo puntúa
-// como bueno) y por encima del 0,02 de la rúbrica. El peso medido fue
-// 746 019 bytes, dentro de 1,1 MB.
-const rutas = {
-  ...comun,
-  "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
-};
+const rutas = comun;
 
 function fila(patron, aserciones = comun) {
   return { matchingUrlPattern: patron, assertions: aserciones };

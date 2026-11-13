@@ -4,7 +4,7 @@
 
 **Proyecto:** EcoLogística Lima – optimizador de rutas sostenibles para DistriRápido S.A.C.  
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Versión:** 1.0.2  
+**Versión:** 1.0.3  
 **Fecha:** 12 de noviembre de 2026  
 **Fecha de modificación:** 13/11/2026  
 **Equipo:** EcoLogística Lima — Carhuapoma Fano, Eilene Elizabeth; Cruz Salazar, Jorge Luiz; Estrada Flores, Axel Sebastian; Huaman Baldeon, Katheryn Elena; Leon Taza, Brayan Angel.  
@@ -154,7 +154,7 @@ export function opcionesTesela(attribution: string) {
 </picture>
 ```
 
-OpenStreetMap publica esas teselas en PNG. El navegador no puede negociar AVIF contra ese servidor sin un proxy, y un proxy de teselas queda fuera del alcance de esta actividad. La pantalla de acceso sigue sin imágenes: Lighthouse contó 0 bytes de imagen antes y después.
+OpenStreetMap publica esas teselas en PNG. El 13 de noviembre de 2026 se comprobó el tipo de contenido: `https://tile.openstreetmap.org/14/4685/8744.png` responde `image/png` y la misma ruta con `.webp` responde HTTP 400. CARTO, sin clave, responde `image/png` en `https://basemaps.cartocdn.com/rastertiles/voyager/14/4685/8744.png` y 404 en `.webp`. OpenFreeMap (`https://tiles.openfreemap.org/styles/liberty`) entrega un estilo vectorial `application/json`, no un ráster WebP que Leaflet pueda usar como `tileLayer`. Cambiar el mapa a un motor vectorial reescribiría `MapaRutas` y sumaría otra biblioteca. No hay un proveedor de teselas ráster en WebP, libre y sin clave de pago, que sustituya a OpenStreetMap sin ese cambio. Las teselas siguen en PNG. La pantalla de acceso sigue sin imágenes.
 
 ### 4. Code splitting con React.lazy y Suspense
 
@@ -180,7 +180,9 @@ const FlotaPage = lazy(() => import("./pages/FlotaPage").then((m) => ({ default:
 const RutasPage = lazy(() => import("./pages/RutasPage").then((m) => ({ default: m.RutasPage })));
 ```
 
-El inicio de sesión sigue en el grafo inicial. El resto cuelga de `<Suspense>` dentro de `Shell`. La compilación posterior deja `assets/index-DwllJXwe.js` en 191 197 bytes (Vite imprime 191,19 kB) y `assets/index-CFXIjgCs.css` en 6 436 bytes (Vite imprime 6,43 kB). Esos tamaños son el `resourceSize` de [lighthouse-despues.json](./evidencias/lighthouse-despues.json). El gzip de nivel 6 de ese JavaScript pesa 62 629 bytes: es el archivo `.gz` y también el cuerpo que entregó `vite preview` el 13 de noviembre. Vite imprime «63,41 kB» en la columna gzip; esa etiqueta no es el archivo ni el `transferSize` de 63 036 bytes registrado el 12 de noviembre para ese script. El CSS de Leaflet está en `assets/RutasPage-vh-t_kPv.css`, 15 095 bytes (Vite imprime 15,09 kB), y no se pide en `/login`.
+En esa primera partición el inicio de sesión seguía en el grafo inicial y el resto colgaba de `<Suspense>` dentro de `Shell`. La compilación de entonces deja `assets/index-DwllJXwe.js` en 191 197 bytes (Vite imprime 191,19 kB) y `assets/index-CFXIjgCs.css` en 6 436 bytes (Vite imprime 6,43 kB). Esos tamaños son el `resourceSize` de [lighthouse-despues.json](./evidencias/lighthouse-despues.json). El gzip de nivel 6 de ese JavaScript pesa 62 629 bytes: es el archivo `.gz` y también el cuerpo que entregó `vite preview` el 13 de noviembre. Vite imprime «63,41 kB» en la columna gzip; esa etiqueta no es el archivo ni el `transferSize` de 63 036 bytes registrado el 12 de noviembre para ese script. El CSS de Leaflet está en `assets/RutasPage-vh-t_kPv.css`, 15 095 bytes (Vite imprime 15,09 kB), y no se pide en `/login`.
+
+La versión 1.0.3 saca también `LoginPage` y `Shell` del grafo inicial. El CSS de la entrada (6,58 kB en la compilación de esta medición) se incrusta en `index.html` al cerrar el bundle, así que el documento ya no pide una hoja que bloquee el render. El CSS de Leaflet sigue saliendo solo con el chunk de Rutas. Vite imprime el JavaScript de entrada en 188,37 kB (`assets/index-DEgFoRmH.js`). Leaflet sigue siendo un chunk aparte (`leaflet-src-Cwq2at8A.js`, 148,61 kB): el paquete publica un solo archivo y la cobertura de Lighthouse cuenta como no usadas las funciones que el mapa no llama al abrirse (24 284 bytes transferidos en `/rutas`).
 
 ### 5. Bibliotecas pesadas y API nativa
 
@@ -377,7 +379,7 @@ La sección 1.4 sigue siendo el par del 12 de noviembre, solo `/login`, con `vit
 
 En todas las pantallas el score es al menos 97, el FCP queda bajo 0,37 s, el LCP bajo 0,59 s, el TBT es 0 y el peso queda bajo 1,1 MB. El inicio de sesión baja 12 882 bytes (77 238 − 64 356). Las pantallas de listado bajan entre 8 y 11 kB porque el CSS de Leaflet ya no viaja en la hoja inicial. Suben las peticiones: Vite separa un runtime y el chunk de cada página.
 
-La única meta de la rúbrica que no se cumple es el CLS de `/rutas`. Antes era 0,105814. Reservar 28 rem para el mapa, también en el estado vacío, lo bajó a 0,038150. Sigue por encima de 0,02. Lighthouse le da score 1 porque su umbral «bueno» es 0,1: el resto del desplazamiento lo producen las teselas y los controles de Leaflet al pintarse. El flujo acepta hasta 0,1 solo en `/rutas` y mantiene 0,02 en las demás. No se aflojó el peso: 746 019 bytes caben en 1,1 MB. Redis no entra en el job: abrir el mapa no encola una optimización.
+En esta medición de Lighthouse 12.1.0 la única meta de la rúbrica que no se cumple es el CLS de `/rutas`. Antes era 0,105814. Reservar 28 rem para el mapa, también en el estado vacío, lo bajó a 0,038150. Sigue por encima de 0,02. Lighthouse le da score 1 porque su umbral «bueno» es 0,1. La sección 1.8 vuelve a medirlo con Lighthouse 13.6.0: el CLS de `/rutas` queda en 0 y la aserción del flujo vuelve a 0,02 en las ocho URL. No se aflojó el peso: 746 019 bytes caben en 1,1 MB. Redis no entra en el job: abrir el mapa no encola una optimización.
 
 ### Sesión completa y SWDM v4
 
@@ -397,6 +399,52 @@ Antes, 546 697 bytes: `GB = 0,000546697`. Primera visita `0,000546697 × 0,300 �
 Después, 560 178 bytes: `GB = 0,000560178`. Primera visita `0,000560178 × 0,300 × 494 = 0,0830183796 g`. Visita media `× 0,755 = 0,062678876598 g`.
 
 La visita media de la sesión sube 0,001508402571 g. Con el supuesto de 36 000 sesiones al año son 54,30 g CO₂e más, no menos. El ahorro de la sección 1.5 sigue siendo el de la pantalla de acceso medida el 12 de noviembre. No describe un recorrido que abre el mapa.
+
+## 1.8 Diagnósticos de Lighthouse 13.6.0
+
+Los JSON de la sección 1.7 los produjo Lighthouse 12.1.0 (`@lhci/cli@0.14.0`) sobre Chrome 157.0.8103.50. En las ocho pantallas, seis auditorías salen con `scoreDisplayMode: "error"` y el mismo mensaje: `Cannot read properties of undefined (reading 'frame_sequence')`. Son `largest-contentful-paint-element`, `lcp-lazy-loaded`, `layout-shifts`, `non-composited-animations`, `prioritize-lcp-image` y `render-blocking-resources`. El recolector `RootCauses` de esa versión no lee la traza de este Chrome. No es el CSP (el servidor no envía `Content-Security-Policy`), ni `servir.mjs`, ni un fallo de la compilación: el mismo Chrome, con Lighthouse 13.6.0 (`@lhci/cli@0.16.1`), deja esas auditorías sin error. El flujo de CI pasa a esa versión. Si unas DevTools concretas siguen empaquetando Lighthouse 12.1, el panel puede seguir mostrando «Error!» aunque la medición de línea de comandos ya no lo haga.
+
+El par de esta sección usa Lighthouse 13.6.0, preset de escritorio, caché fría y el mismo `servir.mjs` con la API en marcha. El antes es el código de `main` después de integrar el PR 27, medido el 13 de noviembre de 2026. El después es el de esta versión. Los archivos son `evidencias/lighthouse-antes103-<pantalla>.*` y `evidencias/lighthouse-despues103-<pantalla>.*`.
+
+| Pantalla | Momento | Score | FCP (ms) | LCP (ms) | TBT (ms) | CLS | Peso (bytes) | Peticiones |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| `/login` | Antes | 100 | 201,4621 | 201,4621 | 0 | 0 | 64 356 | 4 |
+| `/login` | Después | 100 | 160,6824 | 370,0473 | 0 | 0 | 64 681 | 5 |
+| `/dashboard` | Antes | 100 | 201,9799 | 452,9699 | 0 | 0 | 67 330 | 7 |
+| `/dashboard` | Después | 100 | 160,8621 | 416,5862 | 0 | 0 | 67 573 | 8 |
+| `/flota` | Antes | 100 | 201,7305 | 452,4610 | 0 | 0,003680 | 69 082 | 7 |
+| `/flota` | Después | 100 | 283,3689 | 454,7378 | 0 | 0 | 69 323 | 8 |
+| `/conductores` | Antes | 100 | 202,4636 | 455,9272 | 0 | 0 | 68 096 | 7 |
+| `/conductores` | Después | 100 | 160,8015 | 414,2062 | 0 | 0 | 68 343 | 8 |
+| `/pedidos` | Antes | 100 | 202,1039 | 458,2078 | 0 | 0 | 70 345 | 9 |
+| `/pedidos` | Después | 100 | 160,6632 | 457,6526 | 0 | 0 | 70 590 | 10 |
+| `/usuarios` | Antes | 100 | 201,5357 | 453,0714 | 0 | 0 | 68 444 | 7 |
+| `/usuarios` | Después | 100 | 160,7802 | 454,1210 | 0 | 0 | 68 688 | 8 |
+| `/modo` | Antes | 100 | 201,4368 | 402,1552 | 0 | 0 | 65 462 | 5 |
+| `/modo` | Después | 100 | 160,6525 | 368,9575 | 0 | 0 | 65 705 | 6 |
+| `/rutas` | Antes | 100 | 201,9531 | 493,9062 | 0 | 0,038150 | 746 045 | 29 |
+| `/rutas` | Después | 100 | 160,9660 | 537,8642 | 0 | 0 | 746 304 | 30 |
+
+El score sigue en 100, el TBT en 0 y el peso bajo 1,1 MB. El FCP baja de unos 202 ms a unos 161 ms en siete pantallas porque la hoja de la entrada ya no bloquea el primer render. En `/flota` el FCP medido fue 283,3689 ms. El LCP de `/login` sube de 201,4621 ms a 370,0473 ms: el formulario ahora llega en su propio chunk. El CLS de `/rutas` pasa de 0,038150 a 0. Reservar la lista textual del mapa y el panel del plan, desactivar las animaciones de fundido y zoom de Leaflet, y dar al aviso de carga `min-height: 100vh` elimina el desplazamiento del pie y del mapa. La aserción de `lighthouserc.cjs` vuelve a ser 0,02 en las ocho URL, `/rutas` incluida.
+
+JavaScript no usado, en bytes transferidos que la cobertura no ejecutó:
+
+| Pantalla | Antes | Después |
+|---|---:|---:|
+| `/login` | 31 068 | 26 906 |
+| `/dashboard` | 23 135 | 22 691 |
+| `/flota` | 22 091 | 21 646 |
+| `/conductores` | 22 231 | 21 786 |
+| `/pedidos` | 22 109 | 21 665 |
+| `/usuarios` | 22 772 | 22 328 |
+| `/modo` | 25 179 | 25 237 |
+| `/rutas` | 44 670 | 24 284 |
+
+En `/rutas` desaparece el aporte del JavaScript de entrada (20 610 bytes) y queda el de Leaflet (24 284 bytes). En `/modo` el dato sube 58 bytes. La auditoría sigue con score 0 en la mayoría de las pantallas: el entry todavía transfiere unas 59 kB y la cobertura no ejecuta todo React ni todo el enrutador en esa ventana. Leaflet 1.9 no ofrece módulos sueltos; partirlo a mano dejaría el mapa sin las funciones que sí se llaman al moverlo.
+
+`render-blocking-insight` pasa de score 0,5 a 1 en las ocho pantallas. `image-delivery-insight` queda en 1 donde no hay imágenes y en 0,5 en `/rutas`, con un ahorro estimado de 412 KiB sobre las teselas PNG. `non-composited-animations` y `lcp-discovery-insight` salen `notApplicable` antes y después: no hay animaciones de la aplicación, las transiciones de Leaflet son `opacity` y `transform`, y el LCP es texto, así que no hay una imagen LCP que precargar ni que marcar como perezosa. Esas dos últimas, junto con `layout-shifts`, eran las que Lighthouse 12.1.0 marcaba «Error!».
+
+La sesión caliente, mismo criterio de `encodedDataLength`, pasa de 560 276 bytes a 575 533 (+15 257, +2,72 %). Los chunks de acceso y de la cáscara se descargan al recorrer los ocho módulos. Con los coeficientes de la sección 1.5, la visita media pasa de 0,062689841916 g a 0,064396962903 g (+0,001707120987 g). A 36 000 sesiones son 61,46 g CO₂e más al año. El recorte de esta versión está en el CLS, en el CSS que bloqueaba el render y en el JavaScript de Leaflet fuera del resto de pantallas, no en el peso de un recorrido que abre el mapa.
 
 ## 1.5 Análisis con el Sustainable Web Design Model v4
 
@@ -496,6 +544,8 @@ Condición común del par antes/después: 12 de noviembre de 2026, Lighthouse 12
 | API anterior, 20 muestras, 13/11/2026 | [api-antes-2026-11-13.json](./evidencias/api-antes-2026-11-13.json) |
 | API posterior, 304 y OpenAPI, 13/11/2026 | [api-despues-2026-11-13.json](./evidencias/api-despues-2026-11-13.json) |
 | Tamaños de los activos y su relación con `transferSize` | [tamanos-activos-2026-11-13.json](./evidencias/tamanos-activos-2026-11-13.json) |
+| Lighthouse 13.6.0, ocho pantallas, antes de 1.0.3 | [lighthouse-antes103-resumen.json](./evidencias/lighthouse-antes103-resumen.json) |
+| Lighthouse 13.6.0, ocho pantallas, después de 1.0.3 | [lighthouse-despues103-resumen.json](./evidencias/lighthouse-despues103-resumen.json) |
 
 ![Pantalla de acceso después de la intervención](./evidencias/login-despues.png)
 
@@ -512,3 +562,4 @@ El nombre del archivo sigue en `V_1_0_0`, igual que el resto de los informes de 
 | 1.0.0 | 12/11/2026 | Equipo EcoLogística Lima | Informe inicial, con el par Lighthouse de escritorio y el cálculo SWDM v4. |
 | 1.0.1 | 13/11/2026 | Equipo EcoLogística Lima | Código ANTES/DESPUÉS de las áreas 3, 6 y 7; líder del proyecto; nueva medición de API, 304, OpenAPI y Brotli; explicación de las etiquetas en kB frente a `transferSize`; redondeo de la fila de emisión; origen de los factores 0,75 / 0,25 / 0,02. |
 | 1.0.2 | 13/11/2026 | Equipo EcoLogística Lima | Lighthouse de las ocho pantallas, con API y mapa. La sesión completa no baja de peso: la dominan las teselas. El CLS de `/rutas` baja de 0,106 a 0,038 y sigue sobre 0,02. |
+| 1.0.3 | 13/11/2026 | Equipo EcoLogística Lima | Lighthouse 13.6.0 quita el «Error!» de `frame_sequence`. El CSS de entrada va en el HTML, Shell y el acceso salen del grafo inicial, y el CLS de las ocho pantallas, `/rutas` incluida, queda en 0. El JavaScript no usado de `/rutas` baja de 44 670 a 24 284 bytes. Las teselas siguen en PNG. |
