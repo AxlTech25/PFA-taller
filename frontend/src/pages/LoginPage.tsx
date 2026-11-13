@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta } from "../avisos";
+import { Marca } from "../marca";
 
 export function LoginPage() {
   const { sesion, iniciar } = useAuth();
@@ -36,6 +37,7 @@ export function LoginPage() {
   return (
     <main className="login">
       <section className="tarjeta" aria-labelledby="titulo-login">
+        <Marca />
         <p className="muted">DistriRápido S.A.C.</p>
         <h1 id="titulo-login" className="marca">EcoLogística Lima</h1>
         <p className="subtitulo">Inicie sesión para gestionar la operación de reparto.</p>

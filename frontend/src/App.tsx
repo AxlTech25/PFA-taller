@@ -1,18 +1,29 @@
-import { useEffect, type ReactNode } from "react";
+import { lazy, useEffect, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { Alerta } from "./avisos";
 import { useAuth } from "./auth";
-import { ConductoresPage } from "./pages/ConductoresPage";
-import { FlotaPage } from "./pages/FlotaPage";
 import { LoginPage } from "./pages/LoginPage";
-import { ModoConductorPage } from "./pages/ModoConductorPage";
-import { DashboardPage } from "./pages/DashboardPage";
-import { PedidosPage } from "./pages/PedidosPage";
-import { RutasPage } from "./pages/RutasPage";
 import { Shell } from "./pages/Shell";
-import { UsuariosPage } from "./pages/UsuariosPage";
 import { modulosVisibles, type Modulo } from "./permissions";
+
+const FlotaPage = lazy(() => import("./pages/FlotaPage").then((m) => ({ default: m.FlotaPage })));
+const ConductoresPage = lazy(() =>
+  import("./pages/ConductoresPage").then((m) => ({ default: m.ConductoresPage })),
+);
+const PedidosPage = lazy(() =>
+  import("./pages/PedidosPage").then((m) => ({ default: m.PedidosPage })),
+);
+const RutasPage = lazy(() => import("./pages/RutasPage").then((m) => ({ default: m.RutasPage })));
+const DashboardPage = lazy(() =>
+  import("./pages/DashboardPage").then((m) => ({ default: m.DashboardPage })),
+);
+const UsuariosPage = lazy(() =>
+  import("./pages/UsuariosPage").then((m) => ({ default: m.UsuariosPage })),
+);
+const ModoConductorPage = lazy(() =>
+  import("./pages/ModoConductorPage").then((m) => ({ default: m.ModoConductorPage })),
+);
 
 function Inicio() {
   const { sesion } = useAuth();

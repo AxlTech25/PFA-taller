@@ -29,4 +29,13 @@ Entregables de la consigna en [Sprint 3/](./Sprint%203/). Los informes de gesti�
 | 04 | Evaluación OWASP Top 10 2025 | [04 OWASP V_1_0_0.md](./Sprint%203/04%20OWASP%20V_1_0_0.md) |
 | 05 | Evaluación de accesibilidad WCAG 2.2 AA | [05 WCAG V_1_0_0.md](./Sprint%203/05%20WCAG%20V_1_0_0.md) |
 
+## Reducción del impacto ambiental
+
+Versión 1.0.0, noviembre de 2026. Carpeta: [reduccion del impacto ambiental/](./reduccion%20del%20impacto%20ambiental/).
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Informe de reducción del impacto ambiental | [01 Informe de reduccion del impacto ambiental V_1_0_0.md](./reduccion%20del%20impacto%20ambiental/01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md) |
+| 02 | Estándares de ingeniería de software | [02 Estandares Ingeniería de software V_1_0_0.md](./reduccion%20del%20impacto%20ambiental/02%20Estandares%20Ingenier%C3%ADa%20de%20software%20V_1_0_0.md) |
+
 [← Volver al README Principal](../../README.md)

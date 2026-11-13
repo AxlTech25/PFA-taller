@@ -3,6 +3,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta, Exito, TablaDesplazable } from "../avisos";
+import { consultar } from "../consulta";
+import { comoPagina, rutaPagina } from "../listado";
+import { Paginador } from "../Paginador";
 import { etiqueta, puedeEditarFlota, puedeRegistrarFlota } from "../permissions";
 import type { Vehiculo } from "../types";
 
@@ -34,6 +37,8 @@ export function FlotaPage() {
   const { llamar, sesion } = useAuth();
   const registrar = sesion ? puedeRegistrarFlota(sesion.rol) : false;
   const editar = sesion ? puedeEditarFlota(sesion.rol) : false;
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
   const [edicion, setEdicion] = useState<Record<string, Edicion>>({});
   const [formulario, setFormulario] = useState(vacio);
@@ -53,15 +58,17 @@ export function FlotaPage() {
 
   useEffect(() => {
     document.title = "Flota · EcoLogística Lima";
-    llamar<Vehiculo[]>("/vehiculos")
-      .then((lista) => {
-        setVehiculos(lista);
-        recordar(lista);
+    consultar(llamar, rutaPagina("/vehiculos", pagina))
+      .then((data) => {
+        const lista = comoPagina<Vehiculo>(data);
+        setVehiculos(lista.items);
+        setTotalPaginas(lista.total_pages);
+        recordar(lista.items);
       })
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : "No se pudo cargar la flota."),
       );
-  }, [llamar]);
+  }, [llamar, pagina]);
 
   function actualizarCampo(campo: string, valor: string) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }));
@@ -317,6 +324,7 @@ export function FlotaPage() {
             </table>
           </TablaDesplazable>
         )}
+        <Paginador page={pagina} totalPages={totalPaginas} onPage={setPagina} />
       </section>
     </>
   );

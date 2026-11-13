@@ -8,19 +8,22 @@ from sqlalchemy.orm import Session
 from app.core.deps import ESCRITURA_RUTAS, LECTURA_RUTAS, ip_de, require_roles
 from app.db.session import get_db
 from app.models.entities import Usuario
+from app.schemas.pagina import Pagina
 from app.schemas.ruta import RutaOut
 from app.services import rutas as servicio
 
 router = APIRouter(prefix="/rutas", tags=["Optimización"])
 
 
-@router.get("", response_model=list[RutaOut], summary="Listar rutas generadas")
+@router.get("", response_model=Pagina[RutaOut], summary="Listar rutas generadas")
 def listar(
     db: Annotated[Session, Depends(get_db)],
     actor: Annotated[Usuario, Depends(require_roles(*LECTURA_RUTAS))],
     fecha: Annotated[date | None, Query()] = None,
-) -> list:
-    return servicio.listar_rutas(db, actor, fecha)
+    page: Annotated[int, Query(ge=1)] = 1,
+    limite: Annotated[int, Query(ge=1, le=50)] = 12,
+) -> dict:
+    return servicio.listar_rutas(db, actor, fecha, page, limite)
 
 
 @router.post(

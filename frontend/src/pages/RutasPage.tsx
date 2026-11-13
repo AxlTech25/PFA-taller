@@ -3,17 +3,14 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta, Exito, TablaDesplazable } from "../avisos";
+import { consultar } from "../consulta";
+import { fechaHoy } from "../fechas";
+import { comoPagina, rutaPagina } from "../listado";
 import { etiquetaCongestion } from "../mapa";
+import { Paginador } from "../Paginador";
 import { etiqueta, puedeGenerarRutas } from "../permissions";
 import type { JobOptimizacion, Ruta } from "../types";
 import { MapaRutas } from "./MapaRutas";
-
-function fechaHoy(): string {
-  const fecha = new Date();
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  const dia = String(fecha.getDate()).padStart(2, "0");
-  return `${fecha.getFullYear()}-${mes}-${dia}`;
-}
 
 function nombreRuta(ruta: Ruta): string {
   return `${ruta.placa ?? "Vehículo"} · ${ruta.conductor ?? "Conductor"}`;
@@ -29,17 +26,23 @@ export function RutasPage() {
   const { llamar, sesion } = useAuth();
   const generar = sesion ? puedeGenerarRutas(sesion.rol) : false;
   const [fecha, setFecha] = useState(fechaHoy);
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [rutas, setRutas] = useState<Ruta[]>([]);
   const [seleccion, setSeleccion] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
   const [ocupado, setOcupado] = useState(false);
 
-  async function cargar(dia: string) {
-    const lista = await llamar<Ruta[]>(`/rutas?fecha=${dia}`);
-    setRutas(lista);
+  async function cargar(dia: string, numero = pagina, forzar = false) {
+    const data = await consultar(llamar, rutaPagina(`/rutas?fecha=${dia}`, numero), forzar);
+    const lista = comoPagina<Ruta>(data);
+    setRutas(lista.items);
+    setTotalPaginas(lista.total_pages);
     setSeleccion((actual) =>
-      actual && lista.some((ruta) => ruta.id_ruta === actual) ? actual : (lista[0]?.id_ruta ?? null),
+      actual && lista.items.some((ruta) => ruta.id_ruta === actual)
+        ? actual
+        : (lista.items[0]?.id_ruta ?? null),
     );
   }
 
@@ -48,7 +51,7 @@ export function RutasPage() {
     cargar(fecha).catch((err: unknown) =>
       setError(err instanceof ApiError ? err.message : "No se pudo cargar las rutas."),
     );
-  }, [llamar, fecha]);
+  }, [llamar, fecha, pagina]);
 
   async function solicitar(event: FormEvent) {
     event.preventDefault();
@@ -75,7 +78,7 @@ export function RutasPage() {
           "El trabajo sigue en cola. Verifique que el worker de optimización esté en ejecución.",
         );
       }
-      await cargar(fecha);
+      await cargar(fecha, pagina, true);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "No se pudo encolar la optimización.");
     } finally {
@@ -89,7 +92,7 @@ export function RutasPage() {
     try {
       const ruta = await llamar<Ruta>(`/rutas/${idRuta}/confirmar`, { method: "POST" });
       setAviso(ruta.mensaje ?? "Ruta confirmada.");
-      await cargar(fecha);
+      await cargar(fecha, pagina, true);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "No se pudo confirmar la ruta.");
     }
@@ -122,7 +125,10 @@ export function RutasPage() {
                 required
                 aria-describedby="ayuda-rutas"
                 value={fecha}
-                onChange={(event) => setFecha(event.target.value)}
+                onChange={(event) => {
+                  setPagina(1);
+                  setFecha(event.target.value);
+                }}
               />
             </label>
             <button type="submit" disabled={ocupado}>
@@ -233,6 +239,13 @@ export function RutasPage() {
             </article>
           ))
         )}
+        <Paginador
+          page={pagina}
+          totalPages={totalPaginas}
+          onPage={(numero) => {
+            setPagina(numero);
+          }}
+        />
       </section>
     </>
   );

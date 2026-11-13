@@ -7,19 +7,21 @@ from sqlalchemy.orm import Session
 from app.core.deps import EDICION_FLOTA, ESCRITURA_FLOTA, LECTURA_FLOTA, ip_de, require_roles
 from app.db.session import get_db
 from app.models.entities import Usuario
+from app.schemas.pagina import Pagina
 from app.schemas.vehiculo import VehiculoCreado, VehiculoCreate, VehiculoOut, VehiculoUpdate
 from app.services import vehiculos as servicio
 
 router = APIRouter(prefix="/vehiculos", tags=["Flota"])
 
 
-@router.get("", response_model=list[VehiculoOut])
+@router.get("", response_model=Pagina[VehiculoOut])
 def listar(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[Usuario, Depends(require_roles(*LECTURA_FLOTA))],
-    limite: Annotated[int, Query(ge=1, le=200)] = 100,
-) -> list:
-    return servicio.listar_vehiculos(db, limite)
+    page: Annotated[int, Query(ge=1)] = 1,
+    limite: Annotated[int, Query(ge=1, le=50)] = 12,
+) -> dict:
+    return servicio.listar_vehiculos(db, page, limite)
 
 
 @router.get("/{id_vehiculo}", response_model=VehiculoOut)

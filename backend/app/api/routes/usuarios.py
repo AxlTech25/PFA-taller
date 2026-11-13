@@ -7,19 +7,21 @@ from sqlalchemy.orm import Session
 from app.core.deps import ESCRITURA_USUARIOS, LECTURA_USUARIOS, ip_de, require_roles
 from app.db.session import get_db
 from app.models.entities import Usuario
+from app.schemas.pagina import Pagina
 from app.schemas.usuario import UsuarioCreado, UsuarioCreate, UsuarioOut, UsuarioUpdate
 from app.services import usuarios as servicio
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
 
-@router.get("", response_model=list[UsuarioOut])
+@router.get("", response_model=Pagina[UsuarioOut])
 def listar(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[Usuario, Depends(require_roles(*LECTURA_USUARIOS))],
-    limite: Annotated[int, Query(ge=1, le=200)] = 100,
-) -> list:
-    return servicio.listar_usuarios(db, limite)
+    page: Annotated[int, Query(ge=1)] = 1,
+    limite: Annotated[int, Query(ge=1, le=50)] = 12,
+) -> dict:
+    return servicio.listar_usuarios(db, page, limite)
 
 
 @router.post("", response_model=UsuarioCreado, status_code=status.HTTP_201_CREATED)

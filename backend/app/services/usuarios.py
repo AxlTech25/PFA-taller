@@ -1,18 +1,33 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
 
 from app.core.security import hash_password
 from app.models.entities import Usuario
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate
 from app.services.auditoria import registrar
 from app.services.integridad import mensaje_integridad
+from app.services.paginacion import paginar_entidades
 from app.services.sanitizacion import exigir_textos_seguros
 
+# El listado no necesita el hash de la contraseña ni las marcas de tiempo.
+COLUMNAS_LISTADO = (
+    Usuario.id_usuario,
+    Usuario.email,
+    Usuario.rol,
+    Usuario.estado,
+    Usuario.intentos_fallidos,
+    Usuario.bloqueado_hasta,
+)
 
-def listar_usuarios(db: Session, limite: int) -> list[Usuario]:
-    return list(db.scalars(select(Usuario).order_by(Usuario.email).limit(limite)).all())
+
+def consulta_listado():
+    return select(Usuario).options(load_only(*COLUMNAS_LISTADO)).order_by(Usuario.email)
+
+
+def listar_usuarios(db: Session, page: int, limite: int) -> dict:
+    return paginar_entidades(db, consulta_listado(), page, limite)
 
 
 def crear_usuario(db: Session, datos: UsuarioCreate, actor: Usuario, ip: str | None) -> Usuario:

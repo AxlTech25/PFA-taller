@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import "leaflet/dist/leaflet.css";
 
 import { Alerta } from "../avisos";
+import { opcionesTesela } from "../imagen";
 import {
   MENSAJE_TILES,
   etiquetaCongestion,
@@ -39,7 +40,7 @@ type LeafletApi = {
   map: (nodo: HTMLElement, opciones: { scrollWheelZoom: boolean }) => Lienzo;
   tileLayer: (
     url: string,
-    opciones: { attribution: string; maxZoom: number },
+    opciones: { attribution: string; maxZoom: number; detectRetina: false; updateWhenIdle: boolean },
   ) => { on: (evento: "tileerror", aviso: () => void) => void; addTo: (lienzo: Lienzo) => void };
   polyline: (
     puntos: [number, number][],
@@ -150,10 +151,10 @@ function dibujar(
   alFallarTesela: () => void,
 ) {
   const lienzo = L.map(nodo, { scrollWheelZoom: false });
-  const teselas = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap",
-    maxZoom: 18,
-  });
+  const teselas = L.tileLayer(
+    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    opcionesTesela("&copy; OpenStreetMap"),
+  );
   teselas.on("tileerror", alFallarTesela);
   teselas.addTo(lienzo);
   const grupo: [number, number][] = [];

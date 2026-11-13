@@ -1,7 +1,8 @@
 /// <reference types="vitest/config" />
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, relative, resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -65,8 +66,37 @@ if (!globalConHook.__ecologisticaLcov) {
   process.on("exit", normalizarLcov);
 }
 
+function comprimirDist() {
+  const recorrer = (directorio: string) => {
+    for (const nombre of readdirSync(directorio)) {
+      const ruta = join(directorio, nombre);
+      if (statSync(ruta).isDirectory()) {
+        recorrer(ruta);
+        continue;
+      }
+      const precomprimido = nombre.endsWith(".gz") || nombre.endsWith(".br");
+      if (precomprimido || !/\.(js|css|html|svg|json)$/.test(nombre)) continue;
+      const datos = readFileSync(ruta);
+      if (datos.length < 1024) continue;
+      writeFileSync(`${ruta}.gz`, gzipSync(datos, { level: 6 }));
+      writeFileSync(
+        `${ruta}.br`,
+        brotliCompressSync(datos, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } }),
+      );
+    }
+  };
+  return {
+    name: "comprimir-dist",
+    apply: "build" as const,
+    closeBundle() {
+      const dist = resolve(raizFrontend, "dist");
+      if (existsSync(dist)) recorrer(dist);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), comprimirDist()],
   server: {
     host: true,
     port: 5173,

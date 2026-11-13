@@ -46,7 +46,7 @@ def test_listado_muestra_la_flota_demo_y_un_conductor_no_registra(client, db):
     headers = autenticar(client, operador.email)
     listado = client.get("/vehiculos", headers=headers)
     assert listado.status_code == 200
-    placas = {item["placa"] for item in listado.json()}
+    placas = {item["placa"] for item in listado.json()["items"]}
     assert {"DMO-101", "DMO-102", "DMO-201", "DMO-301"} <= placas
     denegado = client.post(
         "/vehiculos",
@@ -65,7 +65,7 @@ def test_listado_muestra_la_flota_demo_y_un_conductor_no_registra(client, db):
 def test_operador_actualiza_estado_y_factor_y_deja_auditoria(client, db):
     operador = crear_usuario(db, email="op.edita@distrirapido.example.com")
     headers = autenticar(client, operador.email)
-    listado = client.get("/vehiculos", headers=headers).json()
+    listado = client.get("/vehiculos", headers=headers).json()["items"]
     objetivo = next(item for item in listado if item["placa"] == "DMO-101")
     respuesta = client.put(
         f"/vehiculos/{objetivo['id_vehiculo']}",
@@ -87,7 +87,7 @@ def test_conductor_no_edita_flota_y_el_registro_no_cambia(client, db):
     operador = crear_usuario(db, email="op.base@distrirapido.example.com")
     conductor = crear_usuario(db, email="conductor.edita@distrirapido.example.com", rol="CONDUCTOR")
     headers = autenticar(client, operador.email)
-    listado = client.get("/vehiculos", headers=headers).json()
+    listado = client.get("/vehiculos", headers=headers).json()["items"]
     objetivo = next(item for item in listado if item["placa"] == "DMO-102")
     denegado = client.put(
         f"/vehiculos/{objetivo['id_vehiculo']}",
@@ -102,7 +102,7 @@ def test_conductor_no_edita_flota_y_el_registro_no_cambia(client, db):
 def test_actualizacion_vacia_o_factor_invalido(client, db):
     gerente = crear_usuario(db, email="gerente.flota@distrirapido.example.com", rol="GERENTE")
     headers = autenticar(client, gerente.email)
-    listado = client.get("/vehiculos", headers=headers).json()
+    listado = client.get("/vehiculos", headers=headers).json()["items"]
     objetivo = next(item for item in listado if item["placa"] == "DMO-201")
     vacio = client.put(f"/vehiculos/{objetivo['id_vehiculo']}", headers=headers, json={})
     assert vacio.status_code == 422

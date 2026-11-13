@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 
 import { useAuth } from "../auth";
+import { Marca } from "../marca";
 import { etiquetaRol, modulosVisibles, type Modulo } from "../permissions";
 
 const ENLACES: { to: string; etiqueta: string; modulo: Modulo }[] = [
@@ -25,13 +27,16 @@ export function Shell() {
         Saltar al contenido
       </a>
       <header className="barra">
-        <nav className="nav" aria-label="Módulos">
-          {enlaces.map((enlace) => (
-            <NavLink key={enlace.to} to={enlace.to}>
-              {enlace.etiqueta}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="marca-nav">
+          <Marca tono="claro" />
+          <nav className="nav" aria-label="Módulos">
+            {enlaces.map((enlace) => (
+              <NavLink key={enlace.to} to={enlace.to}>
+                {enlace.etiqueta}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
         <div className="sesion">
           <span>
             {sesion.email} · {etiquetaRol(sesion.rol)}
@@ -45,7 +50,9 @@ export function Shell() {
         <a id="contenido" className="ancla-contenido" href="#contenido">
           Contenido principal
         </a>
-        <Outlet />
+        <Suspense fallback={<p role="status">Cargando módulo…</p>}>
+          <Outlet />
+        </Suspense>
       </main>
       <footer className="pie">
         <nav aria-label="Accesos directos">

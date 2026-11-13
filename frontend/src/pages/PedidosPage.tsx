@@ -3,14 +3,15 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta, Exito, TablaDesplazable } from "../avisos";
+import { consultar } from "../consulta";
+import { fechaHoraLocal } from "../fechas";
+import { comoPagina, rutaPagina } from "../listado";
+import { Paginador } from "../Paginador";
 import { etiqueta, puedeRegistrarPedido } from "../permissions";
 import type { Cliente, Pedido } from "../types";
 
 function horaLocal(hora: string): string {
-  const fecha = new Date();
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  const dia = String(fecha.getDate()).padStart(2, "0");
-  return `${fecha.getFullYear()}-${mes}-${dia}T${hora}`;
+  return fechaHoraLocal(hora);
 }
 
 const vacio = {
@@ -30,6 +31,8 @@ const vacio = {
 export function PedidosPage() {
   const { llamar, sesion } = useAuth();
   const registrar = sesion ? puedeRegistrarPedido(sesion.rol) : false;
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [formulario, setFormulario] = useState(vacio);
@@ -38,19 +41,25 @@ export function PedidosPage() {
 
   useEffect(() => {
     document.title = "Pedidos · EcoLogística Lima";
-    Promise.all([llamar<Cliente[]>("/clientes"), llamar<Pedido[]>("/pedidos")])
-      .then(([listaClientes, listaPedidos]) => {
-        setClientes(listaClientes);
-        setPedidos(listaPedidos);
+    Promise.all([
+      consultar(llamar, rutaPagina("/clientes", 1)),
+      consultar(llamar, rutaPagina("/pedidos", pagina)),
+    ])
+      .then(([datosClientes, datosPedidos]) => {
+        const listaClientes = comoPagina<Cliente>(datosClientes);
+        const listaPedidos = comoPagina<Pedido>(datosPedidos);
+        setClientes(listaClientes.items);
+        setPedidos(listaPedidos.items);
+        setTotalPaginas(listaPedidos.total_pages);
         setFormulario((actual) => ({
           ...actual,
-          id_cliente: actual.id_cliente || listaClientes[0]?.id_cliente || "",
+          id_cliente: actual.id_cliente || listaClientes.items[0]?.id_cliente || "",
         }));
       })
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : "No se pudo cargar los pedidos."),
       );
-  }, [llamar]);
+  }, [llamar, pagina]);
 
   function actualizarCampo(campo: string, valor: string) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }));
@@ -285,6 +294,7 @@ export function PedidosPage() {
             </table>
           </TablaDesplazable>
         )}
+        <Paginador page={pagina} totalPages={totalPaginas} onPage={setPagina} />
       </section>
     </>
   );

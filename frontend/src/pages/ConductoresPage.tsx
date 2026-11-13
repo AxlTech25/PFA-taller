@@ -3,6 +3,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
 import { Alerta, Exito, TablaDesplazable } from "../avisos";
+import { consultar } from "../consulta";
+import { comoPagina, rutaPagina } from "../listado";
+import { Paginador } from "../Paginador";
 import { etiqueta, puedeRegistrarConductor } from "../permissions";
 import type { Conductor } from "../types";
 
@@ -20,6 +23,8 @@ const vacio = {
 export function ConductoresPage() {
   const { llamar, sesion } = useAuth();
   const registrar = sesion ? puedeRegistrarConductor(sesion.rol) : false;
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [conductores, setConductores] = useState<Conductor[]>([]);
   const [formulario, setFormulario] = useState(vacio);
   const [error, setError] = useState("");
@@ -27,12 +32,16 @@ export function ConductoresPage() {
 
   useEffect(() => {
     document.title = "Conductores · EcoLogística Lima";
-    llamar<Conductor[]>("/conductores")
-      .then(setConductores)
+    consultar(llamar, rutaPagina("/conductores", pagina))
+      .then((data) => {
+        const lista = comoPagina<Conductor>(data);
+        setConductores(lista.items);
+        setTotalPaginas(lista.total_pages);
+      })
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : "No se pudo cargar los conductores."),
       );
-  }, [llamar]);
+  }, [llamar, pagina]);
 
   function actualizarCampo(campo: string, valor: string) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }));
@@ -213,6 +222,7 @@ export function ConductoresPage() {
             </table>
           </TablaDesplazable>
         )}
+        <Paginador page={pagina} totalPages={totalPaginas} onPage={setPagina} />
       </section>
     </>
   );
