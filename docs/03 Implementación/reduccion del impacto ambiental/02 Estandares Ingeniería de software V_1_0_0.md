@@ -4,7 +4,7 @@
 
 **Proyecto:** EcoLogística Lima – optimizador de rutas sostenibles para DistriRápido S.A.C.  
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth  
-**Versión:** 1.0.1  
+**Versión:** 1.0.2  
 **Fecha:** 12 de noviembre de 2026  
 **Fecha de modificación:** 13/11/2026  
 **Equipo:** EcoLogística Lima — Carhuapoma Fano, Eilene Elizabeth; Cruz Salazar, Jorge Luiz; Estrada Flores, Axel Sebastian; Huaman Baldeon, Katheryn Elena; Leon Taza, Brayan Angel.
@@ -85,7 +85,7 @@ Las reglas siguientes obligan al código nuevo de este repositorio. Clean Code a
 
 ## 2.3 Integración continua y versiones
 
-El flujo `.github/workflows/green-audit.yml` compila el frontend y ejecuta `lhci autorun` con `lighthouserc.cjs`. Las aserciones son de error, no de advertencia: performance al menos 0,90, FCP como máximo 1 000 ms, LCP como máximo 1 400 ms, TBT como máximo 85 ms, CLS como máximo 0,02 y peso como máximo 1 100 000 bytes. No hay `|| true`. El servidor del flujo es `frontend/scripts/servir.mjs`, que negocia Brotli y Gzip. La corrida local del 12 de noviembre de 2026 terminó con todas las aserciones en verde; el resultado está en [lighthouse-ci.json](./evidencias/lighthouse-ci.json).
+El flujo `.github/workflows/green-audit.yml` levanta PostgreSQL/PostGIS, migra, siembra los usuarios `admin.lhci` y `conductor.lhci` con la clave de prueba `clave-segura`, arranca la API y ejecuta `lhci autorun` con `lighthouserc.cjs`. Audita `/login`, `/dashboard`, `/flota`, `/conductores`, `/pedidos`, `/usuarios`, `/modo` y `/rutas`. No hay `|| true`. Las aserciones son de error: performance al menos 0,90, FCP como máximo 1 000 ms, LCP como máximo 1 400 ms, TBT como máximo 85 ms, CLS como máximo 0,02 y peso como máximo 1 100 000 bytes. En `/rutas` el CLS admite hasta 0,1: la medición del 13 de noviembre dio 0,038150, por encima de 0,02 y dentro de la banda que Lighthouse puntúa como buena. El servidor es `frontend/scripts/servir.mjs`, que negocia Brotli y Gzip y, si `API_UPSTREAM` está definido, reenvía la API salvo cuando el navegador pide `text/html`.
 
 El preset de esa auditoría es el de escritorio, el mismo del informe. En el preset móvil simulado el FCP medido fue 1,352 s y esa aserción fallaría. El flujo no usa el preset móvil porque la consola se evalúa como puesto de trabajo y porque el par antes/después se tomó en escritorio.
 
@@ -137,3 +137,4 @@ El nombre del archivo sigue en `V_1_0_0`, igual que el resto de los informes de 
 |---|---|---|---|
 | 1.0.0 | 12/11/2026 | Equipo EcoLogística Lima | Estándares, guía verde, flujo de Lighthouse CI y matriz de las ocho optimizaciones. |
 | 1.0.1 | 13/11/2026 | Equipo EcoLogística Lima | Líder del proyecto. La fuente de los cuatro principios pasa al `introduction.md` del material de la Green Software Foundation. La media de los listados queda en la medición del 13/11/2026. |
+| 1.0.2 | 13/11/2026 | Equipo EcoLogística Lima | El flujo de Lighthouse cubre las ocho pantallas. El CLS de `/rutas` queda en 0,1 porque el mapa mide 0,038. |

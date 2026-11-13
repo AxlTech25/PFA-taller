@@ -55,6 +55,13 @@ describe("auth", () => {
     expect(sessionStorage.getItem(CLAVE)).toBeNull();
   });
 
+  it("acepta la sesión que la auditoría deja en una cookie", () => {
+    const datos = sesion("ADMIN");
+    document.cookie = `ecologistica_sesion=${encodeURIComponent(JSON.stringify(datos))}`;
+    montarPanel();
+    expect(screen.getByText(datos.email)).toBeInTheDocument();
+  });
+
   it("guarda la sesión al entrar y la suelta si el API responde 401", async () => {
     const usuario = userEvent.setup();
     const datos = sesion("OPERADOR");

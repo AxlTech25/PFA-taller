@@ -1,12 +1,30 @@
-import { createServer } from "node:http";
+import { createServer, request as httpRequest } from "node:http";
+import { request as httpsRequest } from "node:https";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 
-const dist = fileURLToPath(new URL("../dist/", import.meta.url));
+const dist = process.env.DIST_DIR
+  ? `${process.env.DIST_DIR.replace(/[/\\]+$/, "")}/`
+  : fileURLToPath(new URL("../dist/", import.meta.url));
 const puerto = Number(process.env.PORT || 4173);
+const apiUpstream = process.env.API_UPSTREAM || "";
+const prefijosApi = [
+  "/auth",
+  "/usuarios",
+  "/vehiculos",
+  "/conductores",
+  "/pedidos",
+  "/clientes",
+  "/optimizaciones",
+  "/rutas",
+  "/indicadores",
+  "/health",
+  "/openapi.json",
+  "/docs",
+];
 
 const tipos = {
   ".html": "text/html; charset=utf-8",
@@ -57,7 +75,40 @@ function negociar(accept, datos, ruta) {
   return { cuerpo: datos, algoritmo: null };
 }
 
+function esApi(req) {
+  if (!apiUpstream) return false;
+  // La navegación del documento pide text/html. Esas rutas (/rutas, /pedidos…)
+  // coinciden con la API y tienen que devolver la aplicación, no el JSON.
+  const accept = String(req.headers.accept || "");
+  if (accept.includes("text/html")) return false;
+  const camino = (req.url || "/").split("?")[0];
+  return prefijosApi.some((prefijo) => camino === prefijo || camino.startsWith(`${prefijo}/`));
+}
+
+function proxy(req, res) {
+  const destino = new URL(req.url || "/", apiUpstream);
+  const libreria = destino.protocol === "https:" ? httpsRequest : httpRequest;
+  const cabeceras = { ...req.headers, host: destino.host };
+  const saliente = libreria(
+    destino,
+    { method: req.method, headers: cabeceras },
+    (respuesta) => {
+      res.writeHead(respuesta.statusCode || 502, respuesta.headers);
+      respuesta.pipe(res);
+    },
+  );
+  saliente.on("error", () => {
+    if (!res.headersSent) res.writeHead(502, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("API no disponible");
+  });
+  req.pipe(saliente);
+}
+
 const server = createServer((req, res) => {
+  if (esApi(req)) {
+    proxy(req, res);
+    return;
+  }
   const ruta = resolver(req.url || "/");
   if (!ruta) {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });
