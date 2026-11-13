@@ -59,7 +59,6 @@ Al cierre del Sprint 3, quedaron algunas funcionalidades que requieren trabajo a
 | **US-010** | Motor VRPTW + Green VRP | 13 | Entrega parcial | Completar la integración del algoritmo genético mediante DEAP para procesar una instancia de 150 pedidos y 15 vehículos. Se debe mejorar la optimización de las ventanas horarias y reducir las emisiones de CO₂. |
 | **ENB-001** | SLA del motor (≤ 45 s) | 13 | Entrega parcial | Ejecutar pruebas de carga automatizadas con Locust para verificar que el percentil 95 (P95) no supere los 45 segundos. No hay URL de Staging donde correrlas: el README y el IMP-04 dejan ese despliegue pendiente. |
 | **US-012** | Mapa interactivo con Leaflet / OSM | 8 | No iniciado | Desarrollar el mapa interactivo con React-Leaflet y OpenStreetMap para visualizar las rutas, utilizando colores para diferenciar los niveles de congestión y las zonas de riesgo. |
-| **US-014** | Dashboard de métricas | 8 | No iniciado | Implementar un tablero de indicadores que permita visualizar el consumo de combustible en litros, las emisiones de CO₂ en kilogramos, el ahorro económico en soles y su equivalencia en árboles. |
 
 Las actividades pendientes se retomarán en el siguiente Sprint para avanzar con la optimización de rutas, evaluar el rendimiento del motor y completar las funcionalidades de visualización y seguimiento de indicadores. Las historias con entrega parcial requieren finalizar su implementación y verificar los criterios de aceptación antes de considerarse completadas.
 
