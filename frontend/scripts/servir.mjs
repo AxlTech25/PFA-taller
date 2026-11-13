@@ -1,5 +1,4 @@
 import { createServer, request as httpRequest } from "node:http";
-import { request as httpsRequest } from "node:https";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
@@ -10,9 +9,11 @@ const dist = process.env.DIST_DIR
   ? `${process.env.DIST_DIR.replace(/[/\\]+$/, "")}/`
   : fileURLToPath(new URL("../dist/", import.meta.url));
 const puerto = Number(process.env.PORT || 4173);
-const apiUpstream = process.env.API_UPSTREAM || "";
-const prefijosApi = [
-  "/auth",
+// Solo se reenvía a la API de esta máquina. Un valor distinto no activa el proxy:
+// el host no puede salir de una variable ni de la petición.
+const proxyLocal = process.env.API_UPSTREAM === "http://127.0.0.1:8000";
+const rutasApi = [
+  "/auth/login",
   "/usuarios",
   "/vehiculos",
   "/conductores",
@@ -75,47 +76,52 @@ function negociar(accept, datos, ruta) {
   return { cuerpo: datos, algoritmo: null };
 }
 
-function caminoPermitido(camino) {
-  return prefijosApi.some((prefijo) => camino === prefijo || camino.startsWith(`${prefijo}/`));
-}
-
 function esApi(req) {
-  if (!apiUpstream) return false;
+  if (!proxyLocal) return false;
   // La navegación del documento pide text/html. Esas rutas (/rutas, /pedidos…)
   // coinciden con la API y tienen que devolver la aplicación, no el JSON.
   const accept = String(req.headers.accept || "");
   if (accept.includes("text/html")) return false;
-  return urlDeApi(req.url) !== null;
+  return rutaLocal(req.url) !== null;
 }
 
-function urlDeApi(urlRecibida) {
-  const base = new URL(apiUpstream);
+function rutaLocal(urlRecibida) {
   let relativa;
   try {
-    // Base fija: una URL absoluta o con otro host no se acepta como ruta de la API.
     relativa = new URL(urlRecibida || "/", "http://auditoria.local");
   } catch {
     return null;
   }
   if (relativa.hostname !== "auditoria.local" || relativa.username || relativa.password) return null;
-  const destino = new URL(`${relativa.pathname}${relativa.search}`, base);
-  if (destino.origin !== base.origin || destino.username || destino.password) return null;
-  if (!caminoPermitido(destino.pathname)) return null;
-  return destino;
+  const canonica = rutasApi.find((ruta) => ruta === relativa.pathname);
+  if (!canonica) return null;
+  const pares = [];
+  for (const clave of ["page", "limite", "fecha"]) {
+    const valor = relativa.searchParams.get(clave);
+    if (valor === null) continue;
+    if (!/^[0-9A-Za-z_+.-]{1,40}$/.test(valor)) return null;
+    pares.push(`${clave}=${encodeURIComponent(valor)}`);
+  }
+  if (pares.length === 0) return canonica;
+  return `${canonica}?${pares.join("&")}`;
 }
 
 function proxy(req, res) {
-  const destino = urlDeApi(req.url);
-  if (!destino) {
+  const ruta = rutaLocal(req.url);
+  if (!ruta) {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("Ruta no permitida");
     return;
   }
-  const libreria = destino.protocol === "https:" ? httpsRequest : httpRequest;
-  const cabeceras = { ...req.headers, host: destino.host };
-  const saliente = libreria(
-    destino,
-    { method: req.method, headers: cabeceras },
+  const saliente = httpRequest(
+    {
+      protocol: "http:",
+      hostname: "127.0.0.1",
+      port: 8000,
+      method: req.method,
+      path: ruta,
+      headers: { ...req.headers, host: "127.0.0.1:8000" },
+    },
     (respuesta) => {
       res.writeHead(respuesta.statusCode || 502, respuesta.headers);
       respuesta.pipe(res);
