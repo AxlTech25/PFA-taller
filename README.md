@@ -102,7 +102,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva y el análisis de Playwright; la usabilidad sigue pendiente. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 ### Sprint 4
 
@@ -113,7 +113,7 @@ Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/S
 | 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) |
 | 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
 | 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_1.md) |
-| 04 | Usabilidad | pendiente (`04 Usabilidad V_1_0_0.md`) |
+| 04 | Usabilidad (SUS) | [04 Usabilidad V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/04%20Usabilidad%20V_1_0_0.md) |
 
 ### Sprint 3
 
