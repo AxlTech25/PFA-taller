@@ -77,12 +77,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Ver si backend cambió
+        id: cambios
+        env:
+          EVENTO: ${{ github.event_name }}
+          SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          subir=true
+          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$EVENTO" = "push" ]; then
+            echo "Etiqueta o workflow_dispatch: Railway se despliega siempre."
+          elif git rev-parse --verify "${SHA}^" >/dev/null 2>&1 && ! git diff --name-only "${SHA}^" "$SHA" -- backend/ | grep -q .; then
+            subir=false
+            echo "Railway omitió el despliegue: sin cambios en backend"
+          else
+            echo "Hay cambios en backend/, o no se pudo comparar con el padre. Railway se despliega."
+          fi
+          echo "subir=$subir" >> "$GITHUB_OUTPUT"
       - name: Instalar Railway CLI
+        if: steps.cambios.outputs.subir == 'true'
         run: npm install -g @railway/cli@5.75.0
       - name: Desplegar api y worker
+        if: steps.cambios.outputs.subir == 'true'
         env:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           DESPLIEGUE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
@@ -94,8 +114,10 @@ jobs:
             servicio="$1"
             log="$(mktemp)"
             # CLI 5.75.0: sin --detach y con --ci espera el despliegue.
-            # SUCCESS sale 0; FAILED o CRASHED sale 1. El directorio de
-            # trabajo es la raíz del repo: los servicios tienen rootDirectory backend/.
+            # SUCCESS sale 0. SKIPPED también puede salir 0: Railway no
+            # reconstruye si los watch paths no cambiaron. FAILED, CRASHED
+            # y REMOVED hacen fallar el job. El directorio de trabajo es la
+            # raíz del repo: los servicios tienen rootDirectory backend/.
             railway up \
               --project "$proyecto" \
               --environment production \
@@ -115,17 +137,21 @@ jobs:
               --service "$servicio" \
               --limit 20 \
               --json > "${log}.json"
-            python3 - "$id" "${log}.json" << 'PY'
+            python3 - "$servicio" "$id" "${log}.json" << 'PY'
           import json, sys
-          want, path = sys.argv[1], sys.argv[2]
+          servicio, want, path = sys.argv[1], sys.argv[2], sys.argv[3]
           rows = json.load(open(path))
           match = next((row for row in rows if row.get("id") == want), None)
           if match is None:
               sys.exit(f"el despliegue {want} no está en la lista")
           status = match.get("status")
-          print(f"estado {want}: {status}")
-          if status != "SUCCESS":
-              sys.exit(f"el despliegue {want} terminó en {status}")
+          print(f"estado {servicio} {want}: {status}")
+          if status == "SUCCESS":
+              sys.exit(0)
+          if status == "SKIPPED":
+              print("Railway omitió el despliegue: sin cambios en backend")
+              sys.exit(0)
+          sys.exit(f"el despliegue {servicio} {want} terminó en {status}")
           PY
           }
 
