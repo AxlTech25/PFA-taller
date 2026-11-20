@@ -22,9 +22,9 @@ Carpeta: [Sprint 4/](./Sprint%204/). `04 Usabilidad V_1_0_0.md` sigue pendiente.
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_1.md](./Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) |
 | 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
-| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_0.md](./Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_0.md) |
+| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_1.md](./Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_1.md) |
 | 04 | Usabilidad | pendiente (`04 Usabilidad V_1_0_0.md`) |
 
 ## Sprint 3
