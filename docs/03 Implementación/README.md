@@ -1,11 +1,8 @@
 # 03 Implementación
 
-Documentos de gestión del PFA, **un sprint por carpeta**. Los informes de seguimiento usan el nombre `V_1_0_0.md`.
+Documentos de gestión del PFA, **un sprint por carpeta**. Los informes de seguimiento de los sprints 1 y 2 usan el nombre `V_1_0_0.md`.
 
-Hay dos carpetas para el mismo Sprint 3 (16/10/2026 – 29/10/2026). No son dos sprints:
-
-- `Sprint 3/` guarda los informes de gestión (estado, impedimentos, revisión y retrospectiva), con la misma convención que Sprint 1, Sprint 2 y Sprint 4.
-- `Sprint 3/` guarda los entregables que pide la consigna del curso. El contenido de `Sprint 3/` no se movió.
+El Sprint 3 (16/10/2026 – 29/10/2026) guarda los entregables de la consigna del curso. El Sprint 4 guarda la revisión, la retrospectiva y el análisis de Playwright. La usabilidad (`04 Usabilidad V_1_0_0.md`) sigue pendiente.
 
 Calendario completo: [05 Cronograma de sprints V_1_0_5.md](../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
@@ -19,7 +16,20 @@ Calendario completo: [05 Cronograma de sprints V_1_0_5.md](../02%20Planificaci%C
 | 6 | 27/11/2026 | 10/12/2026 | Re-opt; PDF; confirmar entrega; compensación; US-009 (Could) | — |
 | Cierre (Hito 4) | 11/12/2026 | 13/12/2026 | UAT, documentación y presentación | — |
 
-Entregables de la consigna en [Sprint 3/](./Sprint%203/). Los informes de gestión del mismo calendario siguen en [Sprint 3/](./Sprint%203/).
+## Sprint 4
+
+Carpeta: [Sprint 4/](./Sprint%204/). `04 Usabilidad V_1_0_0.md` sigue pendiente.
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_0.md](./Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_0.md) |
+| 04 | Usabilidad | pendiente (`04 Usabilidad V_1_0_0.md`) |
+
+## Sprint 3
+
+Entregables de la consigna en [Sprint 3/](./Sprint%203/).
 
 | # | Artefacto | Archivo |
 |---|---|---|

@@ -6,8 +6,8 @@
 # 01. Transformando a Ágil
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
-**Fecha:** 28/10/2026  
-**Versión:** 1.0.9  
+**Fecha:** 20/11/2026  
+**Versión:** 1.0.10  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 ---
@@ -922,7 +922,7 @@ Detalle de carga en Jira (`ECO Sprint 2`): [02 Artefactos Jira V_1_0_10.md](./02
 
 Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Staging (IMP-04), catastro INEI (IMP-11).
 
-**Cierre en código (17/10/2026, [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)):** US-008 B, US-007, ENB-006 y el vecino más cercano están en `main`. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%203/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+**Cierre en código (17/10/2026, [PR #15](https://github.com/AxlTech25/PFA-taller/pull/15)):** US-008 B, US-007, ENB-006 y el vecino más cercano están en `main`. Revisión: [01 Revisión del Sprint V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%203/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md).
 
 ---
 
@@ -947,7 +947,7 @@ Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Stag
 
 Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-014 B (factor árboles RN-018), Staging IMP-04 e IMP-11.
 
-**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. Mapa y tablero quedan iniciados, no Done. El Hito 3 sigue el 12/11/2026. Informe: [01 Informe de estado del proyecto V_1_0_0.md](../03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md).
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. La [revisión del Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) del 20/11/2026 deja en Done las cuatro tarjetas del compromiso: ENB-001 B (5 SP), US-010 B (8 SP), US-012 A (8 SP) y US-014 A (5 SP), 26 SP. El Hito 3 sigue el 12/11/2026. Pendiente al Sprint 5: US-013, US-014 B, Staging IMP-04 e IMP-11.
 
 ---
 
@@ -1011,6 +1011,7 @@ Orden de recorte si RSK-05 se materializa: US-009 → US-017 → US-016.
 | 1.0.7 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4: ENB-001 / US-010 con algoritmo genético, inicio de US-012 y tablero iniciado. Staging (IMP-04) sigue abierto al 12/11/2026. |
 | 1.0.8 | 21/10/2026 | Equipo EcoLogística Lima | Compromiso de 26 SP alineado a lo entregado en S3 (PR #15) y S4 (PR #16). Heurística = vecino más cercano; S4 = AG DEAP + inicio de mapa y dashboard. US-009 al Sprint 6. |
 | 1.0.9 | 28/10/2026 | Equipo EcoLogística Lima | ENB-005 y el DoD D8 pasan a WCAG 2.2 AA. D1 nombra pytest-cov y @vitest/coverage-v8. D2 distingue SonarQube local de CodeQL en GitHub Actions. D8 nombra axe-core en Vitest. El archivo queda en V_1_0_9, alineado al encabezado. |
+| 1.0.10 | 20/11/2026 | Equipo EcoLogística Lima | La revisión del Sprint 4 da por cerradas ENB-001 B, US-010 B, US-012 A y US-014 A (26 SP). Pendiente al Sprint 5: IMP-04 (Staging Railway), IMP-11 (catastro INEI), US-013 y US-014 B. Los cierres de S3 y S4 enlazan la revisión que está en la carpeta. El archivo pasa a V_1_0_10. |
 
 ---
 

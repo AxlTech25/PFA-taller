@@ -1,3 +1,5 @@
+[← Volver al README principal](../../../README.md)
+
 # Evidencias fotográficas de Jira Software
 
 Colocar aquí **cinco PNG recortados** al panel de Jira (sin escritorio ni pestaña del navegador). Nombres obligatorios:
@@ -22,3 +24,5 @@ Colocar aquí **cinco PNG recortados** al panel de Jira (sin escritorio ni pesta
 8. Capturar y recortar las cinco evidencias.
 
 Fuente de datos: [02 Artefactos Jira V_1_0_10.md](../02%20Artefactos%20Jira%20V_1_0_10.md).
+
+[← Volver al README principal](../../../README.md)

@@ -10,7 +10,7 @@
 **Versión:** 1.0.5  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
-Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md).
+Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_10.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md).
 
 ---
 
@@ -101,7 +101,7 @@ Cada sprint suma **26 SP** (el cierre no suma historias). Recorte MoSCoW en el S
 
 ## 4. Compromiso por sprint (26 SP)
 
-Velocidad: **26 SP / sprint**. Total **156 SP**. Los ítems de 13 SP se parten 8+5; los de 8 que cruzan sprint se parten 5+3. Detalle BDD: [01 Transformando a ágil V_1_0_9.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) §§9–14.
+Velocidad: **26 SP / sprint**. Total **156 SP**. Los ítems de 13 SP se parten 8+5; los de 8 que cruzan sprint se parten 5+3. Detalle BDD: [01 Transformando a ágil V_1_0_10.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md) §§9–14.
 
 ### Sprint 1 — cerrado (PR #9)
 
