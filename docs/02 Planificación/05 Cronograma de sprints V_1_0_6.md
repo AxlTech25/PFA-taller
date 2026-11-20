@@ -7,7 +7,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha:** 28/10/2026  
-**Versión:** 1.0.5  
+**Versión:** 1.0.6  
 **Project Manager:** Carhuapoma Fano, Eilene Elizabeth
 
 Cada sprint dura **2 semanas calendario**. El Sprint 3 arranca el **16/10/2026**; a partir de ahí el calendario se recorre 16 días. El Hito 4 queda el **13/12/2026**. Fuente de alcance: [01 Transformando a ágil V_1_0_10.md](./01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md).
@@ -84,7 +84,7 @@ Una fila por actividad. El detalle de SP y responsables está en la sección 4. 
 | | | Implementar modo conductor (secuencia, ETA, alertas) | US-015 | 8 |
 | | | Cumplir WCAG 2.2 AA (contraste, labels, teclado) | ENB-005 | 5 |
 | | | Ajustar payload de sesión ≤ 150 KB en 2G/3G | ENB-008 | 5 |
-| | | Staging Railway/Render (arrastre IMP-04; sin SP) | IMP-04 | — |
+| | | Producción Vercel + Railway, cerrada el 20/11/2026 (IMP-04; sin SP) | IMP-04 | — |
 | | | Catastro INEI si hay archivo (arrastre IMP-11; sin SP) | IMP-11 | — |
 | **6** | 27/11/2026 – 10/12/2026 | Re-optimizar solo las rutas afectadas por un incidente | US-011 | 8 |
 | | | Generar reporte PDF de sostenibilidad | US-016 | 5 |
@@ -153,7 +153,7 @@ Entregado en paralelo, **sin SP:** CodeQL (`.github/workflows/codeql.yml`). **No
 | US-014 A | Inicio dashboard: km, CO₂, combustible, soles, % ventanas | 5 | Huaman Baldeon, Katheryn Elena |
 | | **Total** | **26** | |
 
-**Pendiente al Sprint 5:** cierre de US-012 vía US-013 (zonas y ruta alternativa), US-014 B (factor árboles RN-018), Staging de IMP-04 (Railway/Render) e IMP-11 (sin catastro INEI). El Hito 3 no se mueve: 12/11/2026.
+**Pendiente al Sprint 5:** cierre de US-012 vía US-013 (zonas y ruta alternativa), US-014 B (factor árboles RN-018) e IMP-11 (sin catastro INEI). IMP-04 quedó cerrado el 20/11/2026: la producción es Vercel más Railway, no el Staging Railway/Render. El Hito 3 no se mueve: 12/11/2026.
 
 ### Sprint 5 — 13/11/2026 – 26/11/2026
 
@@ -166,7 +166,7 @@ Entregado en paralelo, **sin SP:** CodeQL (`.github/workflows/codeql.yml`). **No
 | ENB-008 | Payload ≤ 150 KB en 2G/3G | 5 | Estrada Flores, Axel Sebastian |
 | | **Total** | **26** | |
 
-Fuera: re-optimización, PDF, confirmar entrega, US-009. IMP-04 Staging e IMP-11 siguen en paralelo, **sin SP**.
+Fuera: re-optimización, PDF, confirmar entrega, US-009. IMP-11 sigue en paralelo, **sin SP**. IMP-04 se cerró el 20/11/2026.
 
 ### Sprint 6 — 27/11/2026 – 10/12/2026
 
@@ -197,6 +197,7 @@ Sin historias nuevas. UAT, documentación, presentación y release `v1.0.3-MVP`.
 | 1.0.3 | 18/10/2026 | Equipo EcoLogística Lima | Cierre en código del Sprint 4 el 18/10/2026, antes de la ventana 30/10–12/11. Genético, mapa iniciado y tablero iniciado. Staging sigue pendiente al 12/11. |
 | 1.0.4 | 21/10/2026 | Equipo EcoLogística Lima | Tabla de actividades y compromiso de 26 SP alineados a lo entregado en S3 (PR #15) y S4 (PR #16). US-009 al Sprint 6 para no romper el tope de 26 SP del Sprint 5. |
 | 1.0.5 | 28/10/2026 | Equipo EcoLogística Lima | ENB-005 pasa a WCAG 2.2 AA. El archivo se renombra de V_1_0_0 a V_1_0_5 para que el nombre coincida con el encabezado. |
+| 1.0.6 | 20/11/2026 | Equipo EcoLogística Lima | IMP-04 queda cerrado el 20/11/2026: producción en Vercel y Railway. El archivo pasa a V_1_0_6. |
 
 ---
 

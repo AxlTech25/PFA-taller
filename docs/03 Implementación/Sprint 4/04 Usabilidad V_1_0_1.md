@@ -6,7 +6,7 @@
 
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
 
-**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Versión: 1.0.0.
+**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Versión: 1.0.1.
 
 **Instrumento:** System Usability Scale (SUS), 10 ítems, formulario [Evaluación de usabilidad – EcoLogística Lima](https://forms.gle/4pUiEtxLqffGGF2y7).
 
@@ -15,6 +15,20 @@
 **Muestra:** n = 9. Las nueve personas marcaron el rol Estudiante y respondieron Sí a haber completado todas las tareas.
 
 Las respuestas anonimizadas están en [sus/respuestas.csv](./sus/respuestas.csv). Ninguna cifra de este informe se redondeó de nuevo: se archivan tal como quedaron calculadas.
+
+---
+
+## 0. Guion de tareas
+
+El formulario pide hacer las tareas en la aplicación y después responder. No quedó un guion aparte de esa sesión. Las tareas de abajo son las que la propia aplicación ofrece y las que recorre `frontend/e2e` (inicio de sesión, Flota, Conductores, Pedidos, Rutas y Tablero). No son resultados medidos: las únicas respuestas archivadas siguen siendo el Sí de «completé todas las tareas», los diez ítems y los comentarios.
+
+1. Abrir [https://ecologistica-lima-beige.vercel.app/login](https://ecologistica-lima-beige.vercel.app/login). Sin sesión, Flota, Conductores, Pedidos, Rutas y Tablero vuelven al login. El encabezado de esa pantalla es «EcoLogística Lima».
+2. Entrar con correo y contraseña. Si no coinciden, la pantalla muestra «Credenciales inválidas» y se queda en el login. Con una sesión válida se ve el correo, el rol, el menú de módulos y «Cerrar sesión».
+3. En Flota, mirar la tabla «Unidades registradas» y el formulario «Registrar vehículo» (placa, capacidades, consumo y factor de CO₂). La unidad de demostración del sistema es `DMO-101`.
+4. En Conductores, abrir «Registrar conductor» (nombre y DNI).
+5. En Pedidos, elegir un cliente de demostración. «Bodega El Ahorro — con consentimiento» permite el alta; hay que indicar peso, volumen, dirección y punto de referencia. Dentro de cobertura el pedido queda Pendiente, en San Juan de Lurigancho.
+6. En Rutas, elegir la fecha y pulsar «Generar rutas». Eso encola la optimización. El mapa Leaflet dibuja el plan; si no hay pedidos pendientes, la pantalla lo dice. Si las teselas no cargan, queda la tabla.
+7. En Tablero, consultar el período. Con un plan se ven kilómetros, CO₂, combustible, soles y el porcentaje de ventanas. Sin rutas, el aviso es «Sin datos de operación para el período seleccionado».
 
 ---
 
@@ -132,5 +146,6 @@ La siguiente pasada tiene que avisar, antes de responder, que los ítems pares e
 | Versión | Fecha | Autor | Descripción |
 |---|---|---|---|
 | 1.0.0 | 20/11/2026 | Equipo EcoLogística Lima | Acta SUS con n = 9, estudiantes, 20/11/2026 14:33–16:39 (Lima), sitio público. Media oficial 68.33, grado C, 5/9 en o sobre 68. Sin P3, P4 y P6 la media exploratoria es 80.42. |
+| 1.0.1 | 20/11/2026 | Equipo EcoLogística Lima | Se añade el guion de tareas tomado de los flujos de la aplicación y de `frontend/e2e`. Las cifras no cambian. El archivo pasa a V_1_0_1. |
 
 [← Volver al README principal](../../../README.md)

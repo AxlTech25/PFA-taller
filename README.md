@@ -21,7 +21,7 @@ Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para Di
 
 ### Cronograma de sprints
 
-Calendario vigente: [`05 Cronograma de sprints V_1_0_5.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md). El Sprint 3 arranca el **16/10/2026**.
+Calendario vigente: [`05 Cronograma de sprints V_1_0_6.md`](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md). El Sprint 3 arranca el **16/10/2026**.
 
 | Sprint | Inicio | Fin | Hito |
 |---|---|---|---|
@@ -45,7 +45,7 @@ Calendario vigente: [`05 Cronograma de sprints V_1_0_5.md`](./docs/02%20Planific
 | 6 | Re-optimización; PDF; confirmar entrega; compensación de carbono; preferencias de cliente (US-009, Could) |
 | Cierre | UAT, documentación y presentación (sin historias nuevas) |
 
-Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10); Sprint 4 el 18/10/2026 (antes de la ventana 30/10–12/11; el Hito 3 sigue el 12/11). Actividades, ID y SP: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) §3. Responsables: misma fuente, §4.
+Cierre en código: Sprint 1 el 30/09/2026; Sprint 2 el 01/10/2026; Sprint 3 el 17/10/2026 (dentro de la ventana 16/10–29/10); Sprint 4 el 18/10/2026 (antes de la ventana 30/10–12/11; el Hito 3 sigue el 12/11). Actividades, ID y SP: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md) §3. Responsables: misma fuente, §4.
 
 ---
 
@@ -76,7 +76,7 @@ Documentos de constitución, visión, requisitos, arquitectura y restricciones. 
 | 07 | Requisitos no funcionales | [07. Requisitos no funcionales V_1_0_2.md](./docs/01%20Inicio/07.%20Requisitos%20no%20funcionales%20V_1_0_2.md) |
 | 08 | Usuarios | [08. Usuarios V_1_0_1.md](./docs/01%20Inicio/08.%20Usuarios%20V_1_0_1.md) |
 | 09 | Reglas de negocio | [09. Reglas de negocio V_1_0_1.md](./docs/01%20Inicio/09.%20Reglas%20de%20negocio%20V_1_0_1.md) |
-| 10 | Stack tecnológico | [10. Stack tecnológico V_1_0_3.md](./docs/01%20Inicio/10.%20Stack%20tecnol%C3%B3gico%20V_1_0_3.md) |
+| 10 | Stack tecnológico | [10. Stack tecnológico V_1_0_4.md](./docs/01%20Inicio/10.%20Stack%20tecnol%C3%B3gico%20V_1_0_4.md) |
 | 11 | Base de datos | [11. Base de datos V_1_0_1.md](./docs/01%20Inicio/11.%20Base%20de%20datos%20V_1_0_1.md) |
 | 12 | Modelo C4 | [12. Modelo C4 V_1_0_2.md](./docs/01%20Inicio/12.%20Modelo%20C4%20V_1_0_2.md) |
 | 13 | Restricciones | [13. Restricciones V_1_0_2.md](./docs/01%20Inicio/13.%20Restricciones%20V_1_0_2.md) |
@@ -93,7 +93,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 | 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_10.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
-| 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_5.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) | — |
+| 05 | Cronograma de sprints | [05 Cronograma de sprints V_1_0_6.md](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md) | — |
 | — | Evidencias Jira (capturas recortadas) | [evidencias/](./docs/02%20Planificaci%C3%B3n/evidencias/) | — |
 
 ---
@@ -102,18 +102,18 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md).
 
 ### Sprint 4
 
-Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/Sprint%204/). Cierre del compromiso de 26 SP: ENB-001 B, US-010 B, US-012 A y US-014 A. Quedan para el Sprint 5 IMP-04 (Staging en Railway), IMP-11 (catastro INEI), US-013 y US-014 B.
+Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/Sprint%204/). Cierre del compromiso de 26 SP: ENB-001 B, US-010 B, US-012 A y US-014 A. Quedan para el Sprint 5 IMP-11 (catastro INEI), US-013 y US-014 B. IMP-04 quedó en producción el 20/11/2026: [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app) y la API [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app).
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) |
-| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_2.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_2.md) |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_1.md) |
 | 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_1.md) |
-| 04 | Usabilidad (SUS) | [04 Usabilidad V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/04%20Usabilidad%20V_1_0_0.md) |
+| 04 | Usabilidad (SUS) | [04 Usabilidad V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/04%20Usabilidad%20V_1_0_1.md) |
 
 ### Sprint 3
 
@@ -229,12 +229,12 @@ Los sprints 1 a 3 siguen vigentes. Esta entrega cierra en código el motor y los
 | US-008 B | Cobertura de San Juan de Lurigancho, El Agustino, Santa Anita y Ate; punto de referencia y `georreferencia_aproximada` |
 | US-007 | Confirmación de ruta: rechazo si la conducción del día supera 8 h (Ley N.º 30224) y descanso de 1 h cada 4 h |
 | ENB-006 | `POST /optimizaciones` responde 202. El worker (`python -m app.worker`) calcula fuera del request. Redis caído → 503, sin job huérfano |
-| ENB-001 / US-010 | Algoritmo genético (DEAP) en el worker, rutas en borrador, pico y placa, congestión y comparación con el vecino más cercano. Bench 150×15 en CI. La corrida en Staging sigue pendiente |
+| ENB-001 / US-010 | Algoritmo genético (DEAP) en el worker, rutas en borrador, pico y placa, congestión y comparación con el vecino más cercano. Bench 150×15 en CI. La producción está en [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app) |
 | US-012 | Inicio: mapa Leaflet/OSM con trazado, paradas, ETA por tramo y semáforo. Si las teselas fallan, queda la tabla |
 | US-014 | Inicio del tablero (km, CO₂, combustible, soles, % de ventanas). El factor de árboles (RN-018) no está ratificado |
 | ENB-004 | 403 por rol, rechazo de inyección obvia en formularios y auditoría de login, vehículo, conductor y pedido |
 | ENB-007 | OpenAPI en vivo en `/docs`. `GET /clientes` es catálogo de demostración, sin altas |
-| IMP-04 | Workflow CodeQL. **Staging en la nube sigue pendiente** (no hay secreto de Railway/Render) |
+| IMP-04 | Producción en línea: [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app) y API [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app). CodeQL y `deploy-production.yml` en GitHub Actions. Cerrado el 20/11/2026 |
 
 ## Cómo ejecutarlo
 
