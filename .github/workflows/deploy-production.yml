@@ -84,11 +84,11 @@ jobs:
       - name: Desplegar api y worker
         working-directory: backend
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           set -eu
-          railway up --service api --environment production --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --detach -y
-          railway up --service worker --environment production --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --detach -y
+          railway up --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --environment production --service api --detach -y
+          railway up --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --environment production --service worker --detach -y
       - name: Esperar a que /health responda 200
         run: |
           set -eu

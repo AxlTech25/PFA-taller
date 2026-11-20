@@ -204,7 +204,7 @@ Secretos del repositorio, solo los nombres. Ninguno va escrito en el workflow.
 
 | Secreto | Para qué | Cómo obtenerlo |
 |---|---|---|
-| `RAILWAY_TOKEN` | `railway up` de `api` y `worker` | Token de proyecto en Railway, para el proyecto `81c6f2b1-cac0-4061-bc96-6d8bd46754be`. |
+| `RAILWAY_TOKEN` | `railway up` de `api` y `worker`. El workflow lo expone como `RAILWAY_API_TOKEN`. | Token de API del workspace en [railway.com/account/tokens](https://railway.com/account/tokens), con alcance al workspace que contiene el proyecto `81c6f2b1-cac0-4061-bc96-6d8bd46754be`. |
 | `VERCEL_TOKEN` | CLI de Vercel | Token de cuenta en Vercel, equipo `eco-pfa`. |
 | `VERCEL_ORG_ID` | Alcance del equipo | `team_Sw5bWg7fktluEGmYE84y39R3`. |
 | `VERCEL_PROJECT_ID` | Proyecto `ecologistica-lima` | `prj_lnO9MxEO2sLa0MoB3xHey3vFdvXp`. |
