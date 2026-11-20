@@ -6,9 +6,9 @@
 
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
 
-**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Hito 3 el 12/11/2026. Retrospectiva: 20/11/2026. Versión: 1.0.0.
+**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Hito 3 el 12/11/2026. Retrospectiva: 20/11/2026. Versión: 1.0.1.
 
-El detalle de lo entregado está en la [revisión del sprint](./01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md). Las cifras de Lighthouse y de CO₂ del software están en el [informe de reducción del impacto ambiental](../reduccion%20del%20impacto%20ambiental/01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md).
+El detalle de lo entregado está en la [revisión del sprint](./01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_2.md). Las cifras de Lighthouse y de CO₂ del software están en el [informe de reducción del impacto ambiental](../reduccion%20del%20impacto%20ambiental/01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md).
 
 ## ¿Qué aprendimos?
 
@@ -66,5 +66,26 @@ Cada acción tiene un responsable, una fecha y una forma de saber si se cumplió
 | A5 | Mantener IMP-11 sin geometría inventada. Si el archivo del catastro INEI llega al repositorio, reemplazar las envolventes de `distrito_cobertura` y conservar `ST_Covers`. Si no llega, el impedimento sigue Aceptado. | Leon Taza, Brayan Angel | 26/11/2026 | O hay una migración nueva que sustituye las envolventes de `004_sprint3_cobertura.py` por el archivo recibido, o el registro del Sprint 5 repite que no había archivo y que no se cargó un polígono de relleno. |
 
 US-013 (zonas y ruta alternativa, 5 SP) y US-014 B (factor de árboles, 3 SP) siguen siendo el compromiso de producto del Sprint 5. No se reabren como acciones de esta retrospectiva: ya tienen responsable y SP en el cronograma. A1 a A5 cubren lo que este sprint dejó configurado y sin ejecutar.
+
+## Apéndice: seguimiento del 20/11/2026
+
+La sesión de arriba no se reescribe. Este apéndice dice qué pasó con A1–A5 el mismo 20/11/2026, después de esa reunión.
+
+| ID | Estado al 20/11/2026 |
+| --- | --- |
+| A1 | Hecho en otra topología. La interfaz está en Vercel ([https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app)) y la API en Railway ([https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app), `/health`). Railway corre `api`, `worker` (`PROCESO=worker`), `db` (`postgis/postgis:16-3.4`) y `Redis`. No se publicó el servicio `web` de `Dockerfile.prod`. |
+| A2 | Hecho. `.github/workflows/tests.yml` corre Playwright en Chromium, Firefox y WebKit. La suite recorre el inicio de sesión, Flota, Conductores, Pedidos, Rutas (encola la optimización) y el Tablero. |
+| A3 | Archivado, con otro perfil. [04 Usabilidad V_1_0_1.md](./04%20Usabilidad%20V_1_0_1.md) guarda n = 9, media 68.33 y grado C, con la fórmula estándar. Las nueve personas son estudiantes. No hay Operador ni Gerente, que era el perfil pedido. |
+| A4 | Los secretos `RAILWAY_TOKEN`, `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID` están configurados. `ci.yml`, `tests.yml`, `codeql.yml` y `green-audit.yml` siguen en el repositorio, y `deploy-production.yml` sí publica en Railway y Vercel después de `Tests` en verde sobre `main`. La corrida [44819456279](https://github.com/AxlTech25/PFA-taller/actions/runs/44819456279) terminó en verde. |
+| A5 | Sigue abierta. No hay archivo del catastro INEI en el repositorio y no se cargó un polígono de relleno. |
+
+Playwright ya está en el repositorio. El SUS también, con la salvedad de rol de A3.
+
+## Historial de Control de Cambios
+
+| Versión | Fecha | Autor | Descripción |
+|---|---|---|---|
+| 1.0.0 | 20/11/2026 | Equipo EcoLogística Lima | Acta de la retrospectiva del Sprint 4. Las acciones A1–A5 quedan abiertas ese día, con la información de la sesión. |
+| 1.0.1 | 20/11/2026 | Equipo EcoLogística Lima | Apéndice del 20/11/2026: A1 en Vercel y Railway sin servicio `web`, A2 y Playwright hechos, A3 archivado con n = 9 estudiantes, secretos configurados y despliegue automático. A5 sigue abierta. El archivo pasa a V_1_0_1. |
 
 [← Volver al README principal](../../../README.md)

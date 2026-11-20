@@ -4,7 +4,7 @@ Documentos de gestión del PFA, **un sprint por carpeta**. Los informes de segui
 
 El Sprint 3 (16/10/2026 – 29/10/2026) guarda los entregables de la consigna del curso. El Sprint 4 guarda la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS.
 
-Calendario completo: [05 Cronograma de sprints V_1_0_5.md](../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Calendario completo: [05 Cronograma de sprints V_1_0_6.md](../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md).
 
 | Sprint | Inicio | Fin | Actividades | Carpeta |
 |---|---|---|---|---|
@@ -22,10 +22,10 @@ Carpeta: [Sprint 4/](./Sprint%204/).
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_1.md](./Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) |
-| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_2.md](./Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_2.md) |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_1.md](./Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_1.md) |
 | 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_1.md](./Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_1.md) |
-| 04 | Usabilidad (SUS) | [04 Usabilidad V_1_0_0.md](./Sprint%204/04%20Usabilidad%20V_1_0_0.md) |
+| 04 | Usabilidad (SUS) | [04 Usabilidad V_1_0_1.md](./Sprint%204/04%20Usabilidad%20V_1_0_1.md) |
 
 ## Sprint 3
 

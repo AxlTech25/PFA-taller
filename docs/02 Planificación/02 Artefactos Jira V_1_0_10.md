@@ -67,7 +67,7 @@ Regla de columna **Done**: solo si se cumple el [DoD global](./01%20Transformand
 
 ## 3. Evidencia 1 — Roadmap del proyecto
 
-Épicas alineadas a 6 sprints de 2 semanas. El Sprint 3 arranca el **16/10/2026**; el cierre es el **13/12/2026**. Fechas: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Épicas alineadas a 6 sprints de 2 semanas. El Sprint 3 arranca el **16/10/2026**; el cierre es el **13/12/2026**. Fechas: [05 Cronograma de sprints V_1_0_6.md](./05%20Cronograma%20de%20sprints%20V_1_0_6.md).
 
 | Sprint Jira | Inicio | Fin |
 |---|---|---|
@@ -302,7 +302,7 @@ No meter US-009 (queda para el Sprint 6: el Sprint 5 ya suma 26 SP). Staging IMP
 
 Recorte MoSCoW: US-009 → US-017 → US-016.
 
-Al crear cada sprint: Backlog → **Crear sprint** → nombre `ECO Sprint n` → pegar el Goal **antes** de iniciarlo → fechas del [cronograma](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Al crear cada sprint: Backlog → **Crear sprint** → nombre `ECO Sprint n` → pegar el Goal **antes** de iniciarlo → fechas del [cronograma](./05%20Cronograma%20de%20sprints%20V_1_0_6.md).
 
 ---
 

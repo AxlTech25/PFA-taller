@@ -809,11 +809,11 @@ Orden: valor de negocio + riesgo técnico (RSK-03 primero en cuanto exista flota
 | 26 | US-017 | Compensación de carbono | US | EP-07 | 5 | 6 | API / Frontend |
 | | | **Total** | | | **156** | | |
 
-US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable: ENB-001 = 8+5, US-010 = 5+8. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP). US-014 (8 SP) se parte en A (Sprint 4, 5 SP) y B (Sprint 5, 3 SP) para el Hito 3. US-009 (Could) queda en el Sprint 6, primera en recortarse. Tabla canónica: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md) §3.
+US-010 y ENB-001 (13 SP) se ejecutan en dos sprints consecutivos con subtareas ≤ 8 h, nunca como un único bloque sin avance demostrable: ENB-001 = 8+5, US-010 = 5+8. US-008 (8 SP) se parte en incremento A (Sprint 2, 5 SP) e incremento B (Sprint 3, 3 SP). US-014 (8 SP) se parte en A (Sprint 4, 5 SP) y B (Sprint 5, 3 SP) para el Hito 3. US-009 (Could) queda en el Sprint 6, primera en recortarse. Tabla canónica: [05 Cronograma de sprints V_1_0_6.md](./05%20Cronograma%20de%20sprints%20V_1_0_6.md) §3.
 
 ### 8.1 Cronograma de sprints (fechas)
 
-Calendario canónico: [05 Cronograma de sprints V_1_0_5.md](./05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Calendario canónico: [05 Cronograma de sprints V_1_0_6.md](./05%20Cronograma%20de%20sprints%20V_1_0_6.md).
 
 | Sprint | Inicio | Fin | Hito del Acta |
 |---|---|---|---|
@@ -947,7 +947,7 @@ Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Stag
 
 Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-014 B (factor árboles RN-018), Staging IMP-04 e IMP-11.
 
-**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. La [revisión del Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) del 20/11/2026 deja en Done las cuatro tarjetas del compromiso: ENB-001 B (5 SP), US-010 B (8 SP), US-012 A (8 SP) y US-014 A (5 SP), 26 SP. El Hito 3 sigue el 12/11/2026. Pendiente al Sprint 5: US-013, US-014 B, Staging IMP-04 e IMP-11.
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. La [revisión del Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_2.md) del 20/11/2026 deja en Done las cuatro tarjetas del compromiso: ENB-001 B (5 SP), US-010 B (8 SP), US-012 A (8 SP) y US-014 A (5 SP), 26 SP. El Hito 3 sigue el 12/11/2026. IMP-04 se cerró el 20/11/2026 (producción Vercel y Railway). Pendiente al Sprint 5: US-013, US-014 B e IMP-11.
 
 ---
 
