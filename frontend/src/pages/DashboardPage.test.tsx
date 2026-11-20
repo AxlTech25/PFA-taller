@@ -35,7 +35,9 @@ describe("DashboardPage", () => {
     expect(screen.getByText("80 %")).toBeInTheDocument();
     expect(screen.getByText("Árboles equivalentes").closest("article")).toHaveTextContent("—");
     expect(screen.getByText("RN-018 pendiente")).toBeInTheDocument();
-    expect(screen.getByLabelText("Indicadores del día").textContent).toMatch(/10/);
+    expect(screen.getByText("S/ 10.00")).toBeInTheDocument();
+    expect(screen.getByText("S/ 15.00")).toBeInTheDocument();
+    expect(screen.getByText("S/ 4.00")).toBeInTheDocument();
   });
 
   it("avisa cuando el período no tiene operación", async () => {
