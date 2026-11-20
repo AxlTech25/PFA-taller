@@ -14,7 +14,7 @@
 
 El compromiso del Sprint 4 fue **26 Story Points**: el algoritmo genético, el escenario de 150 pedidos y 15 vehículos, el inicio del mapa y el inicio del tablero. Las cuatro tarjetas están en **Done** en Jira y el código está en `main`. El motor, el mapa y el tablero entraron el 18/10/2026, antes de abrir la ventana; el Hito 3 se mantiene el 12/11/2026. Los pull requests posteriores cerraron el trazado por calles y la medición de Green IT.
 
-Fuente del alcance: [01 Transformando a ágil](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) (§5 y §12), [02 Artefactos Jira](../../02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) (§5.3) y [05 Cronograma de sprints](../../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) (§4).
+Fuente del alcance: [01 Transformando a ágil](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md) (§5 y §12), [02 Artefactos Jira](../../02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) (§5.3) y [05 Cronograma de sprints](../../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) (§4).
 
 El criterio D4 del Definition of Done (demostrar la historia en Staging en la nube) no forma parte de este cierre. La configuración de Railway está en el PR #23 y los servicios no se levantaron: no hay URL pública. La demostración y las pruebas corrieron en Docker Compose, en `http://localhost:5173` y `http://localhost:8000`.
 

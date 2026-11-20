@@ -1,5 +1,16 @@
 # EcoLogística Lima
 
+[![CI](https://github.com/AxlTech25/PFA-taller/actions/workflows/ci.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/ci.yml)
+[![Tests](https://github.com/AxlTech25/PFA-taller/actions/workflows/tests.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/AxlTech25/PFA-taller/actions/workflows/codeql.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/codeql.yml)
+[![Green IT](https://github.com/AxlTech25/PFA-taller/actions/workflows/green-audit.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/green-audit.yml)
+
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://react.dev/)
+[![PostgreSQL + PostGIS](https://img.shields.io/badge/PostgreSQL%2016%20%2B%20PostGIS-4169E1?logo=postgresql&logoColor=white)](https://postgis.net/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+
 Plataforma web de optimización de rutas sostenibles (VRPTW + Green VRP) para DistriRápido S.A.C., desarrollada como Proyecto Final de Carrera en el curso **Taller de Proyectos 2** de la Universidad Continental.
 
 **Repositorio:** [AxlTech25/PFA-taller](https://github.com/AxlTech25/PFA-taller)  
@@ -77,7 +88,7 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 | # | Artefacto | Archivo | Puntaje |
 |---|---|---|---|
-| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_9.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_9.md) | 5.0 |
+| 01 | Transformación a ágil (Épicas, US, Enablers, DoD) | [01 Transformando a ágil V_1_0_10.md](./docs/02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md) | 5.0 |
 | 02 | Configuración y evidencias de Jira Software | [02 Artefactos Jira V_1_0_10.md](./docs/02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) | 5.0 |
 | 03 | Registro de riesgos (PMBOK / CMMI) | [03 Registro de riesgos V_1_0_4.md](./docs/02%20Planificaci%C3%B3n/03%20Registro%20de%20riesgos%20V_1_0_4.md) | 3.0 |
 | 04 | Presupuesto del proyecto | [04 Presupuesto del proyecto V_1_0_2.md](./docs/02%20Planificaci%C3%B3n/04%20Presupuesto%20del%20proyecto%20V_1_0_2.md) | 3.0 |
@@ -90,31 +101,22 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Los sprints 1, 2 y 4, y la carpeta de gestión `Sprint 3/`, tienen los cuatro archivos de seguimiento con el nombre `V_1_0_0.md`. La carpeta `Sprint 3/` reúne los entregables de la consigna del curso para ese mismo Sprint 3 (ítems 1 a 5). Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
+Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva y el análisis de Playwright; la usabilidad sigue pendiente. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md).
 
 ### Sprint 4
 
-Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/Sprint%204/).
+Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/Sprint%204/). Cierre del compromiso de 26 SP: ENB-001 B, US-010 B, US-012 A y US-014 A. Quedan para el Sprint 5 IMP-04 (Staging en Railway), IMP-11 (catastro INEI), US-013 y US-014 B.
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md) |
-| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Registro%20de%20Impedimentos%20V_1_0_0.md) |
-| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
-| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
+| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_0.md) |
+| 04 | Usabilidad | pendiente (`04 Usabilidad V_1_0_0.md`) |
 
 ### Sprint 3
 
-Carpeta de gestión: [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implementaci%C3%B3n/Sprint%203/).
-
-| # | Artefacto | Archivo |
-|---|---|---|
-| 01 | Informe de estado del proyecto | [01 Informe de estado del proyecto V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/01%20Informe%20de%20estado%20del%20proyecto%20V_1_0_0.md) |
-| 02 | Registro de impedimentos | [02 Registro de Impedimentos V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/02%20Registro%20de%20Impedimentos%20V_1_0_0.md) |
-| 03 | Revisión del Sprint | [03 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/03%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
-| 04 | Retrospectiva del Sprint | [04 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%203/04%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
-
-Entregables de la consigna del curso, en [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implementaci%C3%B3n/Sprint%203/). `Sprint 3/` y `Sprint 3/` son el mismo calendario: la primera guarda estos ítems y la segunda, los informes de gestión.
+Carpeta: [`docs/03 Implementación/Sprint 3/`](./docs/03%20Implementaci%C3%B3n/Sprint%203/).
 
 | # | Artefacto | Archivo |
 |---|---|---|
