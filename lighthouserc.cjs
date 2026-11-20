@@ -1,10 +1,14 @@
+function tope(maxNumericValue) {
+  return ["error", { maxNumericValue, aggregationMethod: "median" }];
+}
+
 const comun = {
-  "categories:performance": ["error", { minScore: 0.9 }],
-  "first-contentful-paint": ["error", { maxNumericValue: 1000 }],
-  "largest-contentful-paint": ["error", { maxNumericValue: 1400 }],
-  "total-blocking-time": ["error", { maxNumericValue: 85 }],
-  "cumulative-layout-shift": ["error", { maxNumericValue: 0.02 }],
-  "resource-summary:total:transferSize": ["error", { maxNumericValue: 1100000 }],
+  "categories:performance": ["error", { minScore: 0.9, aggregationMethod: "median" }],
+  "first-contentful-paint": tope(1000),
+  "largest-contentful-paint": tope(1400),
+  "total-blocking-time": tope(85),
+  "cumulative-layout-shift": tope(0.02),
+  "resource-summary:total:transferSize": tope(1100000),
 };
 
 const rutas = comun;
@@ -33,7 +37,10 @@ module.exports = {
         "http://127.0.0.1:4173/modo",
         "http://127.0.0.1:4173/rutas",
       ],
-      numberOfRuns: 1,
+      // Una sola pasada del tablero osciló entre 97 ms y 146 ms de TBT
+      // (presupuesto 85 ms) en el mismo artefacto. La mediana de 3 pasadas
+      // descarta ese sample suelto sin subir el presupuesto.
+      numberOfRuns: 3,
       settings: {
         preset: "desktop",
         onlyCategories: ["performance"],

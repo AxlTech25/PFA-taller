@@ -7,11 +7,12 @@ import { fechaHoy } from "../fechas";
 import type { Indicadores } from "../types";
 
 function soles(valor: number): string {
-  return new Intl.NumberFormat("es-PE", {
-    style: "currency",
-    currency: "PEN",
-    minimumFractionDigits: 2,
-  }).format(valor);
+  // Sin Intl.NumberFormat: el primer `es-PE` + moneda carga datos ICU en el
+  // hilo principal y empuja el TBT del tablero por encima del presupuesto.
+  const negativo = valor < 0;
+  const [entero, fraccion] = Math.abs(valor).toFixed(2).split(".");
+  const grupos = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `${negativo ? "-" : ""}S/ ${grupos}.${fraccion}`;
 }
 
 export function DashboardPage() {

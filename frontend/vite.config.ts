@@ -115,6 +115,11 @@ export default defineConfig({
     port: 5173,
     proxy,
   },
+  preview: {
+    host: "127.0.0.1",
+    port: 4173,
+    proxy,
+  },
   test: {
     environment: "jsdom",
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],

@@ -23,6 +23,12 @@ dist/
 frontend/coverage/
 .vite/
 .lighthouseci/
+playwright-report/
+test-results/
+blob-report/
+frontend/playwright-report/
+frontend/test-results/
+frontend/blob-report/
 
 # IDE y SO
 .idea/
