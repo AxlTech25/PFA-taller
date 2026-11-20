@@ -4,7 +4,7 @@
 
 **Nombre del Proyecto:** EcoLogística Lima – Optimizador de Rutas Sostenibles para DistriRápido S.A.C.  
 **Fecha de la medición:** 2026-11-20  
-**Versión del análisis:** V_1_0_0  
+**Versión del análisis:** V_1_0_1  
 **Herramienta:** Playwright Test 1.65.1 (Chromium, Firefox y WebKit)
 
 La medición se hizo sobre la pila local: PostgreSQL 16.15 con PostGIS 3.4.2, Redis 7.0, uvicorn (`app.main:app` en `127.0.0.1:8000`), el worker `python -m app.worker` y el preview de producción del frontend (`vite preview` en `http://127.0.0.1:4173`, con el mismo proxy de API que el servidor de desarrollo). El informe HTML de esa corrida marca **69 pasadas, 0 fallidas, 0 inestables y 0 omitidas**, en 1.3 minutos. La misma suite queda en el workflow `Tests` para repetirse en GitHub Actions.
@@ -23,6 +23,7 @@ frontend/
     formularios.spec.ts
     disponibilidad.spec.ts
     rendimiento.spec.ts
+    produccion.spec.ts         # solo con E2E_PRODUCCION=1; no corre en CI
   .gitignore                 # playwright-report/, test-results/, blob-report/
 .github/workflows/
   ci.yml                     # estilo, estático, build y dependencias
@@ -30,7 +31,7 @@ frontend/
 backend/scripts/
   comprobar_integracion.py   # API ya arrancada: salud, login, listado y 422
 docs/03 Implementación/Sprint 4/
-  03 Analisis PlayWrigth V_1_0_0.md
+  03 Analisis PlayWrigth V_1_0_1.md
   img/
 ```
 
@@ -211,7 +212,7 @@ El 500 y el corte de red no dejan la página en blanco: el módulo pinta el `rol
 
 En esta corrida `GET /health` respondió 200 antes de abrir Playwright y otra vez dentro de la suite, en los tres navegadores. No hubo un 5xx originado por uvicorn, PostgreSQL o Redis: los 500 y los abortos de la sección 4.2 son interceptaciones del navegador. El plan del 2099-01-01 se encoló en Redis y el worker lo cerró con un mensaje de negocio.
 
-Eso cubre la máquina local y el job de GitHub Actions (el workflow `Tests` repite PostGIS, Redis, uvicorn, el worker y los tres navegadores, y guarda el informe HTML). No es una cifra de disponibilidad de producción. El staging en Railway (IMP-04) sigue pendiente: no hay `deploy-production.yml` en este cambio porque los secretos de ese entorno todavía no están configurados. Cuando ese entorno exista, la misma suite puede apuntar allí con `PLAYWRIGHT_BASE_URL`.
+Eso cubre la máquina local y el job de GitHub Actions (el workflow `Tests` repite PostGIS, Redis, uvicorn, el worker y los tres navegadores, y guarda el informe HTML). No es una cifra de disponibilidad de producción. La medición contra el sitio público está en la sección 5.
 
 ### 4.4 Informe HTML
 
@@ -222,5 +223,80 @@ El reporter dejó el resumen en `frontend/playwright-report/`. Estas tres captur
 ![Detalle de la redirección al login en Chromium, con los pasos de navegación](./img/playwright-detalle.png)
 
 ![Traza de Playwright: la ruta protegida termina en la pantalla de inicio de sesión](./img/playwright-traza.png)
+
+## 5. Medición contra producción
+
+Fecha de la medición: 2026-11-20, entre 20:33:00Z y 20:37:37Z, desde este entorno de integración. El sitio ya estaba desplegado a mano. `frontend/vercel.json` de este cambio todavía no está publicado: las cifras describen el sitio que responde hoy, no un despliegue de este pull request.
+
+No había contraseña de demostración en el entorno (`SEED_ADMIN_PASSWORD` y equivalentes vacíos). No se inició sesión. No hay tiempos de un endpoint autenticado. Las cifras de abajo son solo de rutas públicas.
+
+### 5.1 Web Vitals (Chromium, caché desactivada)
+
+Una navegación por contexto, `Network.setCacheDisabled`, viewport 1280×800. `TTFB` es `responseStart` de `PerformanceNavigationTiming`. `FCP` es la entrada `first-contentful-paint`. `LCP` sale de un `PerformanceObserver` de `largest-contentful-paint`. Medido a las 20:37:37Z.
+
+| Ruta pedida | HTTP | URL final | TTFB (ms) | FCP (ms) | LCP (ms) |
+|---|---:|---|---:|---:|---:|
+| `/login` | 200 | `/login` | 21.40 | 88 | 104 |
+| `/` | 200 | `/login` | 20.30 | 80 | 116 |
+| `/usuarios` | 200 | `/login` | 23.90 | 84 | 100 |
+
+`/` y `/usuarios` entregaron el documento (200) y la SPA, sin sesión, terminó en `/login`. El documento transferido midió 2866 bytes en las tres navegaciones.
+
+### 5.2 Tiempos de API (mediana de 5, un calentamiento descartado)
+
+`fetch` con `cache: "no-store"` y `Accept: application/json`. El cuerpo se leyó completo. Cierre de la muestra: 20:35:46Z.
+
+| URL | HTTP | Mediana (ms) | Máximo (ms) | Muestras (ms) |
+|---|---:|---:|---:|---|
+| `https://api-production-b8dfa3c0.up.railway.app/health` | 200 | 25.20 | 59.12 | 59.12, 25.20, 28.27, 23.58, 24.61 |
+| `https://ecologistica-lima-beige.vercel.app/health` | 200 | 46.92 | 59.06 | 59.06, 55.57, 41.95, 46.92, 41.86 |
+| `https://api-production-b8dfa3c0.up.railway.app/openapi.json` | 200 | 26.08 | 27.97 | 20.52, 23.61, 26.28, 26.08, 27.97 |
+
+`/health` de la API devolvió `{"status":"ok","servicio":"ecologistica-api"}`.
+
+### 5.3 Códigos HTTP (una petición cada uno, 20:37:37Z)
+
+| Petición | Accept | HTTP | Tipo | ms | Bytes |
+|---|---|---:|---|---:|---:|
+| Vercel `GET /login` | `text/html` | 200 | `text/html; charset=utf-8` | 58.88 | 7177 |
+| Vercel `GET /health` | `application/json` | 200 | `application/json` | 107.14 | 45 |
+| Vercel `GET /openapi.json` | `application/json` | 200 | `application/json` | 58.63 | 32912 |
+| Vercel `GET /docs` | `text/html` | 200 | `text/html; charset=utf-8` | 40.23 | 941 |
+| Vercel `GET /usuarios` | `text/html` | 200 | `text/html; charset=utf-8` | 28.78 | 7177 |
+| Vercel `GET /usuarios` | `application/json` | 401 | `application/json` | 33.21 | 27 |
+| Railway `GET /health` | `application/json` | 200 | `application/json` | 55.23 | 45 |
+| Railway `GET /docs` | `text/html` | 200 | `text/html; charset=utf-8` | 48.06 | 941 |
+
+`/usuarios` con `text/html` devolvió el HTML de la SPA (`<!doctype html>`). La misma ruta con `application/json` devolvió `{"detail":"No autenticado"}`. `/docs` en los dos orígenes devolvió el HTML de Swagger (941 bytes).
+
+### 5.4 Disponibilidad
+
+12 peticiones, una cada 15 segundos, en paralelo, de 20:33:00.816Z a 20:35:46.815Z. Éxito: HTTP 200–399.
+
+| URL | Éxitos | Porcentaje | Mínimo (ms) | Máximo (ms) |
+|---|---:|---:|---:|---:|
+| Railway `GET /health` | 12/12 | 100 | 21.69 | 399.82 |
+| Vercel `GET /login` | 12/12 | 100 | 22.50 | 42.22 |
+
+En Railway, la petición 9 tardó 399.82 ms y el resto quedó entre 21.69 ms y 76.40 ms. En Vercel las doce quedaron entre 22.50 ms y 42.22 ms. No hubo timeout ni código distinto de 200. Es una muestra de unos tres minutos, no un mes de disponibilidad.
+
+### 5.5 Suite de solo lectura
+
+`frontend/e2e/produccion.spec.ts` no entra en la suite de CI: `playwright.config.ts` lo ignora salvo que `E2E_PRODUCCION=1`. No crea ni borra datos. Comprueba el título de `/login`, `GET /health` 200, `GET /openapi.json` 200, `GET /usuarios` con HTML 200 y con JSON 401.
+
+Corrida de esta medición, solo Chromium, contra `PLAYWRIGHT_BASE_URL=https://ecologistica-lima-beige.vercel.app`: **2 pasadas, 0 fallidas, 1.1 s**. No se apuntó el resto de la suite (crea vehículos, conductores y pedidos) a producción.
+
+```bash
+cd frontend
+E2E_PRODUCCION=1 PLAYWRIGHT_BASE_URL=https://ecologistica-lima-beige.vercel.app \
+  npx playwright test e2e/produccion.spec.ts --project=chromium
+```
+
+## Historial de Control de Cambios
+
+| Versión | Fecha | Autor | Descripción |
+|---|---|---|---|
+| 1.0.0 | 20/11/2026 | Equipo EcoLogística Lima | Suite local: 69/69 en Chromium, Firefox y WebKit. Vitals y API de laboratorio. |
+| 1.0.1 | 20/11/2026 | Equipo EcoLogística Lima | Sección 5: TTFB, FCP, LCP, tiempos de API, códigos HTTP y una muestra de disponibilidad medidos contra la URL pública. Sin sesión, porque no había contraseña de demostración. El archivo pasa a V_1_0_1. |
 
 [← Volver al README principal](../../../README.md)

@@ -947,7 +947,7 @@ Entregado en paralelo, **sin SP:** CodeQL. Fuera: AG DEAP, mapa, dashboard, Stag
 
 Pendiente al Sprint 5: US-013 (zonas y ruta alternativa = cierre del mapa), US-014 B (factor árboles RN-018), Staging IMP-04 e IMP-11.
 
-**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. La [revisión del Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) del 20/11/2026 deja en Done las cuatro tarjetas del compromiso: ENB-001 B (5 SP), US-010 B (8 SP), US-012 A (8 SP) y US-014 A (5 SP), 26 SP. El Hito 3 sigue el 12/11/2026. Pendiente al Sprint 5: US-013, US-014 B, Staging IMP-04 e IMP-11.
+**Cierre en código (18/10/2026, [PR #16](https://github.com/AxlTech25/PFA-taller/pull/16)):** el genético corre en el worker y se compara con el vecino más cercano. La [revisión del Sprint 4](../03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) del 20/11/2026 deja en Done las cuatro tarjetas del compromiso: ENB-001 B (5 SP), US-010 B (8 SP), US-012 A (8 SP) y US-014 A (5 SP), 26 SP. El Hito 3 sigue el 12/11/2026. Pendiente al Sprint 5: US-013, US-014 B, Staging IMP-04 e IMP-11.
 
 ---
 

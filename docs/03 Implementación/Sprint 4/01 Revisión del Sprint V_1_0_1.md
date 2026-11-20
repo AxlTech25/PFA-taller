@@ -6,7 +6,7 @@
 
 **Líder del Proyecto:** Carhuapoma Fano, Eilene Elizabeth
 
-**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Hito 3 el 12/11/2026. Revisión de cierre: 20/11/2026. Versión: 1.0.0.
+**Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Hito 3 el 12/11/2026. Revisión de cierre: 20/11/2026. Versión: 1.0.1.
 
 ---
 
@@ -16,7 +16,7 @@ El compromiso del Sprint 4 fue **26 Story Points**: el algoritmo genético, el e
 
 Fuente del alcance: [01 Transformando a ágil](../../02%20Planificaci%C3%B3n/01%20Transformando%20a%20%C3%A1gil%20V_1_0_10.md) (§5 y §12), [02 Artefactos Jira](../../02%20Planificaci%C3%B3n/02%20Artefactos%20Jira%20V_1_0_10.md) (§5.3) y [05 Cronograma de sprints](../../02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_5.md) (§4).
 
-El criterio D4 del Definition of Done (demostrar la historia en Staging en la nube) no forma parte de este cierre. La configuración de Railway está en el PR #23 y los servicios no se levantaron: no hay URL pública. La demostración y las pruebas corrieron en Docker Compose, en `http://localhost:5173` y `http://localhost:8000`.
+La sesión del 20/11/2026 se demostró en Docker Compose, en `http://localhost:5173` y `http://localhost:8000`. El entorno público de esta versión es producción: la interfaz en [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app) y la API en [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app). El detalle está en [Demostración del trabajo completado](#demostración-del-trabajo-completado).
 
 | Tarjeta | Incremento | SP | Responsable | Estado |
 | --- | --- | ---: | --- | --- |
@@ -111,21 +111,30 @@ Commits de Green IT en `main`:
 - [PR #27](https://github.com/AxlTech25/PFA-taller/pull/27), merge [`693cb4b195ff466e0cb7e48fae11c35dd52d40fb`](https://github.com/AxlTech25/PFA-taller/commit/693cb4b195ff466e0cb7e48fae11c35dd52d40fb) (13/11/2026).
 - [PR #28](https://github.com/AxlTech25/PFA-taller/pull/28), merge [`b5edc5c38a1e1bba132bc35c5b8cc4d9951a23dc`](https://github.com/AxlTech25/PFA-taller/commit/b5edc5c38a1e1bba132bc35c5b8cc4d9951a23dc) (13/11/2026). Corrección de CLS: [`74adfa9fb81dfcf234a37055f701945ff98c15b8`](https://github.com/AxlTech25/PFA-taller/commit/74adfa9fb81dfcf234a37055f701945ff98c15b8).
 
-Lo que ya ejecuta GitHub Actions, y lo que todavía no existe, queda en Pendientes. No hay un workflow que despliegue a Railway.
+Lo que ya ejecuta GitHub Actions, y lo que todavía falta para que el despliegue salga solo, queda en Pendientes. El workflow es [`.github/workflows/deploy-production.yml`](../../../.github/workflows/deploy-production.yml).
 
 ---
 
 ## Demostración del trabajo completado
 
-La revisión con los interesados se hizo en la máquina del equipo, con `docker compose up --build`. `docker-compose.yml` publica la interfaz en `http://localhost:5173` (servicio `web`) y la API en `http://localhost:8000` (servicio `api`; Swagger en `/docs`). PostgreSQL 16 con PostGIS escucha en el host en el puerto 5433 y Redis en el 6379. El worker es otro contenedor y no corre dentro del request.
+El entorno es **producción**.
 
-Esa demo es local. El PR #23 deja lista la imagen de producción del frontend (`frontend/Dockerfile.prod`, Caddy, puerto 8080) y los cinco servicios de Railway. Esos servicios no se desplegaron. En la sesión no se mostró una dirección pública, porque no existe.
+| Pieza | Dónde está | URL |
+| --- | --- | --- |
+| Interfaz | Vercel, equipo `eco-pfa`, proyecto `ecologistica-lima`, raíz `frontend` | [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app) |
+| API y contrato | Railway, servicio `api` | [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app) (`/health`, `/docs`) |
+
+`ecologistica-lima.vercel.app` es otro sitio. No es esta aplicación.
+
+La SPA se construye con Vite y Node 22 (`npm ci`, `npm run build`, salida `dist`). `frontend/vercel.json` reenvía `/auth`, `/usuarios`, `/vehiculos`, `/conductores`, `/pedidos`, `/clientes`, `/optimizaciones`, `/rutas`, `/indicadores`, `/health`, `/docs` y `/openapi.json` a la API. Si el navegador pide HTML en `/usuarios`, `/conductores`, `/pedidos` o `/rutas`, responde `index.html`. En Railway, proyecto `81c6f2b1-cac0-4061-bc96-6d8bd46754be`, entorno `production`, `api` (`19dd40e0-d91a-4674-8ca8-557a21c46806`) y `worker` (`e68f06e4-9cc5-40cd-a3bd-ba6945d1f28f`) salen de `backend/Dockerfile` con `railway up`. El entrypoint aplica Alembic, siembra y arranca uvicorn; el worker usa `PROCESO=worker`. `db` (`postgis/postgis:16-3.4`) y `Redis` no tienen dominio público.
+
+La sesión con los interesados del 20/11/2026 se hizo en la máquina del equipo, con `docker compose up --build` (`http://localhost:5173` y `http://localhost:8000`). Esa sesión no usó la URL pública. Los escenarios de la tabla son los de esa sesión. El despliegue público se hizo a mano; [`.github/workflows/deploy-production.yml`](../../../.github/workflows/deploy-production.yml) lo repite cuando el repositorio tenga `RAILWAY_TOKEN`, `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`. En un pull request ese workflow se omite y no falla.
 
 Perfiles presentes en la revisión:
 
 - **Gerente de operaciones de DistriRápido S.A.C.:** kilómetros, CO₂, combustible, soles y cumplimiento de ventanas.
 - **Jefe de operaciones logísticas:** generación del plan, trazado por calles, paradas y semáforo de congestión.
-- **Patrocinador:** ver el Hito 3 funcionando sin depender de una URL que el equipo no tiene.
+- **Patrocinador:** ver el Hito 3 en la sesión local. Pidió una URL pública; esta versión la registra arriba.
 - **Representante de los conductores:** jornada y descansos ya cerrados en el Sprint 3, y que el plan nuevo no los ignore al confirmar.
 
 ### Escenarios demostrados
@@ -135,7 +144,7 @@ Perfiles presentes en la revisión:
 | **1. Plan con el algoritmo genético** | El Operador abrió Rutas, eligió la fecha de un pedido de demostración y pulsó Generar rutas. En paralelo se mostró el bench automatizado de 150 pedidos y 15 vehículos. | La API respondió `202 Accepted`. El worker corrió DEAP dentro del presupuesto de 45 s y dejó el plan en Borrador, comparado con el vecino más cercano. El bench `test_bench_150_pedidos_15_vehiculos_en_45_segundos` terminó en ≤ 45 s, con los 150 pedidos asignados, sin violar capacidad, ventanas, jornada ni pico y placa. La base de demostración no contiene 150 pedidos: esa cifra es la prueba sintética, no un alta manual de 150 fichas. |
 | **2. Mapa por calles** | Se eligió la ruta en borrador. | Leaflet dibujó el recorrido con la geometría de OSRM, los marcadores de parada, el ETA por tramo y el semáforo verde, amarillo o rojo. Se explicó el respaldo: si OSRM no responde en 8 s, la línea recta; si OpenStreetMap no carga, la tabla con el aviso de teselas. |
 | **3. Tablero del mismo día** | El Gerente abrió Tablero en la fecha del plan y, después, en un día sin rutas. | Con plan: km, kg de CO₂, litros, soles (S/ 17,50 por galón y S/ 1,20 por km) y el porcentaje de ventanas. Sin plan: ceros y el texto «Sin datos de operación para el período seleccionado». El equivalente en árboles quedó en blanco, con la nota de que RN-018 no está ratificado. |
-| **4. Comentarios de la revisión** | Se recorrió el mismo flujo con los cuatro perfiles y se anotó qué pedían para el Sprint 5. | El Gerente aceptó los cinco indicadores del incremento A y pidió el factor de árboles solo cuando esté ratificado. El Jefe de operaciones validó el trazado por calles y pidió las zonas de riesgo y la ruta alternativa (US-013). El patrocinador aceptó la demo local y pidió la URL de Railway cuando los cinco servicios estén levantados. No se anotó una dirección porque no hay despliegue. |
+| **4. Comentarios de la revisión** | Se recorrió el mismo flujo con los cuatro perfiles y se anotó qué pedían para el Sprint 5. | El Gerente aceptó los cinco indicadores del incremento A y pidió el factor de árboles solo cuando esté ratificado. El Jefe de operaciones validó el trazado por calles y pidió las zonas de riesgo y la ruta alternativa (US-013). El patrocinador aceptó la demo local y pidió una URL pública. Esta versión deja esa URL arriba: la interfaz en Vercel y la API en Railway. |
 
 ---
 
@@ -145,7 +154,7 @@ Nada de lo siguiente formaba parte de los 26 SP cerrados. Sigue fuera de Done.
 
 | ID | Qué queda | SP | Dónde está al 20/11/2026 | Hacia dónde va |
 | --- | --- | ---: | --- | --- |
-| **IMP-04** | Levantar de verdad los servicios de Railway con la configuración del PR #23. CodeQL ya corre (`.github/workflows/codeql.yml`, desde el Sprint 3). Falta el proyecto en la nube: no hay secreto de Railway ni dominio de `web`. El DoD D4 sigue abierto. | — | Configuración en el repositorio. Despliegue no realizado. | Sprint 5, en paralelo, sin SP. Responsable de seguimiento: Cruz Salazar, Jorge Luiz. |
+| **IMP-04** | El sitio público ya está en producción, desplegado a mano: Vercel para la SPA y Railway para `api`, `worker`, `db` y `Redis`. CodeQL ya corre. Falta que GitHub Actions pueda repetir el despliegue: los secretos `RAILWAY_TOKEN`, `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID` todavía no están en el repositorio. La topología real no publica el servicio `web` de `Dockerfile.prod`. | — | Producción en línea. El workflow existe y se omite hasta que haya secretos. | Cargar los cuatro secretos en el entorno `production` de GitHub. Seguimiento: Cruz Salazar, Jorge Luiz. |
 | **IMP-11** | Catastro INEI. RN-005 pide polígonos distritales. La migración `004_sprint3_cobertura.py` carga envolventes rectangulares de San Juan de Lurigancho, El Agustino, Santa Anita y Ate, y el propio archivo dice que no son el catastro del INEI. No hay un archivo oficial en el repositorio. La validación sigue en PostGIS (`ST_Covers`). | — | Aceptado el 17/10/2026. Sigue sin archivo. | No se sustituye la geometría con un polígono inventado. Si aparece el archivo, lo toma Leon Taza, Brayan Angel, sin cambiar el contrato de la API. |
 | **US-013** | Zonas de riesgo (`zona_restriccion`) y acción de ruta alternativa. Cierra el mapa que US-012 A dejó iniciado. Reserva ecológica como restricción dura (RN-013). | 5 | No iniciado en este sprint. | Sprint 5 (13/11/2026 – 26/11/2026). Leon Taza, Brayan Angel. Tarjeta ECO-26. |
 | **US-014 B** | Factor de árboles `factor_captura_arbol_kg` (RN-018). El tablero no muestra un equivalente inventado. | 3 | `arboles` es nulo y la nota cita RN-018. | Sprint 5. Huaman Baldeon, Katheryn Elena. Misma tarjeta ECO-27, incremento B. |
@@ -154,10 +163,19 @@ El resto del compromiso del Sprint 5 (26 SP en total) ya estaba planificado y no
 
 Verificación automática que ya está en el repositorio, y la que todavía no:
 
-- **Ya corre.** `ci.yml` en cada push y cada pull request: Ruff, Pytest con cobertura mínima del 80 % sobre `app`, `npm test` (Vitest) y `npm run build`. `codeql.yml` analiza JavaScript/TypeScript y Python en `main`, en pull requests y cada lunes a las 06:00 UTC. `green-audit.yml` corre Lighthouse CI 0.16.1 sobre las ocho pantallas.
-- **Todavía no está.** No hay un job que despliegue a Railway. No hay Playwright en el repositorio. No hay un cuestionario SUS archivado. El comando de frontend en CI es `vitest run`, sin `--coverage`: `@vitest/coverage-v8` está instalado y configurado, y el workflow no exige un porcentaje de cobertura de la interfaz. El FCP móvil de 1 351,7659 ms en `/login` queda fuera del umbral de 1,0 s; la medición de aceptación de este sprint es la de escritorio.
+- **Ya corre.** `ci.yml` en cada push y cada pull request: Ruff, Pytest con cobertura mínima del 80 % sobre `app`, `npm test` (Vitest) y `npm run build`. `tests.yml` corre pytest, Vitest, la integración HTTP y Playwright (Chromium, Firefox y WebKit). `codeql.yml` analiza JavaScript/TypeScript y Python en `main`, en pull requests y cada lunes a las 06:00 UTC. `green-audit.yml` corre Lighthouse CI 0.16.1 sobre las ocho pantallas. `deploy-production.yml` está en el repositorio: despliega `api` y `worker` en Railway y la SPA en Vercel después de `Tests` en verde en un push a `main`, o al publicar una etiqueta `v*`. En un pull request se omite.
+- **Todavía no está.** Los cuatro secretos del entorno `production`, así que el workflow todavía no despliega desde GitHub. No hay un cuestionario SUS archivado. El comando de frontend en CI es `vitest run`, sin `--coverage`: `@vitest/coverage-v8` está instalado y configurado, y el workflow no exige un porcentaje de cobertura de la interfaz. El FCP móvil de 1 351,7659 ms en `/login` queda fuera del umbral de 1,0 s; la medición de aceptación de este sprint es la de escritorio.
 
-Esas cuatro ausencias (despliegue, Playwright, SUS y el acta de los tres workflows) son las acciones de la [retrospectiva](./02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md).
+El cuestionario SUS sigue como acción de la [retrospectiva](./02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md). Playwright y el workflow de despliegue ya están en el repositorio.
+
+---
+
+## Historial de Control de Cambios
+
+| Versión | Fecha | Autor | Descripción |
+|---|---|---|---|
+| 1.0.0 | 20/11/2026 | Equipo EcoLogística Lima | Revisión de cierre del Sprint 4. Las cuatro tarjetas del compromiso (26 SP) quedan en Done. La sesión con interesados de ese día fue en Docker Compose. |
+| 1.0.1 | 20/11/2026 | Equipo EcoLogística Lima | El entorno público es producción: Vercel (`ecologistica-lima-beige.vercel.app`) y Railway (`api-production-b8dfa3c0.up.railway.app`). Se registra el workflow de despliegue y que Playwright ya está en el repositorio. El archivo pasa a V_1_0_1. |
 
 ---
 

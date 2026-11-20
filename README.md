@@ -4,6 +4,7 @@
 [![Tests](https://github.com/AxlTech25/PFA-taller/actions/workflows/tests.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/AxlTech25/PFA-taller/actions/workflows/codeql.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/codeql.yml)
 [![Green IT](https://github.com/AxlTech25/PFA-taller/actions/workflows/green-audit.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/green-audit.yml)
+[![Deploy](https://github.com/AxlTech25/PFA-taller/actions/workflows/deploy-production.yml/badge.svg)](https://github.com/AxlTech25/PFA-taller/actions/workflows/deploy-production.yml)
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://react.dev/)
@@ -77,7 +78,7 @@ Documentos de constitución, visión, requisitos, arquitectura y restricciones. 
 | 09 | Reglas de negocio | [09. Reglas de negocio V_1_0_1.md](./docs/01%20Inicio/09.%20Reglas%20de%20negocio%20V_1_0_1.md) |
 | 10 | Stack tecnológico | [10. Stack tecnológico V_1_0_3.md](./docs/01%20Inicio/10.%20Stack%20tecnol%C3%B3gico%20V_1_0_3.md) |
 | 11 | Base de datos | [11. Base de datos V_1_0_1.md](./docs/01%20Inicio/11.%20Base%20de%20datos%20V_1_0_1.md) |
-| 12 | Modelo C4 | [12. Modelo C4 V_1_0_1.md](./docs/01%20Inicio/12.%20Modelo%20C4%20V_1_0_1.md) |
+| 12 | Modelo C4 | [12. Modelo C4 V_1_0_2.md](./docs/01%20Inicio/12.%20Modelo%20C4%20V_1_0_2.md) |
 | 13 | Restricciones | [13. Restricciones V_1_0_2.md](./docs/01%20Inicio/13.%20Restricciones%20V_1_0_2.md) |
 
 ---
@@ -109,9 +110,9 @@ Carpeta: [`docs/03 Implementación/Sprint 4/`](./docs/03%20Implementaci%C3%B3n/S
 
 | # | Artefacto | Archivo |
 |---|---|---|
-| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md) |
+| 01 | Revisión del Sprint | [01 Revisión del Sprint V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md) |
 | 02 | Retrospectiva del Sprint | [02 Retrospectiva del Sprint V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/02%20Retrospectiva%20del%20Sprint%20V_1_0_0.md) |
-| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_0.md) |
+| 03 | Análisis Playwright | [03 Analisis PlayWrigth V_1_0_1.md](./docs/03%20Implementaci%C3%B3n/Sprint%204/03%20Analisis%20PlayWrigth%20V_1_0_1.md) |
 | 04 | Usabilidad | pendiente (`04 Usabilidad V_1_0_0.md`) |
 
 ### Sprint 3
@@ -173,9 +174,46 @@ Carpeta: [`docs/03 Implementación/Sprint 1/`](./docs/03%20Implementaci%C3%B3n/S
 
 ---
 
+## Producción
+
+El sitio público es [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app). La API está en [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app) (salud en `/health`, contrato en `/docs`). El dominio `ecologistica-lima.vercel.app` es otro sitio y no es esta aplicación.
+
+La interfaz vive en Vercel (equipo `eco-pfa`, proyecto `ecologistica-lima`, raíz `frontend`, Node 22, `npm ci` / `npm run build`, salida `dist`). `frontend/vercel.json` reenvía las rutas de la API al servicio Railway y, si el navegador pide HTML en `/usuarios`, `/conductores`, `/pedidos` o `/rutas`, sirve la SPA. El backend está en el proyecto Railway `81c6f2b1-cac0-4061-bc96-6d8bd46754be`, entorno `production`: `api` y `worker` salen de `backend/Dockerfile` (`railway up`, sin enlace a GitHub). El entrypoint aplica Alembic, siembra y arranca uvicorn; el worker usa `PROCESO=worker`. `db` es la imagen `postgis/postgis:16-3.4` y `Redis` queda en la red privada.
+
+El workflow [`.github/workflows/deploy-production.yml`](./.github/workflows/deploy-production.yml) despliega después de que `Tests` termine en verde en un push a `main`, o al publicar una etiqueta `v*`, o con `workflow_dispatch` sobre `main` o esa etiqueta. En un pull request el job se omite y no falla. Usa el entorno de GitHub `production`.
+
+```mermaid
+flowchart LR
+  push["push a main o etiqueta v*"] --> tests["workflow Tests"]
+  tests -->|éxito| deploy["deploy-production.yml"]
+  dispatch["workflow_dispatch"] --> deploy
+  deploy --> railway["railway up"]
+  deploy --> vercel["vercel pull, build, deploy"]
+  railway --> api["api"]
+  railway --> worker["worker"]
+  api --> db[("PostGIS")]
+  api --> redis[("Redis")]
+  worker --> db
+  worker --> redis
+  vercel --> web["Vercel SPA"]
+  web -->|"rewrites, mismo origen"| api
+  persona["Navegador"] --> web
+```
+
+Secretos del repositorio, solo los nombres. Ninguno va escrito en el workflow.
+
+| Secreto | Para qué | Cómo obtenerlo |
+|---|---|---|
+| `RAILWAY_TOKEN` | `railway up` de `api` y `worker` | Token de proyecto en Railway, para el proyecto `81c6f2b1-cac0-4061-bc96-6d8bd46754be`. |
+| `VERCEL_TOKEN` | CLI de Vercel | Token de cuenta en Vercel, equipo `eco-pfa`. |
+| `VERCEL_ORG_ID` | Alcance del equipo | `team_Sw5bWg7fktluEGmYE84y39R3`. |
+| `VERCEL_PROJECT_ID` | Proyecto `ecologistica-lima` | `prj_lnO9MxEO2sLa0MoB3xHey3vFdvXp`. |
+
+---
+
 ## Alcance implementado (Sprint 4)
 
-Los sprints 1 a 3 siguen vigentes. Esta entrega cierra en código el motor (algoritmo genético VRPTW + Green VRP en el worker, comparado con el vecino más cercano) e inicia el mapa Leaflet/OSM y el tablero. US-012 y US-014 no se dan por cerradas. No hay URL de Staging.
+Los sprints 1 a 3 siguen vigentes. Esta entrega cierra en código el motor y los incrementos ENB-001 B, US-010 B, US-012 A y US-014 A (26 SP). US-013 y US-014 B siguen para el Sprint 5. El sitio público está en [Producción](#producción).
 
 | ID | Entrega |
 |---|---|
@@ -273,7 +311,7 @@ El servidor de Vite reenvía las llamadas de la interfaz hacia `http://localhost
 9. El usuario Conductor ve Flota (solo consulta) y Modo conductor. No entra a Usuarios, ni a Rutas, ni al Tablero, ni puede editar la flota (HTTP 403).
 10. Abra http://localhost:8000/docs para el contrato OpenAPI. `GET /clientes` es solo el catálogo de demostración.
 
-No hay dirección pública de Staging. El análisis CodeQL corre en GitHub Actions (`.github/workflows/codeql.yml`).
+No hay una segunda URL de Staging distinta de producción. El sitio público y la API están en [Producción](#producción). El análisis CodeQL corre en GitHub Actions (`.github/workflows/codeql.yml`).
 
 Una cuenta inactiva responde HTTP 403. El Administrador no puede desactivar su propia cuenta.
 
@@ -287,6 +325,8 @@ cd frontend && npm test && npm run build
 `TEST_DATABASE_URL` apunta a una base de pruebas. El conftest la crea si el usuario de PostgreSQL puede hacerlo y luego aplica Alembic. No use la base de desarrollo como base de pruebas: los tests revierten sus datos, pero la migración sí permanece.
 
 ### 5. Staging en Railway (IMP-04)
+
+El sitio que está en línea es el de [Producción](#producción): Vercel para la interfaz y Railway para `api` y `worker`, sin el servicio `web`. Lo que sigue es el diseño de cinco servicios del PR #23, con el frontend en `Dockerfile.prod`. No es la topología que responde hoy.
 
 Un proyecto de Railway con cinco servicios. Los tres de código salen de este repositorio; Railway los vuelve a desplegar en cada push a la rama elegida.
 

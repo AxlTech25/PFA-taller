@@ -1,0 +1,136 @@
+{
+  "rewrites": [
+    {
+      "source": "/docs",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/docs"
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/docs/:path*"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/openapi.json"
+    },
+    {
+      "source": "/usuarios",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/usuarios/:path*",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/conductores",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/conductores/:path*",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pedidos",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pedidos/:path*",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/rutas",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/rutas/:path*",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/auth"
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/auth/:path*"
+    },
+    {
+      "source": "/usuarios",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/usuarios"
+    },
+    {
+      "source": "/usuarios/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/usuarios/:path*"
+    },
+    {
+      "source": "/vehiculos",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/vehiculos"
+    },
+    {
+      "source": "/vehiculos/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/vehiculos/:path*"
+    },
+    {
+      "source": "/conductores",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/conductores"
+    },
+    {
+      "source": "/conductores/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/conductores/:path*"
+    },
+    {
+      "source": "/pedidos",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/pedidos"
+    },
+    {
+      "source": "/pedidos/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/pedidos/:path*"
+    },
+    {
+      "source": "/clientes",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/clientes"
+    },
+    {
+      "source": "/clientes/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/clientes/:path*"
+    },
+    {
+      "source": "/optimizaciones",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/optimizaciones"
+    },
+    {
+      "source": "/optimizaciones/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/optimizaciones/:path*"
+    },
+    {
+      "source": "/rutas",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/rutas"
+    },
+    {
+      "source": "/rutas/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/rutas/:path*"
+    },
+    {
+      "source": "/indicadores",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/indicadores"
+    },
+    {
+      "source": "/indicadores/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/indicadores/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/health"
+    },
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

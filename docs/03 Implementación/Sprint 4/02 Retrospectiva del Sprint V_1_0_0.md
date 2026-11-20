@@ -8,7 +8,7 @@
 
 **Sprint:** 4 (`ECO Sprint 4`, 30/10/2026 – 12/11/2026). Hito 3 el 12/11/2026. Retrospectiva: 20/11/2026. Versión: 1.0.0.
 
-El detalle de lo entregado está en la [revisión del sprint](./01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_0.md). Las cifras de Lighthouse y de CO₂ del software están en el [informe de reducción del impacto ambiental](../reduccion%20del%20impacto%20ambiental/01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md).
+El detalle de lo entregado está en la [revisión del sprint](./01%20Revisi%C3%B3n%20del%20Sprint%20V_1_0_1.md). Las cifras de Lighthouse y de CO₂ del software están en el [informe de reducción del impacto ambiental](../reduccion%20del%20impacto%20ambiental/01%20Informe%20de%20reduccion%20del%20impacto%20ambiental%20V_1_0_0.md).
 
 ## ¿Qué aprendimos?
 

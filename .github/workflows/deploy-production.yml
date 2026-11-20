@@ -1,0 +1,143 @@
+name: Deploy production
+
+on:
+  workflow_run:
+    workflows: ["Tests"]
+    types: [completed]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: deploy-production-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  decidir:
+    name: Decidir si corresponde desplegar
+    runs-on: ubuntu-latest
+    outputs:
+      desplegar: ${{ steps.gate.outputs.desplegar }}
+    steps:
+      - id: gate
+        env:
+          EVENTO: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          ORIGEN: ${{ github.event.workflow_run.event }}
+          RAMA: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -eu
+          desplegar=false
+          case "$EVENTO" in
+            pull_request)
+              echo "Pull request: no se despliega."
+              ;;
+            workflow_dispatch)
+              if [ "$REF" = "refs/heads/main" ] || [[ "$REF" == refs/tags/v* ]]; then
+                desplegar=true
+              else
+                echo "workflow_dispatch fuera de main o de una etiqueta v*: no se despliega."
+              fi
+              ;;
+            push)
+              if [[ "$REF" == refs/tags/v* ]]; then
+                desplegar=true
+              else
+                echo "Push que no es una etiqueta v*: no se despliega."
+              fi
+              ;;
+            workflow_run)
+              if [ "$CONCLUSION" = "success" ] && [ "$ORIGEN" = "push" ] && [ "$RAMA" = "main" ]; then
+                desplegar=true
+              else
+                echo "Tests no cerró en verde sobre un push a main: no se despliega."
+              fi
+              ;;
+            *)
+              echo "Evento no previsto: no se despliega."
+              ;;
+          esac
+          echo "desplegar=$desplegar" >> "$GITHUB_OUTPUT"
+
+  backend:
+    name: Railway api y worker
+    needs: decidir
+    if: needs.decidir.outputs.desplegar == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://api-production-b8dfa3c0.up.railway.app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Instalar Railway CLI
+        run: npm install -g @railway/cli@5.75.0
+      - name: Desplegar api y worker
+        working-directory: backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          set -eu
+          railway up --service api --environment production --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --detach -y
+          railway up --service worker --environment production --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --detach -y
+      - name: Esperar a que /health responda 200
+        run: |
+          set -eu
+          url="https://api-production-b8dfa3c0.up.railway.app/health"
+          for _ in $(seq 1 30); do
+            codigo="$(curl -sS -o /tmp/health.json -w "%{http_code}" "$url" || true)"
+            if [ "$codigo" = "200" ]; then
+              cat /tmp/health.json
+              echo
+              exit 0
+            fi
+            echo "health=$codigo; reintento"
+            sleep 10
+          done
+          echo "La API no respondió 200" >&2
+          exit 1
+
+  frontend:
+    name: Vercel
+    needs: decidir
+    if: needs.decidir.outputs.desplegar == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://ecologistica-lima-beige.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@66.6.0
+      - name: Desplegar el frontend
+        working-directory: frontend
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          set -eu
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --yes --token="$VERCEL_TOKEN"
+      - name: Comprobar la URL pública
+        run: |
+          set -eu
+          url="https://ecologistica-lima-beige.vercel.app/login"
+          codigo="$(curl -sS -o /tmp/login.html -w "%{http_code}" "$url")"
+          test "$codigo" = "200"
+          grep -q 'id="root"' /tmp/login.html

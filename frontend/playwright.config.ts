@@ -9,6 +9,7 @@ const servidorExterno = Boolean(process.env.PLAYWRIGHT_BASE_URL);
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: process.env.E2E_PRODUCCION ? [] : ["**/produccion.spec.ts"],
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
