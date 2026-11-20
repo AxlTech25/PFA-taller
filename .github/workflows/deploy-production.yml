@@ -69,6 +69,7 @@ jobs:
     needs: decidir
     if: needs.decidir.outputs.desplegar == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     environment:
       name: production
       url: https://api-production-b8dfa3c0.up.railway.app
@@ -82,18 +83,59 @@ jobs:
       - name: Instalar Railway CLI
         run: npm install -g @railway/cli@5.75.0
       - name: Desplegar api y worker
-        working-directory: backend
         env:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          DESPLIEGUE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
         run: |
-          set -eu
-          railway up --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --environment production --service api --detach -y
-          railway up --project 81c6f2b1-cac0-4061-bc96-6d8bd46754be --environment production --service worker --detach -y
+          set -euo pipefail
+          proyecto=81c6f2b1-cac0-4061-bc96-6d8bd46754be
+
+          desplegar() {
+            servicio="$1"
+            log="$(mktemp)"
+            # CLI 5.75.0: sin --detach y con --ci espera el despliegue.
+            # SUCCESS sale 0; FAILED o CRASHED sale 1. El directorio de
+            # trabajo es la raíz del repo: los servicios tienen rootDirectory backend/.
+            railway up \
+              --project "$proyecto" \
+              --environment production \
+              --service "$servicio" \
+              --ci \
+              -y \
+              --message "$DESPLIEGUE_SHA" | tee "$log"
+            id="$(grep -oE 'id=[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}' "$log" | head -1 | cut -d= -f2 || true)"
+            if [ -z "$id" ]; then
+              echo "Railway no imprimió el id del despliegue de ${servicio}" >&2
+              exit 1
+            fi
+            echo "Despliegue ${servicio}: ${id} (commit ${DESPLIEGUE_SHA})"
+            railway deployment list \
+              --project "$proyecto" \
+              --environment production \
+              --service "$servicio" \
+              --limit 20 \
+              --json > "${log}.json"
+            python3 - "$id" "${log}.json" << 'PY'
+          import json, sys
+          want, path = sys.argv[1], sys.argv[2]
+          rows = json.load(open(path))
+          match = next((row for row in rows if row.get("id") == want), None)
+          if match is None:
+              sys.exit(f"el despliegue {want} no está en la lista")
+          status = match.get("status")
+          print(f"estado {want}: {status}")
+          if status != "SUCCESS":
+              sys.exit(f"el despliegue {want} terminó en {status}")
+          PY
+          }
+
+          desplegar api
+          desplegar worker
       - name: Esperar a que /health responda 200
         run: |
-          set -eu
+          set -euo pipefail
           url="https://api-production-b8dfa3c0.up.railway.app/health"
-          for _ in $(seq 1 30); do
+          for _ in $(seq 1 12); do
             codigo="$(curl -sS -o /tmp/health.json -w "%{http_code}" "$url" || true)"
             if [ "$codigo" = "200" ]; then
               cat /tmp/health.json
