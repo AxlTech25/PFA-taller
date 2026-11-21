@@ -10,6 +10,11 @@ export const CONDUCTOR = {
   password: process.env.E2E_CONDUCTOR_PASSWORD ?? "ConductorDemo1",
 };
 
+export const PRESUPUESTO = {
+  email: process.env.E2E_PRESUPUESTO_EMAIL ?? "conductor.presupuesto@distrirapido.example.com",
+  password: process.env.E2E_PRESUPUESTO_PASSWORD ?? CONDUCTOR.password,
+};
+
 let consecutivo = 0;
 
 export function placaNueva(proyecto: string): string {

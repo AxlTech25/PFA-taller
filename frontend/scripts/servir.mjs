@@ -23,6 +23,7 @@ const rutasApi = [
   "/rutas",
   "/rutas/zonas-restriccion",
   "/modo/jornada",
+  "/modo/mapa",
   "/indicadores",
   "/health",
   "/openapi.json",

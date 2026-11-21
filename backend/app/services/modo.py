@@ -205,3 +205,36 @@ def jornada(db: Session, actor: Usuario) -> dict:
         "paradas": paradas,
         "alertas": alertas,
     }
+
+
+def _vacio_mapa() -> dict:
+    return {"hay_ruta": False, "placa": None, "puntos": []}
+
+
+def mapa(db: Session, actor: Usuario) -> dict:
+    """Puntos de la misma jornada. Se pide solo si el conductor abre el mapa."""
+
+    encontrada = _ruta_del_dia(db, actor.id_usuario, fecha_operativa())
+    if encontrada is None:
+        return _vacio_mapa()
+    ruta, placa = encontrada
+    filas = db.execute(
+        select(DetalleRuta.secuencia, Pedido.latitud, Pedido.longitud, Cliente.nombre)
+        .join(Pedido, Pedido.id_pedido == DetalleRuta.id_pedido)
+        .join(Cliente, Cliente.id_cliente == Pedido.id_cliente)
+        .where(DetalleRuta.id_ruta == ruta.id_ruta)
+        .order_by(DetalleRuta.secuencia)
+    ).all()
+    return {
+        "hay_ruta": True,
+        "placa": placa,
+        "puntos": [
+            {
+                "secuencia": secuencia,
+                "latitud": float(latitud),
+                "longitud": float(longitud),
+                "cliente": nombre or "Cliente",
+            }
+            for secuencia, latitud, longitud, nombre in filas
+        ],
+    }

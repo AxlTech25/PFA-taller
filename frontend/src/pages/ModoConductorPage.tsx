@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
@@ -7,6 +7,8 @@ import { prepararConfirmacionEntrega } from "../entrega";
 import { fechaVisible, horaVisible } from "../fechas";
 import { etiqueta } from "../permissions";
 import type { JornadaModo, ParadaModo } from "../types";
+
+const ModoMapa = lazy(() => import("./ModoMapa").then((modulo) => ({ default: modulo.ModoMapa })));
 
 type Pendiente = { idDetalle: string; texto: string };
 
@@ -24,6 +26,7 @@ export function ModoConductorPage() {
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(true);
   const [pendiente, setPendiente] = useState<Pendiente | null>(null);
+  const [mapa, setMapa] = useState(false);
 
   useEffect(() => {
     document.title = "Modo conductor · EcoLogística Lima";
@@ -146,6 +149,17 @@ export function ModoConductorPage() {
               );
             })}
           </ol>
+          <p id="nota-mapa" className="ayuda">
+            El mapa es opcional. La lista de paradas no lo espera y no se descarga hasta abrirlo.
+          </p>
+          <button type="button" aria-describedby="nota-mapa" onClick={() => setMapa(true)}>
+            Ver mapa
+          </button>
+          {mapa ? (
+            <Suspense fallback={<p role="status">Cargando mapa…</p>}>
+              <ModoMapa />
+            </Suspense>
+          ) : null}
         </section>
       ) : null}
     </>

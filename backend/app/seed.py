@@ -14,6 +14,8 @@ from app.core.security import hash_password
 from app.db.session import SessionLocal, engine
 from app.models.entities import Usuario
 from app.services.jornada_demo import asegurar_jornada_demo
+from app.services.jornada_presupuesto import CORREO as CORREO_PRESUPUESTO
+from app.services.jornada_presupuesto import asegurar_jornada_presupuesto
 
 logger = logging.getLogger("ecologistica.seed")
 
@@ -67,6 +69,14 @@ def _asegurar_jornada(db) -> None:
         return
     if not asegurar_jornada_demo(db, usuario):
         logger.warning("No se pudo preparar la ruta de demostración del conductor")
+    _asegurar_usuario(db, CORREO_PRESUPUESTO, clave, "CONDUCTOR")
+    db.flush()
+    presupuesto = db.scalar(select(Usuario).where(Usuario.email == CORREO_PRESUPUESTO))
+    if presupuesto is None or presupuesto.rol != "CONDUCTOR":
+        logger.warning("No hay usuario de presupuesto para la ruta de 12 paradas")
+        return
+    if not asegurar_jornada_presupuesto(db, presupuesto):
+        logger.warning("No se pudo preparar la ruta de 12 paradas")
 
 
 def cargar() -> None:

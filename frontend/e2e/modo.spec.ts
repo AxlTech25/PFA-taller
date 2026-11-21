@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { ADMIN, CONDUCTOR, entrarConductor } from "./helpers";
@@ -69,4 +70,60 @@ test("la jornada solo la ve el conductor y pesa menos de 150 KB", async ({ reque
   expect(cuerpo).not.toHaveProperty("co2_estimado_kg");
   expect(cuerpo).not.toHaveProperty("distancia_total_km");
   expect(cuerpo.paradas[0]).not.toHaveProperty("latitud");
+});
+
+test("el teclado llega a confirmar entrega antes que al mapa", async ({ page }) => {
+  await entrarConductor(page);
+  const vistos: string[] = [];
+  for (let paso = 0; paso < 16; paso += 1) {
+    await page.keyboard.press("Tab");
+    const actual = await page.evaluate(() => {
+      const nodo = document.activeElement;
+      if (!nodo) return "";
+      return (nodo.getAttribute("aria-label") || nodo.textContent || "").replace(/\s+/g, " ").trim();
+    });
+    vistos.push(actual);
+    if (actual.includes("Confirmar entrega de la parada 1")) break;
+  }
+  expect(vistos.at(-1)).toContain("Confirmar entrega de la parada 1");
+  expect(vistos.some((nombre) => nombre.startsWith("Ver mapa"))).toBe(false);
+  const anillo = await page.evaluate(() => {
+    const nodo = document.activeElement as HTMLElement | null;
+    if (!nodo) return { estilo: "none", ancho: "0px" };
+    const estilo = getComputedStyle(nodo);
+    return { estilo: estilo.outlineStyle, ancho: estilo.outlineWidth };
+  });
+  expect(anillo.estilo).not.toBe("none");
+  expect(Number.parseFloat(anillo.ancho)).toBeGreaterThanOrEqual(2);
+  const caja = await page.evaluate(() => {
+    const nodo = document.activeElement as HTMLElement | null;
+    if (!nodo) return null;
+    const rect = nodo.getBoundingClientRect();
+    const estilo = getComputedStyle(nodo);
+    return {
+      ancho: Math.round(rect.width),
+      alto: Math.round(rect.height),
+      outlineWidth: estilo.outlineWidth,
+      outlineStyle: estilo.outlineStyle,
+      outlineColor: estilo.outlineColor,
+    };
+  });
+  console.log(`FOCO_JSON ${JSON.stringify(caja)}`);
+  await page.keyboard.press("Enter");
+  await expect(page.getByText(/todavía no se guarda/)).toBeVisible();
+  for (let paso = 0; paso < 8; paso += 1) {
+    await page.keyboard.press("Tab");
+    const actual = await page.evaluate(() => document.activeElement?.textContent?.replace(/\s+/g, " ").trim() ?? "");
+    if (actual === "Ver mapa") break;
+  }
+  await expect(page.getByRole("button", { name: "Ver mapa" })).toBeFocused();
+});
+
+test("el modo conductor no tiene violaciones WCAG 2.2 AA", async ({ page }) => {
+  await entrarConductor(page);
+  await expect(page.getByRole("button", { name: /Confirmar entrega de la parada 1/ })).toBeVisible();
+  const resultado = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(resultado.violations).toEqual([]);
 });

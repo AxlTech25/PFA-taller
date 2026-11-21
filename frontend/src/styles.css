@@ -552,6 +552,11 @@ h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
   font-weight: 700;
 }
 
+.mapa-modo {
+  height: 16rem;
+  margin-top: 0.75rem;
+}
+
 @media (forced-colors: active) {
   :focus-visible {
     outline: 3px solid CanvasText;
