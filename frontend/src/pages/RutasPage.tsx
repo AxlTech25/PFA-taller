@@ -9,7 +9,8 @@ import { comoPagina, rutaPagina } from "../listado";
 import { etiquetaCongestion } from "../mapa";
 import { Paginador } from "../Paginador";
 import { etiqueta, puedeGenerarRutas } from "../permissions";
-import type { JobOptimizacion, Ruta } from "../types";
+import type { JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
+import { ADVERTENCIA_ZONAS, comoZonas } from "../zonas";
 import { MapaRutas } from "./MapaRutas";
 
 function nombreRuta(ruta: Ruta): string {
@@ -33,6 +34,10 @@ export function RutasPage() {
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [alternativaEn, setAlternativaEn] = useState<string | null>(null);
+  const [zonas, setZonas] = useState<ZonaRestriccion[]>([]);
+  const [zonasPendientes, setZonasPendientes] = useState(true);
+  const [advertenciaZonas, setAdvertenciaZonas] = useState(ADVERTENCIA_ZONAS);
 
   async function cargar(dia: string, numero = pagina, forzar = false) {
     const data = await consultar(llamar, rutaPagina(`/rutas?fecha=${dia}`, numero), forzar);
@@ -46,11 +51,27 @@ export function RutasPage() {
     );
   }
 
+  async function cargarZonas(forzar = false) {
+    try {
+      const data = await consultar(llamar, "/rutas/zonas-restriccion", forzar);
+      const lista = comoZonas(data);
+      setZonas(lista.zonas);
+      if (lista.advertencia) setAdvertenciaZonas(lista.advertencia);
+    } catch {
+      setZonas([]);
+    } finally {
+      setZonasPendientes(false);
+    }
+  }
+
   useEffect(() => {
     document.title = "Rutas · EcoLogística Lima";
     cargar(fecha).catch((err: unknown) =>
       setError(err instanceof ApiError ? err.message : "No se pudo cargar las rutas."),
     );
+    cargarZonas().catch(() => {
+      setZonas([]);
+    });
   }, [llamar, fecha, pagina]);
 
   async function solicitar(event: FormEvent) {
@@ -86,6 +107,22 @@ export function RutasPage() {
     }
   }
 
+  async function alternativa(idRuta: string) {
+    setError("");
+    setAviso("");
+    setAlternativaEn(idRuta);
+    try {
+      const ruta = await llamar<Ruta>(`/rutas/${idRuta}/alternativa-segura`, { method: "POST" });
+      setAviso(ruta.mensaje ?? "Ruta alternativa más segura calculada.");
+      await cargar(fecha, pagina, true);
+      await cargarZonas(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No se pudo calcular la ruta alternativa.");
+    } finally {
+      setAlternativaEn(null);
+    }
+  }
+
   async function confirmar(idRuta: string) {
     setError("");
     setAviso("");
@@ -107,7 +144,10 @@ export function RutasPage() {
           (VRPTW + Green VRP) y lo compara con el vecino más cercano. La confirmación rechaza
           jornadas de más de 8 horas e inserta un descanso de 1 hora cada 4 horas de conducción
           (Ley N.º 30224). Los vehículos con el último dígito restringido ese día no entran al plan.
-          El mapa usa OpenStreetMap. Si las teselas no cargan, queda la tabla de paradas.
+          El mapa usa OpenStreetMap y marca las zonas de restricción. La reserva ecológica es una
+          restricción dura: una ruta que la atraviesa no se confirma (RN-013). La acción «ruta
+          alternativa más segura» rodea las zonas de riesgo. Si las teselas no cargan, queda la
+          tabla de paradas.
           Al cambiar la fecha se actualiza el plan mostrado.
         </p>
       </header>
@@ -148,7 +188,13 @@ export function RutasPage() {
           tiene el foco, para no trabar el desplazamiento de la página. Si no puede usar el mapa,
           lea la alternativa textual y la tabla de paradas.
         </p>
-        <MapaRutas rutas={rutas} seleccionada={seleccion} />
+        <MapaRutas
+          rutas={rutas}
+          seleccionada={seleccion}
+          zonas={zonas}
+          advertencia={advertenciaZonas}
+          zonasPendientes={zonasPendientes}
+        />
       </section>
       <section className="panel panel-plan" aria-labelledby="titulo-plan">
         <h2 id="titulo-plan">Plan generado</h2>
@@ -227,14 +273,36 @@ export function RutasPage() {
                   </tbody>
                 </table>
               </TablaDesplazable>
+              {ruta.zonas_cruzadas?.some((zona) => zona.tipo === "RESERVA_ECOLOGICA") &&
+              !ruta.evita_riesgo ? (
+                <p className="alerta">
+                  Esta ruta atraviesa una reserva ecológica y no se puede confirmar (RN-013).
+                </p>
+              ) : null}
+              {ruta.evita_riesgo ? (
+                <p className="exito">
+                  Esta ruta usa el trazado que evita zonas de riesgo y reservas ecológicas.
+                </p>
+              ) : null}
               {generar && ruta.estado === "BORRADOR" ? (
-                <button
-                  type="button"
-                  aria-label={`Confirmar ruta ${nombreRuta(ruta)}`}
-                  onClick={() => confirmar(ruta.id_ruta)}
-                >
-                  Confirmar ruta
-                </button>
+                <div className="fila-acciones">
+                  <button
+                    type="button"
+                    className="secundario"
+                    disabled={alternativaEn === ruta.id_ruta}
+                    aria-label={`Ruta alternativa más segura de ${nombreRuta(ruta)}`}
+                    onClick={() => alternativa(ruta.id_ruta)}
+                  >
+                    {alternativaEn === ruta.id_ruta ? "Calculando alternativa…" : "Ruta alternativa más segura"}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Confirmar ruta ${nombreRuta(ruta)}`}
+                    onClick={() => confirmar(ruta.id_ruta)}
+                  >
+                    Confirmar ruta
+                  </button>
+                </div>
               ) : null}
             </article>
           ))

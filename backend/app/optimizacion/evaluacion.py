@@ -3,7 +3,8 @@
 La usa la heurística del vecino más cercano (Sprint 3) y el algoritmo
 genético (Sprint 4). Las restricciones duras son las mismas: capacidad,
 ventana, punto de partida, pico y placa (ya filtrado al armar la flota),
-jornada de 8 h y descanso de la Ley N.º 30224.
+jornada de 8 h, descanso de la Ley N.º 30224 y reserva ecológica (RN-013).
+Una zona de riesgo se penaliza, no se prohíbe (RN-012).
 """
 
 import time
@@ -13,6 +14,13 @@ from math import asin, cos, radians, sin, sqrt
 from uuid import UUID
 
 from app.optimizacion.jornada import EstadoJornada
+from app.optimizacion.zonas import (
+    PENALIZACION_KM,
+    PENALIZACION_RIESGO,
+    Poligono,
+    cruces_riesgo,
+    reserva_bloquea,
+)
 
 SERVICIO_MIN = 10
 # 1 galón estadounidense. RN-017 publica el diésel en S/ por galón.
@@ -53,6 +61,7 @@ class RutaPlan:
     minutos_reloj: float
     combustible_l: float
     co2_kg: float
+    cruces_riesgo: int = 0
 
 
 @dataclass
@@ -104,6 +113,7 @@ class Instancia:
     costo_km: float
     excluidos: int
     semilla: int
+    zonas: list[Poligono] = field(default_factory=list)
 
 
 @dataclass
@@ -116,6 +126,7 @@ class _Cursor:
     carga_kg: float = 0
     carga_m3: float = 0
     distancia: float = 0
+    cruces_riesgo: int = 0
     paradas: list[ParadaPlan] = field(default_factory=list)
 
 
@@ -141,13 +152,15 @@ def _cabe(cursor: _Cursor, pedido: PedidoNodo, recurso: Recurso, inst: Instancia
     llegada, proyectado = cursor.jornada.proyectar(cursor.reloj, minutos)
     if llegada > pedido.ventana_fin or llegada > recurso.fin:
         return None
+    if inst.zonas and reserva_bloquea(cursor.lat, cursor.lon, pedido.lat, pedido.lon, inst.zonas):
+        return None
     espera = 0.0
     if llegada < pedido.ventana_inicio:
         espera = (pedido.ventana_inicio - llegada).total_seconds() / 60.0
     return km, minutos, espera, proyectado
 
 
-def _adoptar(cursor: _Cursor, pedido: PedidoNodo, elegido: tuple) -> None:
+def _adoptar(cursor: _Cursor, pedido: PedidoNodo, elegido: tuple, inst: Instancia) -> None:
     km, minutos, espera, proyectado = elegido
     llegada, _ = cursor.jornada.proyectar(cursor.reloj, minutos)
     cursor.jornada.adoptar(proyectado)
@@ -169,6 +182,10 @@ def _adoptar(cursor: _Cursor, pedido: PedidoNodo, elegido: tuple) -> None:
     cursor.distancia += km
     cursor.carga_kg += pedido.peso
     cursor.carga_m3 += pedido.volumen
+    if inst.zonas:
+        cursor.cruces_riesgo += cruces_riesgo(
+            cursor.lat, cursor.lon, pedido.lat, pedido.lon, inst.zonas
+        )
     cursor.lat = pedido.lat
     cursor.lon = pedido.lon
 
@@ -188,6 +205,7 @@ def _cerrar(recurso: Recurso, cursor: _Cursor) -> RutaPlan | None:
         minutos_reloj=minutos_reloj,
         combustible_l=cursor.distancia / consumo if consumo else 0,
         co2_kg=cursor.distancia * recurso.factor_co2,
+        cruces_riesgo=cursor.cruces_riesgo,
     )
 
 
@@ -203,7 +221,13 @@ def _elegir_cercano(
         if cabe is None:
             continue
         km = cabe[0]
-        clave = (0 if pedido.express else 1, km, str(pedido.id))
+        extra = 0.0
+        if inst.zonas:
+            extra = (
+                cruces_riesgo(cursor.lat, cursor.lon, pedido.lat, pedido.lon, inst.zonas)
+                * PENALIZACION_KM
+            )
+        clave = (0 if pedido.express else 1, km + extra, str(pedido.id))
         if elegido is None or clave < elegido[0]:
             elegido = (clave, pedido, cabe)
     return elegido
@@ -225,7 +249,7 @@ def _armar_por_cercania(
         if elegido is None:
             break
         _, pedido, cabe = elegido
-        _adoptar(cursor, pedido, cabe)
+        _adoptar(cursor, pedido, cabe, inst)
         pendientes = [item for item in pendientes if item.id != pedido.id]
     return _cerrar(recurso, cursor), pendientes, cortado
 
@@ -260,7 +284,7 @@ def _tomar_en_orden(
             cabe = _cabe(cursor, pedido, recurso, inst)
             if cabe is None:
                 continue
-            _adoptar(cursor, pedido, cabe)
+            _adoptar(cursor, pedido, cabe, inst)
             del pendientes[indice]
             colocado = True
             break
@@ -300,7 +324,7 @@ def simular(recurso: Recurso, secuencia: list[PedidoNodo], inst: Instancia) -> R
         cabe = _cabe(cursor, pedido, recurso, inst)
         if cabe is None:
             return None
-        _adoptar(cursor, pedido, cabe)
+        _adoptar(cursor, pedido, cabe, inst)
     return _cerrar(recurso, cursor)
 
 
@@ -311,15 +335,17 @@ def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia)
     km = 0.0
     litros = 0.0
     penal = 0.0
+    penal_riesgo = 0.0
     for ruta in rutas:
         soles += ruta.combustible_l * inst.precio_litro + ruta.distancia_km * inst.costo_km
         co2 += ruta.co2_kg
         km += ruta.distancia_km
         litros += ruta.combustible_l
+        penal_riesgo += ruta.cruces_riesgo * PENALIZACION_RIESGO
         for puesto, parada in enumerate(ruta.paradas):
             if parada.id_pedido in express and puesto > 0:
                 penal += PENALIZACION_EXPRESS * puesto
-    total = len(sin_asignar) * 1_000_000 + soles + co2 + penal
+    total = len(sin_asignar) * 1_000_000 + soles + co2 + penal + penal_riesgo
     return {
         "total": total,
         "soles": soles,
@@ -327,6 +353,7 @@ def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia)
         "distancia_km": km,
         "combustible_l": litros,
         "penalizacion_express": penal,
+        "penalizacion_riesgo": penal_riesgo,
         "sin_asignar": len(sin_asignar),
     }
 

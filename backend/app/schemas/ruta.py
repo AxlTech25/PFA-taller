@@ -1,7 +1,9 @@
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.schemas.zona import ZonaCruzadaOut
 
 
 class ParadaOut(BaseModel):
@@ -39,6 +41,9 @@ class RutaOut(BaseModel):
     descansos: list[DescansoOut]
     paradas: list[ParadaOut]
     comparacion: dict | None = None
+    trazado: list[list[float]] | None = None
+    evita_riesgo: bool = False
+    zonas_cruzadas: list[ZonaCruzadaOut] = Field(default_factory=list)
     mensaje: str | None = None
 
 

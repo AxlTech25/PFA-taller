@@ -412,9 +412,44 @@ h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
   min-height: 8rem;
 }
 
-.alternativa-mapa ol {
+/* El bloque existe desde el primer render. 14rem cubre el texto demo medido
+   (~11rem a 1350px) y un par de líneas extra si la fuente del navegador parte
+   el aviso. Así la lista no empuja el mapa al llegar (CLS). */
+.zonas-mapa {
+  min-height: 14rem;
+}
+
+.alternativa-mapa ol,
+.zonas-mapa ul {
   margin: 0.3rem 0 0;
   padding-left: 1.2rem;
+}
+
+.leyenda-zonas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
+  list-style: none;
+  padding-left: 0;
+}
+
+.muestra {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.35rem;
+  vertical-align: text-bottom;
+  border: 2px solid;
+}
+
+.muestra.reserva {
+  background: #b7dfc8;
+  border-color: #0d5c32;
+}
+
+.muestra.riesgo {
+  background: #f3c1bc;
+  border-color: #7a1b1b;
 }
 
 .panel-plan {

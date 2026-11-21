@@ -15,6 +15,7 @@ from app.api.routes import (
     rutas,
     usuarios,
     vehiculos,
+    zonas,
 )
 from app.core.config import settings
 from app.core.errores import traducir_validacion
@@ -24,8 +25,10 @@ app = FastAPI(
     title="EcoLogística Lima",
     version="1.0.0-MVP",
     description=(
-        "API del MVP: rutas VRPTW, tablero iniciado y modo conductor "
-        "(secuencia, hora estimada y alertas de la ruta confirmada del día)."
+        "API del MVP: rutas VRPTW, tablero iniciado, modo conductor "
+        "(secuencia, hora estimada y alertas de la ruta confirmada del día) "
+        "y zonas de restricción en el mapa. La ruta alternativa más segura "
+        "evita zonas de riesgo y la reserva ecológica es restricción dura (RN-013)."
     ),
 )
 
@@ -49,6 +52,7 @@ app.include_router(conductores.router)
 app.include_router(clientes.router)
 app.include_router(pedidos.router)
 app.include_router(optimizaciones.router)
+app.include_router(zonas.router)
 app.include_router(rutas.router)
 app.include_router(modo.router)
 app.include_router(indicadores.router)

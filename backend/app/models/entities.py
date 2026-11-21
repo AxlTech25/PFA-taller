@@ -187,6 +187,10 @@ class Ruta(Base):
     id_job: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("job_optimizacion.id_job")
     )
+    trazado_geojson: Mapped[dict | None] = mapped_column(JSONB)
+    evita_riesgo: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=text("false")
+    )
     generada_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
@@ -227,6 +231,18 @@ class DetalleRuta(Base):
     secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
     eta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     estado_entrega: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDIENTE")
+
+
+class ZonaRestriccion(Base):
+    __tablename__ = "zona_restriccion"
+
+    id_zona: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
+    )
+    nombre: Mapped[str] = mapped_column(String(150), nullable=False)
+    tipo: Mapped[str] = mapped_column(String(30), nullable=False)
+    severidad: Mapped[str] = mapped_column(String(20), nullable=False, default="MEDIA")
+    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
 
 class DescansoRuta(Base):

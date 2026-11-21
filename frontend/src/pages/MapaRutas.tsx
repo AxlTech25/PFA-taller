@@ -10,7 +10,8 @@ import {
   trazadoPorCalles,
   type Trazado,
 } from "../mapa";
-import type { ParadaRuta, Ruta } from "../types";
+import type { ParadaRuta, Ruta, ZonaRestriccion } from "../types";
+import { anilloZona, etiquetaZona } from "../zonas";
 
 const COLORES = ["#08553d", "#0b3a66", "#7a1b1b", "#6a4b00", "#3d5248"];
 
@@ -20,9 +21,19 @@ const PINTURA: Record<string, string> = {
   ROJO: "#7a1b1b",
 };
 
+const ZONAS_VACIAS: ZonaRestriccion[] = [];
+
+const ESTILO_ZONA: Record<string, { color: string; fill: string }> = {
+  RESERVA_ECOLOGICA: { color: "#0d5c32", fill: "#b7dfc8" },
+  RIESGO_SEGURIDAD: { color: "#7a1b1b", fill: "#f3c1bc" },
+};
+
 type Props = Readonly<{
   rutas: Ruta[];
   seleccionada: string | null;
+  zonas?: ZonaRestriccion[];
+  advertencia?: string;
+  zonasPendientes?: boolean;
 }>;
 
 type Marcador = {
@@ -58,7 +69,44 @@ type LeafletApi = {
     punto: [number, number],
     estilo: { radius: number; color: string; fillColor: string; fillOpacity: number },
   ) => Marcador;
+  polygon: (
+    anillo: [number, number][],
+    estilo: { color: string; weight: number; fillColor: string; fillOpacity: number },
+  ) => { bindPopup: (texto: string) => { addTo: (lienzo: Lienzo) => void } };
 };
+
+function escapar(texto: string): string {
+  return texto
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function sePuedeDibujar(ruta: Ruta): boolean {
+  if ((ruta.trazado?.length ?? 0) >= 2) return true;
+  return trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas).length >= 2;
+}
+
+function geometriaDe(ruta: Ruta): Promise<Trazado> {
+  if (ruta.trazado && ruta.trazado.length >= 2) {
+    return Promise.resolve({ linea: ruta.trazado, enlaces: [] });
+  }
+  return trazadoPorCalles(trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas));
+}
+
+function pintarZonas(L: LeafletApi, lienzo: Lienzo, zonas: ZonaRestriccion[], grupo: [number, number][]) {
+  for (const zona of zonas) {
+    const anillo = anilloZona(zona);
+    if (anillo.length < 3) continue;
+    const estilo = ESTILO_ZONA[zona.tipo] ?? { color: "#6a4b00", fill: "#f3e6b8" };
+    const demo = zona.es_demostracion ? "<br/>Polígono de demostración, no es un límite oficial." : "";
+    L.polygon(anillo, { color: estilo.color, weight: 2, fillColor: estilo.fill, fillOpacity: 0.35 })
+      .bindPopup(`${escapar(zona.nombre)}<br/>${escapar(etiquetaZona(zona.tipo))}${demo}`)
+      .addTo(lienzo);
+    grupo.push(...anillo);
+  }
+}
 
 function etiquetarZoom(nodo: HTMLElement) {
   const acercar = nodo.querySelector(".leaflet-control-zoom-in");
@@ -155,6 +203,7 @@ function dibujar(
   nodo: HTMLElement,
   activas: Ruta[],
   calles: Trazado[],
+  zonas: ZonaRestriccion[],
   seleccionada: string | null,
   alFallarTesela: () => void,
 ) {
@@ -171,11 +220,21 @@ function dibujar(
   teselas.on("tileerror", alFallarTesela);
   teselas.addTo(lienzo);
   const grupo: [number, number][] = [];
+  pintarZonas(L, lienzo, zonas, grupo);
   activas.forEach((ruta, indice) => {
     pintarRuta(L, lienzo, ruta, calles[indice], indice, seleccionada, grupo);
   });
   if (grupo.length > 0) lienzo.fitBounds(grupo, { padding: [24, 24] });
   return { lienzo, limpiar: prepararInteraccion(lienzo, nodo) };
+}
+
+function textoRestriccion(ruta: Ruta): string {
+  const partes: string[] = [];
+  if (ruta.evita_riesgo) partes.push("Trazado alternativo que evita zonas de riesgo.");
+  if (ruta.zonas_cruzadas?.some((zona) => zona.tipo === "RESERVA_ECOLOGICA")) {
+    partes.push("Atraviesa una reserva ecológica.");
+  }
+  return partes.length ? ` ${partes.join(" ")}` : "";
 }
 
 function textoPartida(ruta: Ruta): string {
@@ -192,6 +251,50 @@ function textoParada(parada: ParadaRuta): string {
   return `Parada ${parada.secuencia}: ${cliente}${referencia}${eta}. Semáforo ${etiquetaCongestion(parada.nivel_congestion)}.`;
 }
 
+function ListaZonas({
+  zonas,
+  advertencia,
+  pendientes,
+}: {
+  zonas: ZonaRestriccion[];
+  advertencia: string;
+  pendientes: boolean;
+}) {
+  if (!pendientes && zonas.length === 0) return null;
+  return (
+    <section
+      aria-labelledby="titulo-zonas"
+      className="zonas-mapa"
+      aria-busy={pendientes ? true : undefined}
+    >
+      <h3 id="titulo-zonas">Zonas de restricción</h3>
+      {advertencia ? <p>{advertencia}</p> : null}
+      <ul className="leyenda-zonas">
+        <li>
+          <span className="muestra reserva" aria-hidden="true" />
+          Reserva ecológica, restricción dura
+        </li>
+        <li>
+          <span className="muestra riesgo" aria-hidden="true" />
+          Zona de riesgo
+        </li>
+      </ul>
+      {zonas.length > 0 ? (
+        <ul>
+          {zonas.map((zona) => (
+            <li key={zona.id_zona}>
+              {zona.nombre}. {etiquetaZona(zona.tipo)}. Severidad {zona.severidad.toLowerCase()}.
+              {zona.es_demostracion ? " Polígono de demostración, no es un límite oficial." : ""}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Cargando zonas de restricción.</p>
+      )}
+    </section>
+  );
+}
+
 function ListaTextual({ rutas, seleccionada }: Props) {
   return (
     <section id="alternativa-mapa" className="alternativa-mapa" aria-labelledby="titulo-alternativa-mapa">
@@ -204,6 +307,7 @@ function ListaTextual({ rutas, seleccionada }: Props) {
             <li key={ruta.id_ruta} aria-current={ruta.id_ruta === seleccionada ? "true" : undefined}>
               <p>
                 {ruta.placa ?? "Vehículo"} · {ruta.conductor ?? "Conductor"}. {textoPartida(ruta)}
+                {textoRestriccion(ruta)}
                 {ruta.id_ruta === seleccionada ? " Esta ruta está resaltada en el mapa." : ""}
               </p>
               {ruta.paradas.length === 0 ? (
@@ -223,25 +327,27 @@ function ListaTextual({ rutas, seleccionada }: Props) {
   );
 }
 
-export function MapaRutas({ rutas, seleccionada }: Props) {
+export function MapaRutas({
+  rutas,
+  seleccionada,
+  zonas,
+  advertencia = "",
+  zonasPendientes = false,
+}: Props) {
   const contenedor = useRef<HTMLElement>(null);
   const [tilesCaidos, setTilesCaidos] = useState(false);
-  const activas = rutas.filter(
-    (ruta) => trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas).length >= 2,
-  );
+  const capas = zonas ?? ZONAS_VACIAS;
+  const activas = rutas.filter(sePuedeDibujar);
+  const hayDibujo = activas.length > 0 || capas.length > 0;
 
   useEffect(() => {
     const nodo = contenedor.current;
-    if (!nodo || tilesCaidos || activas.length === 0) return undefined;
+    if (!nodo || tilesCaidos || !hayDibujo) return undefined;
     let cancelado = false;
     let mapa: Lienzo | null = null;
     let limpiar = () => {};
 
-    const calles = Promise.all(
-      activas.map((ruta) =>
-        trazadoPorCalles(trazado(ruta.origen_lat, ruta.origen_lon, ruta.paradas)),
-      ),
-    );
+    const calles = Promise.all(activas.map((ruta) => geometriaDe(ruta)));
 
     void Promise.all([import("leaflet"), calles])
       .then(([modulo, geometrias]) => {
@@ -251,6 +357,7 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
           contenedor.current,
           activas,
           geometrias,
+          capas,
           seleccionada,
           () => setTilesCaidos(true),
         );
@@ -266,10 +373,10 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
       limpiar();
       mapa?.remove();
     };
-  }, [activas, seleccionada, tilesCaidos]);
+  }, [activas, capas, hayDibujo, seleccionada, tilesCaidos]);
 
   let cuerpo: ReactNode;
-  if (activas.length === 0) {
+  if (!hayDibujo) {
     cuerpo = (
       <output className="aviso">
         No hay coordenadas para dibujar el trazado. La secuencia de entregas sigue en la tabla.
@@ -290,6 +397,7 @@ export function MapaRutas({ rutas, seleccionada }: Props) {
 
   return (
     <div className="mapa-y-texto">
+      <ListaZonas zonas={capas} advertencia={advertencia} pendientes={zonasPendientes} />
       <ListaTextual rutas={rutas} seleccionada={seleccionada} />
       <div className="mapa-reserva">{cuerpo}</div>
     </div>

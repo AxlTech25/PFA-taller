@@ -103,6 +103,91 @@ test("rutas encola la optimización del día y muestra el resultado", async ({ p
   });
 });
 
+test("el mapa muestra las zonas demo y no las presenta como catastro", async ({ page }) => {
+  await entrar(page);
+  await ir(page, "Rutas");
+  await expect(page.getByRole("heading", { name: "Zonas de restricción" })).toBeVisible();
+  await expect(page.getByText(/DEMO · riesgo ilustrativo en Santa Anita sur/)).toBeVisible();
+  await expect(page.getByText(/DEMO · reserva ecológica ilustrativa en Ate sur/)).toBeVisible();
+  await expect(page.getByText(/no son el catastro del INEI/i)).toBeVisible();
+  await expect(page.getByText("Reserva ecológica, restricción dura")).toBeVisible();
+  await expect(page.getByText("Zona de riesgo", { exact: true })).toBeVisible();
+});
+
+test("la ruta alternativa más segura rodea la zona de riesgo demo", async ({ page, request }, info) => {
+  await entrar(page);
+  const token = await tokenDe(page);
+  const fechas: Record<string, string> = {
+    chromium: "2099-06-09",
+    firefox: "2099-06-16",
+    webkit: "2099-06-23",
+  };
+  const fecha = fechas[info.project.name] ?? "2099-06-09";
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  const clientes = await request.get("/clientes?page=1&limite=50", { headers });
+  expect(clientes.status()).toBe(200);
+  const lista = (await clientes.json()) as {
+    items: { id_cliente: string; consentimiento_datos: boolean }[];
+  };
+  const cliente = lista.items.find((item) => item.consentimiento_datos);
+  expect(cliente).toBeTruthy();
+  const conductor = await request.post("/conductores", {
+    headers,
+    data: {
+      nombre: `Conductor zonas ${info.project.name}`,
+      dni: dniNuevo(),
+      licencia_categoria: "A-IIIb",
+      anios_experiencia: 2,
+      disponibilidad_inicio: "06:00:00",
+      disponibilidad_fin: "20:00:00",
+      lat_punto_partida: -12.01,
+      lon_punto_partida: -76.98,
+    },
+  });
+  expect(conductor.status(), await conductor.text()).toBe(201);
+  const pedido = await request.post("/pedidos", {
+    headers,
+    data: {
+      id_cliente: cliente?.id_cliente,
+      direccion: "Calle demo zonas",
+      latitud: -12.082,
+      longitud: -76.965,
+      peso_kg: 10,
+      volumen_m3: 0.3,
+      ventana_inicio: `${fecha}T08:00:00Z`,
+      ventana_fin: `${fecha}T18:00:00Z`,
+      prioridad: "ESTANDAR",
+      tipo_producto: "NO_PERECEDERO",
+    },
+  });
+  expect(pedido.status(), await pedido.text()).toBe(201);
+  const alta = await request.post("/optimizaciones", { headers, data: { fecha } });
+  expect(alta.status(), await alta.text()).toBe(202);
+  const idJob = ((await alta.json()) as { id_job: string }).id_job;
+  let estado = "ENCOLADO";
+  let mensaje = "";
+  for (let intento = 0; intento < 30 && (estado === "ENCOLADO" || estado === "EN_PROCESO"); intento += 1) {
+    await page.waitForTimeout(500);
+    const consulta = await request.get(`/optimizaciones/${idJob}`, { headers });
+    const cuerpo = (await consulta.json()) as { estado: string; mensaje?: string };
+    estado = cuerpo.estado;
+    mensaje = cuerpo.mensaje ?? "";
+  }
+  expect(estado, mensaje).toBe("COMPLETADO");
+
+  await ir(page, "Rutas");
+  await page.locator("#fecha").fill(fecha);
+  const boton = page.getByRole("button", { name: /Ruta alternativa más segura/ }).first();
+  await expect(boton).toBeVisible();
+  await boton.click();
+  await expect(page.locator("output.exito").filter({ hasText: /alternativa|evita/i })).toBeVisible();
+  await expect(page.getByText(/desvío geométrico de demostración/i)).toBeVisible();
+});
+
 test("el tablero consulta el período y responde sin datos de operación", async ({ page }) => {
   await entrar(page);
   await ir(page, "Tablero");
