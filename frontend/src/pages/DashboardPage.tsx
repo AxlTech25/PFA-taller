@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { ApiError } from "../api";
 import { useAuth } from "../auth";
@@ -20,25 +20,30 @@ export function DashboardPage() {
   const [fecha, setFecha] = useState(fechaHoy);
   const [datos, setDatos] = useState<Indicadores | null>(null);
   const [error, setError] = useState("");
+  const consulta = useRef(0);
 
   async function cargar(dia: string) {
-    const cuerpo = await llamar<Indicadores>(`/indicadores?fecha=${dia}`);
-    setDatos(cuerpo);
+    const actual = consulta.current + 1;
+    consulta.current = actual;
+    try {
+      const cuerpo = await llamar<Indicadores>(`/indicadores?fecha=${dia}`);
+      if (consulta.current !== actual) return;
+      setDatos(cuerpo);
+      setError("");
+    } catch (err: unknown) {
+      if (consulta.current !== actual) return;
+      setError(err instanceof ApiError ? err.message : "No se pudo cargar el tablero.");
+    }
   }
 
   useEffect(() => {
     document.title = "Tablero · EcoLogística Lima";
-    cargar(fecha).catch((err: unknown) =>
-      setError(err instanceof ApiError ? err.message : "No se pudo cargar el tablero."),
-    );
+    cargar(fecha);
   }, [llamar, fecha]);
 
   function consultar(event: FormEvent) {
     event.preventDefault();
-    setError("");
-    cargar(fecha).catch((err: unknown) =>
-      setError(err instanceof ApiError ? err.message : "No se pudo cargar el tablero."),
-    );
+    cargar(fecha);
   }
 
   return (

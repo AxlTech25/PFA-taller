@@ -34,6 +34,10 @@ const ETIQUETAS: Record<string, string> = {
   EN_PROCESO: "En proceso",
   COMPLETADO: "Completado",
   FALLIDO: "Fallido",
+  REPROGRAMADO: "Reprogramado",
+  VERDE: "Verde",
+  AMARILLO: "Amarillo",
+  ROJO: "Rojo",
 };
 
 export function etiquetaRol(rol: string): string {

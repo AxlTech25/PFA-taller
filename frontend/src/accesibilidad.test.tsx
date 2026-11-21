@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { App } from "./App";
 import { violacionesDe } from "./test/axe";
 import { instalarFetch, montar } from "./test/pagina";
-import type { Cliente, Conductor, Indicadores, Pedido, Ruta, Usuario, Vehiculo } from "./types";
+import type { Cliente, Conductor, Indicadores, JornadaModo, Pedido, Ruta, Usuario, Vehiculo } from "./types";
 
 vi.mock("leaflet", () => ({
   default: {
@@ -117,6 +117,33 @@ const ruta: Ruta = {
   ],
 };
 
+const jornadaModo: JornadaModo = {
+  hay_ruta: true,
+  fecha: "2026-11-21",
+  mensaje: null,
+  id_ruta: "ruta-modo",
+  placa: "DMO-101",
+  paradas: [
+    {
+      secuencia: 1,
+      id_detalle: "detalle-modo",
+      cliente: "Bodega El Ahorro",
+      direccion: "Av. Próceres de la Independencia 2450",
+      punto_referencia: "frente a la bodega El Ahorro",
+      eta: "2026-11-21T08:15:00+00:00",
+      estado_entrega: "PENDIENTE",
+      nivel_congestion: "AMARILLO",
+    },
+  ],
+  alertas: [
+    {
+      codigo: "CONGESTION",
+      secuencia: 1,
+      texto: "Parada 1: semáforo amarillo en la llegada estimada.",
+    },
+  ],
+};
+
 const indicadores: Indicadores = {
   fecha: "2026-11-02",
   hay_datos: true,
@@ -219,8 +246,17 @@ describe("accesibilidad WCAG AA", () => {
   });
 
   it("el modo conductor no tiene violaciones de axe", async () => {
+    instalarFetch((path) => {
+      if (path.includes("/modo/jornada")) return { body: jornadaModo };
+      return { body: [] };
+    });
     montar(<App />, "CONDUCTOR", "/modo");
-    expect(await screen.findByRole("heading", { name: "Modo conductor" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: "Confirmar entrega de la parada 1, Bodega El Ahorro" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Modo conductor" })).toBeInTheDocument();
+    expect(screen.getByText("08:15")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Tablero" })).not.toBeInTheDocument();
     await sinViolaciones();
   });
 

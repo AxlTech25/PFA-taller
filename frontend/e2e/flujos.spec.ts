@@ -109,6 +109,9 @@ test("el tablero consulta el período y responde sin datos de operación", async
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.getByRole("heading", { level: 1, name: "Tablero" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Período" })).toBeVisible();
+  // Hoy puede tener la ruta de demostración del conductor. El período vacío es otro día.
+  await page.locator("#fecha-tablero").fill("2099-01-01");
+  await expect(page.locator("#fecha-tablero")).toHaveValue("2099-01-01");
   await expect(page.locator("output.aviso")).toContainText("Sin datos de operación para el período seleccionado.");
   await page.getByRole("button", { name: "Consultar" }).click();
   await expect(page.locator("output.aviso")).toContainText("Sin datos de operación para el período seleccionado.");

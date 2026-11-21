@@ -5,6 +5,11 @@ export const ADMIN = {
   password: process.env.E2E_ADMIN_PASSWORD ?? "AdminDemo1",
 };
 
+export const CONDUCTOR = {
+  email: process.env.E2E_CONDUCTOR_EMAIL ?? "conductor@distrirapido.example.com",
+  password: process.env.E2E_CONDUCTOR_PASSWORD ?? "ConductorDemo1",
+};
+
 let consecutivo = 0;
 
 export function placaNueva(proyecto: string): string {
@@ -26,6 +31,15 @@ export function fechaLima(ahora = new Date()): string {
     month: "2-digit",
     day: "2-digit",
   }).format(ahora);
+}
+
+export async function entrarConductor(page: Page): Promise<void> {
+  await page.goto("/login");
+  await page.locator("#email").fill(CONDUCTOR.email);
+  await page.locator("#password").fill(CONDUCTOR.password);
+  await page.getByRole("button", { name: "Entrar" }).click();
+  await expect(page).toHaveURL(/\/modo$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Modo conductor" })).toBeVisible();
 }
 
 export async function entrar(page: Page): Promise<void> {

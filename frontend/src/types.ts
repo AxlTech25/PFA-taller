@@ -138,6 +138,33 @@ export type Indicadores = {
   mejora_porcentaje?: number | null;
 };
 
+export type AlertaModo = {
+  codigo: "CONGESTION" | "VENTANA" | "DESCANSO" | "INCIDENCIA";
+  secuencia?: number | null;
+  texto: string;
+};
+
+export type ParadaModo = {
+  secuencia: number;
+  id_detalle: string;
+  cliente: string;
+  direccion?: string | null;
+  punto_referencia?: string | null;
+  eta?: string | null;
+  estado_entrega: string;
+  nivel_congestion?: string | null;
+};
+
+export type JornadaModo = {
+  hay_ruta: boolean;
+  fecha: string;
+  mensaje?: string | null;
+  id_ruta?: string | null;
+  placa?: string | null;
+  paradas: ParadaModo[];
+  alertas: AlertaModo[];
+};
+
 export type JobOptimizacion = {
   id_job: string;
   estado: string;

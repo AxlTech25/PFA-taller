@@ -16,7 +16,7 @@
 	# /rutas, /pedidos, /usuarios... son a la vez páginas del SPA y endpoints.
 	# Una navegación (GET/HEAD que acepta HTML) recibe la SPA; el resto va a la API.
 	@api {
-		path /auth /auth/* /usuarios /usuarios/* /vehiculos /vehiculos/* /conductores /conductores/* /pedidos /pedidos/* /clientes /clientes/* /optimizaciones /optimizaciones/* /rutas /rutas/* /indicadores /indicadores/* /health
+		path /auth /auth/* /usuarios /usuarios/* /vehiculos /vehiculos/* /conductores /conductores/* /pedidos /pedidos/* /clientes /clientes/* /optimizaciones /optimizaciones/* /rutas /rutas/* /modo /modo/* /indicadores /indicadores/* /health
 		not {
 			method GET HEAD
 			header Accept *text/html*

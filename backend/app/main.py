@@ -9,6 +9,7 @@ from app.api.routes import (
     conductores,
     health,
     indicadores,
+    modo,
     optimizaciones,
     pedidos,
     rutas,
@@ -23,8 +24,8 @@ app = FastAPI(
     title="EcoLogística Lima",
     version="1.0.0-MVP",
     description=(
-        "API del Sprint 4: algoritmo genético VRPTW + Green VRP en el worker, "
-        "comparación con el vecino más cercano, mapa de rutas y tablero iniciado."
+        "API del MVP: rutas VRPTW, tablero iniciado y modo conductor "
+        "(secuencia, hora estimada y alertas de la ruta confirmada del día)."
     ),
 )
 
@@ -49,6 +50,7 @@ app.include_router(clientes.router)
 app.include_router(pedidos.router)
 app.include_router(optimizaciones.router)
 app.include_router(rutas.router)
+app.include_router(modo.router)
 app.include_router(indicadores.router)
 
 
