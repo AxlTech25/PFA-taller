@@ -2,6 +2,10 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("./ModoMapa", () => ({
+  ModoMapa: () => <p role="region" aria-label="Mapa diferido">Mapa diferido</p>,
+}));
+
 import type { JornadaModo } from "../types";
 import { instalarFetch, montar } from "../test/pagina";
 import { ModoConductorPage } from "./ModoConductorPage";
@@ -95,6 +99,15 @@ describe("modo conductor", () => {
       ),
     ).toBeInTheDocument();
     expect(llamadas.every((llamada) => (llamada.init?.method ?? "GET").toUpperCase() === "GET")).toBe(true);
+    expect(llamadas.some((llamada) => llamada.path.includes("/modo/mapa"))).toBe(false);
+
+    await usuario.tab();
+    const mapa = screen.getByRole("button", { name: "Ver mapa" });
+    expect(mapa).toHaveFocus();
+    await usuario.click(mapa);
+    expect(await screen.findByRole("region", { name: "Mapa diferido" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Parada 1/ })).toBeInTheDocument();
+    expect(llamadas.some((llamada) => llamada.path.includes("/modo/mapa"))).toBe(false);
   });
 
   it("avisa cuando no hay ruta confirmada para hoy", async () => {

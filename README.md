@@ -102,7 +102,16 @@ Transformación de la línea base de requisitos a backlog ágil, configuración 
 
 Documentos de gestión **separados por sprint**. Carpeta: [`docs/03 Implementación/`](./docs/03%20Implementaci%C3%B3n/).
 
-Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS. El Sprint 3 reúne los entregables de la consigna del curso. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md).
+Los sprints 1 y 2 tienen los cuatro informes de seguimiento (`V_1_0_0.md`). El Sprint 4 reúne la revisión, la retrospectiva, el análisis de Playwright y la evaluación SUS. El Sprint 3 reúne los entregables de la consigna del curso. El Sprint 5 guarda la medición de datos y la auditoría WCAG del modo conductor. Fechas: [cronograma de sprints](./docs/02%20Planificaci%C3%B3n/05%20Cronograma%20de%20sprints%20V_1_0_6.md).
+
+### Sprint 5
+
+Carpeta: [`docs/03 Implementación/Sprint 5/`](./docs/03%20Implementaci%C3%B3n/Sprint%205/).
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Presupuesto de datos del modo conductor (ENB-008) | [01 Rendimiento modo conductor V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%205/01%20Rendimiento%20modo%20conductor%20V_1_0_0.md) |
+| 02 | Accesibilidad WCAG 2.2 AA del modo conductor (ENB-005) | [02 WCAG modo conductor V_1_0_0.md](./docs/03%20Implementaci%C3%B3n/Sprint%205/02%20WCAG%20modo%20conductor%20V_1_0_0.md) |
 
 ### Sprint 4
 
@@ -373,4 +382,4 @@ Si `web` responde 502 al iniciar sesión, el entorno de Railway es de los antigu
 
 ## Convención de versionado
 
-Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 los informes de seguimiento viven en la carpeta del sprint (`Sprint 1/`, `Sprint 2/`, `Sprint 3/`, `Sprint 4/`) con el nombre `V_1_0_0.md`. La consigna del Sprint 3 usa además la carpeta `Sprint 3/`.
+Los artefactos documentales usan versionado semántico en el encabezado y el historial (`Versión: X.Y.Z`). En la Fase 03 los informes de seguimiento viven en la carpeta del sprint (`Sprint 1/`, `Sprint 2/`, `Sprint 3/`, `Sprint 4/`, `Sprint 5/`) con el nombre `V_1_0_0.md`. La consigna del Sprint 3 usa además la carpeta `Sprint 3/`.

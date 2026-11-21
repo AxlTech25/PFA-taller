@@ -12,9 +12,18 @@ Calendario completo: [05 Cronograma de sprints V_1_0_6.md](../02%20Planificaci%C
 | 2 | 16/09/2026 | 29/09/2026 | Usuarios y roles; bloqueo; menú de flota; conductor; alta de pedido (demo); OWASP | [Sprint 2/](./Sprint%202/) |
 | 3 | 16/10/2026 | 29/10/2026 | Cobertura Lima Este (migración 004); jornada 8 h; worker Redis 202; vecino más cercano; CodeQL | [Sprint 3/](./Sprint%203/) |
 | 4 | 30/10/2026 | 12/11/2026 | AG DEAP 150×15; inicio mapa Leaflet; inicio dashboard (Hito 3 el 12/11) | [Sprint 4/](./Sprint%204/) |
-| 5 | 13/11/2026 | 26/11/2026 | Zonas y ruta alternativa; factor árboles RN-018; modo conductor; WCAG; payload 2G/3G | — |
+| 5 | 13/11/2026 | 26/11/2026 | Zonas y ruta alternativa; factor árboles RN-018; modo conductor; WCAG; payload 2G/3G | [Sprint 5/](./Sprint%205/) |
 | 6 | 27/11/2026 | 10/12/2026 | Re-opt; PDF; confirmar entrega; compensación; US-009 (Could) | — |
 | Cierre (Hito 4) | 11/12/2026 | 13/12/2026 | UAT, documentación y presentación | — |
+
+## Sprint 5
+
+Carpeta: [Sprint 5/](./Sprint%205/). Mediciones de ENB-008 y ENB-005 sobre el modo conductor. US-013 y US-015 ya están en `main`. El registro de ENTREGADO o FALLIDO sigue en US-018.
+
+| # | Artefacto | Archivo |
+|---|---|---|
+| 01 | Presupuesto de datos del modo conductor | [01 Rendimiento modo conductor V_1_0_0.md](./Sprint%205/01%20Rendimiento%20modo%20conductor%20V_1_0_0.md) |
+| 02 | Accesibilidad WCAG 2.2 AA del modo conductor | [02 WCAG modo conductor V_1_0_0.md](./Sprint%205/02%20WCAG%20modo%20conductor%20V_1_0_0.md) |
 
 ## Sprint 4
 

@@ -180,7 +180,21 @@ test("la ruta alternativa más segura rodea la zona de riesgo demo", async ({ pa
   expect(estado, mensaje).toBe("COMPLETADO");
 
   await ir(page, "Rutas");
-  await page.locator("#fecha").fill(fecha);
+  const listado = page.waitForResponse(
+    (respuesta) =>
+      respuesta.url().includes("/rutas?") &&
+      respuesta.url().includes(`fecha=${fecha}`) &&
+      respuesta.status() === 200,
+  );
+  await page.locator("#fecha").evaluate((campo, valor) => {
+    const input = campo as HTMLInputElement;
+    const definir = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    definir?.call(input, valor);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, fecha);
+  await expect(page.locator("#fecha")).toHaveValue(fecha);
+  await listado;
   const boton = page.getByRole("button", { name: /Ruta alternativa más segura/ }).first();
   await expect(boton).toBeVisible();
   await boton.click();

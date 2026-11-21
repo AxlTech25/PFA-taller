@@ -37,3 +37,18 @@ class JornadaModo(BaseModel):
     placa: str | None = None
     paradas: list[ParadaModo]
     alertas: list[AlertaModo]
+
+
+class PuntoModo(BaseModel):
+    secuencia: int
+    latitud: float
+    longitud: float
+    cliente: str
+
+
+class MapaModo(BaseModel):
+    """Coordenadas opcionales. La lista de paradas no las necesita."""
+
+    hay_ruta: bool
+    placa: str | None = None
+    puntos: list[PuntoModo]

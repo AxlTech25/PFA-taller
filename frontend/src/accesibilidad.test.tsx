@@ -256,6 +256,7 @@ describe("accesibilidad WCAG AA", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Modo conductor" })).toBeInTheDocument();
     expect(screen.getByText("08:15")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ver mapa" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Tablero" })).not.toBeInTheDocument();
     await sinViolaciones();
   });

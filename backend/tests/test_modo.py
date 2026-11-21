@@ -20,6 +20,8 @@ from app.services.jornada_demo import (
     PLACA_DEMO,
     asegurar_jornada_demo,
 )
+from app.services.jornada_presupuesto import PARADAS as PARADAS_PRESUPUESTO
+from app.services.jornada_presupuesto import asegurar_jornada_presupuesto
 from app.services.modo import fecha_operativa
 from sqlalchemy import func, select, text
 from tests.conftest import autenticar, crear_usuario
@@ -430,3 +432,28 @@ def test_no_reemplaza_otra_ficha_ni_otro_dni(db):
     _conductor(db, dueno, DNI_DEMO)
     nuevo = crear_usuario(db, email="nuevo.dni@distrirapido.example.com", rol="CONDUCTOR")
     assert asegurar_jornada_demo(db, nuevo) is False
+
+
+def test_mapa_opcional_y_ruta_de_doce_paradas(client, db):
+    usuario = crear_usuario(db, email="presupuesto.modo@distrirapido.example.com", rol="CONDUCTOR")
+    assert asegurar_jornada_presupuesto(db, usuario) is True
+    assert asegurar_jornada_presupuesto(db, usuario) is True
+    headers = autenticar(client, usuario.email)
+    jornada = client.get("/modo/jornada", headers=headers)
+    assert jornada.status_code == 200, jornada.text
+    cuerpo = jornada.json()
+    assert len(cuerpo["paradas"]) == PARADAS_PRESUPUESTO
+    assert "latitud" not in jornada.text
+    assert len(jornada.content) <= TOPE_BYTES
+    mapa = client.get("/modo/mapa", headers=headers)
+    assert mapa.status_code == 200, mapa.text
+    puntos = mapa.json()["puntos"]
+    assert len(puntos) == PARADAS_PRESUPUESTO
+    assert puntos[0]["secuencia"] == 1
+    assert "latitud" in puntos[0]
+    ajeno = crear_usuario(db, email="ajeno.mapa@distrirapido.example.com", rol="CONDUCTOR")
+    ajeno_mapa = client.get("/modo/mapa", headers=autenticar(client, ajeno.email))
+    assert ajeno_mapa.json()["hay_ruta"] is False
+    operador = crear_usuario(db, email="op.mapa@distrirapido.example.com", rol="OPERADOR")
+    operador_mapa = client.get("/modo/mapa", headers=autenticar(client, operador.email))
+    assert operador_mapa.status_code == 403

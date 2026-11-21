@@ -17,6 +17,7 @@ def test_openapi_y_swagger(client):
         "/rutas",
         "/rutas/zonas-restriccion",
         "/modo/jornada",
+        "/modo/mapa",
         "/indicadores",
     ):
         assert ruta in paths
