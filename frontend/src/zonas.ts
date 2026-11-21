@@ -1,5 +1,9 @@
 import type { ZonaRestriccion } from "./types";
 
+/** Mismo texto que devuelve el API. Va en el primer render para no mover el mapa al llegar la respuesta. */
+export const ADVERTENCIA_ZONAS =
+  "Las zonas cuyo nombre empieza por DEMO son polígonos ilustrativos de la demostración. No son el catastro del INEI ni el límite oficial de una reserva ecológica o de una zona de riesgo.";
+
 export function etiquetaZona(tipo: string): string {
   if (tipo === "RESERVA_ECOLOGICA") return "Reserva ecológica";
   if (tipo === "RIESGO_SEGURIDAD") return "Zona de riesgo";

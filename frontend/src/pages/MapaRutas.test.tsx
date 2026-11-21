@@ -272,6 +272,14 @@ describe("MapaRutas", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it("reserva el alto de las zonas antes de que llegue el listado", () => {
+    render(<MapaRutas rutas={[]} seleccionada={null} zonasPendientes advertencia="Aviso estable." />);
+    const seccion = screen.getByRole("region", { name: "Zonas de restricción" });
+    expect(seccion).toHaveClass("zonas-mapa");
+    expect(seccion).toHaveTextContent("Aviso estable.");
+    expect(seccion).toHaveTextContent("Cargando zonas de restricción.");
+  });
+
   it("dibuja el mapa aunque solo haya zonas", async () => {
     const zona: ZonaRestriccion = {
       id_zona: "z1",

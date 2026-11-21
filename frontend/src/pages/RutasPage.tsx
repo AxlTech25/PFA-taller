@@ -10,7 +10,7 @@ import { etiquetaCongestion } from "../mapa";
 import { Paginador } from "../Paginador";
 import { etiqueta, puedeGenerarRutas } from "../permissions";
 import type { JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
-import { comoZonas } from "../zonas";
+import { ADVERTENCIA_ZONAS, comoZonas } from "../zonas";
 import { MapaRutas } from "./MapaRutas";
 
 function nombreRuta(ruta: Ruta): string {
@@ -36,7 +36,8 @@ export function RutasPage() {
   const [ocupado, setOcupado] = useState(false);
   const [alternativaEn, setAlternativaEn] = useState<string | null>(null);
   const [zonas, setZonas] = useState<ZonaRestriccion[]>([]);
-  const [advertenciaZonas, setAdvertenciaZonas] = useState("");
+  const [zonasPendientes, setZonasPendientes] = useState(true);
+  const [advertenciaZonas, setAdvertenciaZonas] = useState(ADVERTENCIA_ZONAS);
 
   async function cargar(dia: string, numero = pagina, forzar = false) {
     const data = await consultar(llamar, rutaPagina(`/rutas?fecha=${dia}`, numero), forzar);
@@ -55,10 +56,11 @@ export function RutasPage() {
       const data = await consultar(llamar, "/rutas/zonas-restriccion", forzar);
       const lista = comoZonas(data);
       setZonas(lista.zonas);
-      setAdvertenciaZonas(lista.advertencia);
+      if (lista.advertencia) setAdvertenciaZonas(lista.advertencia);
     } catch {
       setZonas([]);
-      setAdvertenciaZonas("");
+    } finally {
+      setZonasPendientes(false);
     }
   }
 
@@ -191,6 +193,7 @@ export function RutasPage() {
           seleccionada={seleccion}
           zonas={zonas}
           advertencia={advertenciaZonas}
+          zonasPendientes={zonasPendientes}
         />
       </section>
       <section className="panel panel-plan" aria-labelledby="titulo-plan">

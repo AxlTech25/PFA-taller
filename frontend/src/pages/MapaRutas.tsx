@@ -33,6 +33,7 @@ type Props = Readonly<{
   seleccionada: string | null;
   zonas?: ZonaRestriccion[];
   advertencia?: string;
+  zonasPendientes?: boolean;
 }>;
 
 type Marcador = {
@@ -250,10 +251,22 @@ function textoParada(parada: ParadaRuta): string {
   return `Parada ${parada.secuencia}: ${cliente}${referencia}${eta}. Semáforo ${etiquetaCongestion(parada.nivel_congestion)}.`;
 }
 
-function ListaZonas({ zonas, advertencia }: { zonas: ZonaRestriccion[]; advertencia: string }) {
-  if (zonas.length === 0) return null;
+function ListaZonas({
+  zonas,
+  advertencia,
+  pendientes,
+}: {
+  zonas: ZonaRestriccion[];
+  advertencia: string;
+  pendientes: boolean;
+}) {
+  if (!pendientes && zonas.length === 0) return null;
   return (
-    <section aria-labelledby="titulo-zonas" className="zonas-mapa">
+    <section
+      aria-labelledby="titulo-zonas"
+      className="zonas-mapa"
+      aria-busy={pendientes ? true : undefined}
+    >
       <h3 id="titulo-zonas">Zonas de restricción</h3>
       {advertencia ? <p>{advertencia}</p> : null}
       <ul className="leyenda-zonas">
@@ -266,14 +279,18 @@ function ListaZonas({ zonas, advertencia }: { zonas: ZonaRestriccion[]; adverten
           Zona de riesgo
         </li>
       </ul>
-      <ul>
-        {zonas.map((zona) => (
-          <li key={zona.id_zona}>
-            {zona.nombre}. {etiquetaZona(zona.tipo)}. Severidad {zona.severidad.toLowerCase()}.
-            {zona.es_demostracion ? " Polígono de demostración, no es un límite oficial." : ""}
-          </li>
-        ))}
-      </ul>
+      {zonas.length > 0 ? (
+        <ul>
+          {zonas.map((zona) => (
+            <li key={zona.id_zona}>
+              {zona.nombre}. {etiquetaZona(zona.tipo)}. Severidad {zona.severidad.toLowerCase()}.
+              {zona.es_demostracion ? " Polígono de demostración, no es un límite oficial." : ""}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Cargando zonas de restricción.</p>
+      )}
     </section>
   );
 }
@@ -310,7 +327,13 @@ function ListaTextual({ rutas, seleccionada }: Props) {
   );
 }
 
-export function MapaRutas({ rutas, seleccionada, zonas, advertencia = "" }: Props) {
+export function MapaRutas({
+  rutas,
+  seleccionada,
+  zonas,
+  advertencia = "",
+  zonasPendientes = false,
+}: Props) {
   const contenedor = useRef<HTMLElement>(null);
   const [tilesCaidos, setTilesCaidos] = useState(false);
   const capas = zonas ?? ZONAS_VACIAS;
@@ -374,7 +397,7 @@ export function MapaRutas({ rutas, seleccionada, zonas, advertencia = "" }: Prop
 
   return (
     <div className="mapa-y-texto">
-      <ListaZonas zonas={capas} advertencia={advertencia} />
+      <ListaZonas zonas={capas} advertencia={advertencia} pendientes={zonasPendientes} />
       <ListaTextual rutas={rutas} seleccionada={seleccionada} />
       <div className="mapa-reserva">{cuerpo}</div>
     </div>

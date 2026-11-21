@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { anilloZona, comoZonas, etiquetaZona } from "./zonas";
+import { ADVERTENCIA_ZONAS, anilloZona, comoZonas, etiquetaZona } from "./zonas";
 
 describe("zonas de restricción", () => {
   it("traduce el tipo y lee el anillo en latitud, longitud", () => {
@@ -55,6 +55,7 @@ describe("zonas de restricción", () => {
         },
       ],
     });
+    expect(ADVERTENCIA_ZONAS).toMatch(/no son el catastro del INEI/i);
     expect(lista.advertencia).toBe("Dato demo");
     expect(lista.zonas).toHaveLength(1);
   });

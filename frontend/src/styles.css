@@ -412,6 +412,13 @@ h3 { margin: 0 0 0.6rem; font-size: 1.05rem; }
   min-height: 8rem;
 }
 
+/* El bloque existe desde el primer render. 14rem cubre el texto demo medido
+   (~11rem a 1350px) y un par de líneas extra si la fuente del navegador parte
+   el aviso. Así la lista no empuja el mapa al llegar (CLS). */
+.zonas-mapa {
+  min-height: 14rem;
+}
+
 .alternativa-mapa ol,
 .zonas-mapa ul {
   margin: 0.3rem 0 0;
