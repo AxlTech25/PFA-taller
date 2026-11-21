@@ -24,6 +24,7 @@ from app.optimizacion.evaluacion import (
     vecino_mas_cercano,
 )
 from app.optimizacion.pico_placa import placa_restringida
+from app.optimizacion.zonas import cargar_poligonos
 
 MENSAJE_SIN_PEDIDOS = (
     "No hay pedidos pendientes para esa fecha. "
@@ -208,6 +209,7 @@ def preparar(db: Session, fecha: date) -> Instancia | Plan:
         costo_km=costo_km,
         excluidos=excluidos,
         semilla=_semilla(fecha, identificadores),
+        zonas=cargar_poligonos(db),
     )
 
 

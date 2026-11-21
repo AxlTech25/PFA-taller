@@ -27,10 +27,30 @@ def listar(
 
 
 @router.post(
+    "/{id_ruta}/alternativa-segura",
+    response_model=RutaOut,
+    summary="Ruta alternativa más segura",
+    description=(
+        "Recalcula el trazado del borrador para rodear las zonas de riesgo (RN-012) "
+        "sin atravesar reservas ecológicas (RN-013). "
+        "El resultado es un desvío geométrico, no un recorrido callejero ni un límite oficial."
+    ),
+)
+def alternativa(
+    id_ruta: UUID,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
+) -> dict:
+    return servicio.alternativa(db, id_ruta, actor, ip_de(request))
+
+
+@router.post(
     "/{id_ruta}/confirmar",
     response_model=RutaOut,
     summary="Confirmar una ruta en borrador",
     description=(
+        "Rechaza la ruta si el trazado atraviesa una reserva ecológica (RN-013). "
         "Rechaza la asignación si la conducción del conductor en el día supera 8 horas "
         "(Ley N.º 30224). Si hay 4 horas continuas sin descanso, inserta 1 hora."
     ),

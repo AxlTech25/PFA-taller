@@ -26,6 +26,7 @@ from app.optimizacion.heuristica import _parametro
 from app.optimizacion.jornada import MENSAJE_JORNADA, descansos_requeridos
 from app.services.auditoria import registrar
 from app.services.paginacion import paginar_entidades
+from app.services.zonas import asegurar_sin_reserva, puntos_de_ruta, resumen, solicitar_alternativa
 
 MENSAJE_ENCOLADO = (
     "La optimización quedó en cola. Consulte el resultado con el identificador del trabajo."
@@ -184,7 +185,7 @@ def salida_ruta(
         parada, previo = _parada(db, detalle, anonimo, previo, velocidad, congestion)
         paradas.append(parada)
     comparacion = _comparacion_de(db, ruta)
-    return {
+    cuerpo = {
         "id_ruta": ruta.id_ruta,
         "fecha": ruta.fecha,
         "estado": ruta.estado,
@@ -208,7 +209,23 @@ def salida_ruta(
             for descanso in descansos
         ],
         "paradas": paradas,
+        "evita_riesgo": bool(ruta.evita_riesgo),
     }
+    puntos = puntos_de_ruta(db, ruta) if anonimo else _puntos_publicos(cuerpo)
+    anexo = resumen(db, ruta, puntos, anonimo)
+    cuerpo["trazado"] = anexo["trazado"]
+    cuerpo["zonas_cruzadas"] = anexo["zonas_cruzadas"]
+    return cuerpo
+
+
+def _puntos_publicos(cuerpo: dict) -> list[tuple[float, float]]:
+    puntos: list[tuple[float, float]] = []
+    if cuerpo["origen_lat"] is not None and cuerpo["origen_lon"] is not None:
+        puntos.append((cuerpo["origen_lat"], cuerpo["origen_lon"]))
+    for parada in cuerpo["paradas"]:
+        if parada["latitud"] is not None and parada["longitud"] is not None:
+            puntos.append((parada["latitud"], parada["longitud"]))
+    return puntos
 
 
 def salida_job(db: Session, job: JobOptimizacion, rol: str) -> dict:
@@ -232,6 +249,16 @@ def salida_job(db: Session, job: JobOptimizacion, rol: str) -> dict:
     }
 
 
+def alternativa(db: Session, id_ruta: uuid.UUID, actor: Usuario, ip: str | None) -> dict:
+    mensaje = solicitar_alternativa(db, id_ruta, actor, ip)
+    ruta = db.get(Ruta, id_ruta)
+    if ruta is None:
+        raise HTTPException(status_code=404, detail="Ruta no encontrada")
+    cuerpo = salida_ruta(db, ruta, actor.rol)
+    cuerpo["mensaje"] = mensaje
+    return cuerpo
+
+
 def listar_rutas(db: Session, actor: Usuario, fecha: date | None, page: int, limite: int) -> dict:
     consulta = select(Ruta).order_by(Ruta.fecha.desc(), Ruta.generada_en.desc())
     if fecha is not None:
@@ -251,6 +278,8 @@ def confirmar(db: Session, id_ruta: uuid.UUID, actor: Usuario, ip: str | None) -
     asignacion = db.scalar(select(AsignacionRuta).where(AsignacionRuta.id_ruta == ruta.id_ruta))
     if asignacion is None:
         raise HTTPException(status_code=409, detail="La ruta no tiene conductor asignado")
+
+    asegurar_sin_reserva(db, ruta, actor, ip)
 
     minutos = float(ruta.minutos_conduccion or 0)
     otros = db.scalar(

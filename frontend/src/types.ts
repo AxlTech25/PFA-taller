@@ -76,6 +76,22 @@ export type DescansoRuta = {
   motivo: string;
 };
 
+export type ZonaCruzada = {
+  id_zona: string;
+  nombre: string;
+  tipo: string;
+  severidad: string;
+};
+
+export type ZonaRestriccion = {
+  id_zona: string;
+  nombre: string;
+  tipo: string;
+  severidad: string;
+  es_demostracion: boolean;
+  geometria: { type: "Polygon"; coordinates: [number, number][][] };
+};
+
 export type ParadaRuta = {
   secuencia: number;
   id_pedido: string;
@@ -117,6 +133,9 @@ export type Ruta = {
   descansos: DescansoRuta[];
   paradas: ParadaRuta[];
   comparacion?: ComparacionRuta | null;
+  trazado?: [number, number][] | null;
+  evita_riesgo?: boolean;
+  zonas_cruzadas?: ZonaCruzada[];
   mensaje?: string;
 };
 

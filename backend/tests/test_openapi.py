@@ -15,6 +15,7 @@ def test_openapi_y_swagger(client):
         "/clientes",
         "/optimizaciones",
         "/rutas",
+        "/rutas/zonas-restriccion",
         "/modo/jornada",
         "/indicadores",
     ):

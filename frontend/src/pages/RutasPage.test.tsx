@@ -104,6 +104,39 @@ describe("RutasPage", () => {
     expect(await screen.findByText("Ruta confirmada.")).toBeInTheDocument();
   });
 
+  it("pide la ruta alternativa más segura y muestra el error si falla", async () => {
+    instalarFetch((path, init) => {
+      if (init?.method === "POST" && path === "/rutas/r1/alternativa-segura") {
+        return { body: { ...ruta, mensaje: "Ruta alternativa más segura calculada.", evita_riesgo: true } };
+      }
+      return { body: [ruta] };
+    });
+    montar(<RutasPage />);
+    await screen.findByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" });
+    fireEvent.click(screen.getByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" }));
+    expect(await screen.findByText("Ruta alternativa más segura calculada.")).toBeInTheDocument();
+
+    cleanup();
+    instalarFetch((_path, init) => {
+      if (init?.method === "POST") return { status: 422, body: { detail: "Reserva ecológica" } };
+      return { body: [ruta] };
+    });
+    montar(<RutasPage />);
+    await screen.findByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" });
+    fireEvent.click(screen.getByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Reserva ecológica");
+
+    cleanup();
+    instalarFetch((_path, init) => {
+      if (init?.method === "POST") throw new Error("red");
+      return { body: [ruta] };
+    });
+    montar(<RutasPage />);
+    await screen.findByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" });
+    fireEvent.click(screen.getByRole("button", { name: "Ruta alternativa más segura de ABC123 · Ana Ramos" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo calcular la ruta alternativa.");
+  });
+
   it("avisa si no hay rutas y el gerente no genera", async () => {
     instalarFetch(() => ({ body: [] }));
     montar(<RutasPage />, "GERENTE");

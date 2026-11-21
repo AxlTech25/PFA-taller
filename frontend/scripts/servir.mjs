@@ -21,6 +21,7 @@ const rutasApi = [
   "/clientes",
   "/optimizaciones",
   "/rutas",
+  "/rutas/zonas-restriccion",
   "/modo/jornada",
   "/indicadores",
   "/health",

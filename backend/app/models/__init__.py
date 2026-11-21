@@ -11,6 +11,7 @@ from app.models.entities import (
     Ruta,
     Usuario,
     Vehiculo,
+    ZonaRestriccion,
 )
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "Ruta",
     "Usuario",
     "Vehiculo",
+    "ZonaRestriccion",
 ]

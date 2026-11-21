@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { MENSAJE_TILES, olvidarGeometrias } from "../mapa";
-import type { Ruta } from "../types";
+import type { Ruta, ZonaRestriccion } from "../types";
 import { MapaRutas } from "./MapaRutas";
 
 const estado = vi.hoisted(() => ({
@@ -14,6 +14,7 @@ const estado = vi.hoisted(() => ({
   conControles: true,
   lineas: [] as [number, number][][],
   punteadas: [] as [number, number][][],
+  poligonos: [] as [number, number][][],
 }));
 
 vi.mock("leaflet", () => ({
@@ -53,6 +54,10 @@ vi.mock("leaflet", () => ({
       bindPopup: () => ({ addTo: () => undefined }),
       addTo: () => undefined,
     }),
+    polygon: (anillo: [number, number][]) => {
+      estado.poligonos.push(anillo);
+      return { bindPopup: () => ({ addTo: () => undefined }) };
+    },
   },
 }));
 
@@ -98,6 +103,7 @@ describe("MapaRutas", () => {
     estado.disableZoom.mockClear();
     estado.lineas = [];
     estado.punteadas = [];
+    estado.poligonos = [];
     olvidarGeometrias();
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("sin red")));
   });
@@ -213,6 +219,82 @@ describe("MapaRutas", () => {
     await waitFor(() => expect(estado.fitBounds).toHaveBeenCalled());
     expect(screen.queryByRole("link", { name: "Acercar" })).not.toBeInTheDocument();
     expect(screen.getByText(/Partida en -12.01, -76.98/)).toBeInTheDocument();
+  });
+
+  it("marca las zonas demo y dibuja el trazado alternativo sin pedir calles", async () => {
+    const zona: ZonaRestriccion = {
+      id_zona: "z1",
+      nombre: "DEMO · riesgo ilustrativo",
+      tipo: "RIESGO_SEGURIDAD",
+      severidad: "ALTA",
+      es_demostracion: true,
+      geometria: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-76.99, -12.03],
+            [-76.97, -12.03],
+            [-76.97, -12.01],
+            [-76.99, -12.01],
+            [-76.99, -12.03],
+          ],
+        ],
+      },
+    };
+    const segura = ruta({
+      trazado: [
+        [-12.01, -76.98],
+        [-12.015, -76.97],
+        [-12.02, -76.99],
+      ],
+      evita_riesgo: true,
+      zonas_cruzadas: [
+        { id_zona: "z2", nombre: "Reserva", tipo: "RESERVA_ECOLOGICA", severidad: "ALTA" },
+      ],
+    });
+    render(
+      <MapaRutas
+        rutas={[segura]}
+        seleccionada="r1"
+        zonas={[zona]}
+        advertencia="No son el catastro del INEI."
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Zonas de restricción" })).toBeInTheDocument();
+    expect(screen.getAllByText(/DEMO · riesgo ilustrativo/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/no es un límite oficial/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/No son el catastro del INEI/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Trazado alternativo que evita zonas de riesgo/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Atraviesa una reserva ecológica/).length).toBeGreaterThan(0);
+    await waitFor(() => expect(estado.fitBounds).toHaveBeenCalled());
+    expect(estado.poligonos[0]?.[0]).toEqual([-12.03, -76.99]);
+    expect(estado.lineas[0]).toEqual(segura.trazado);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("dibuja el mapa aunque solo haya zonas", async () => {
+    const zona: ZonaRestriccion = {
+      id_zona: "z1",
+      nombre: "DEMO · reserva ilustrativa",
+      tipo: "RESERVA_ECOLOGICA",
+      severidad: "MEDIA",
+      es_demostracion: true,
+      geometria: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-76.91, -12.10],
+            [-76.89, -12.10],
+            [-76.89, -12.09],
+            [-76.91, -12.10],
+          ],
+        ],
+      },
+    };
+    render(<MapaRutas rutas={[]} seleccionada={null} zonas={[zona]} />);
+    expect(screen.getAllByText(/Reserva ecológica/).length).toBeGreaterThan(0);
+    await waitFor(() => expect(estado.poligonos.length).toBe(1));
+    expect(screen.queryByText(/No hay coordenadas/)).not.toBeInTheDocument();
   });
 
   it("cancela el dibujo si el mapa se desmonta antes de llegar Leaflet", () => {
