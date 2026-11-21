@@ -241,3 +241,28 @@ class DescansoRuta(Base):
     despues_de_secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
     duracion_min: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
     motivo: Mapped[str] = mapped_column(String(80), nullable=False, default="LEY_30224")
+
+
+class Incidencia(Base):
+    __tablename__ = "incidencia"
+
+    id_incidencia: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
+    )
+    tipo: Mapped[str] = mapped_column(String(30), nullable=False)
+    origen: Mapped[str] = mapped_column(String(20), nullable=False, default="MANUAL")
+    id_ruta: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey(_FK_RUTA))
+    id_vehiculo: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("vehiculo.id_vehiculo")
+    )
+    id_pedido: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("pedido.id_pedido")
+    )
+    descripcion: Mapped[str | None] = mapped_column(String(255))
+    latitud: Mapped[Decimal | None] = mapped_column(Numeric(10, 7))
+    longitud: Mapped[Decimal | None] = mapped_column(Numeric(10, 7))
+    estado: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDIENTE")
+    reportada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
+    )
+    resuelta_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

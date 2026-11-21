@@ -53,6 +53,16 @@
       "destination": "/index.html"
     },
     {
+      "source": "/modo",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/modo/:path*",
+      "has": [{ "type": "header", "key": "accept", "value": ".*text/html.*" }],
+      "destination": "/index.html"
+    },
+    {
       "source": "/auth",
       "destination": "https://api-production-b8dfa3c0.up.railway.app/auth"
     },
@@ -115,6 +125,14 @@
     {
       "source": "/rutas/:path*",
       "destination": "https://api-production-b8dfa3c0.up.railway.app/rutas/:path*"
+    },
+    {
+      "source": "/modo",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/modo"
+    },
+    {
+      "source": "/modo/:path*",
+      "destination": "https://api-production-b8dfa3c0.up.railway.app/modo/:path*"
     },
     {
       "source": "/indicadores",

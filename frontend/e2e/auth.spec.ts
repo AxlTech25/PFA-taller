@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { ADMIN, entrar } from "./helpers";
 
-const PRIVADAS = ["/flota", "/conductores", "/pedidos", "/rutas", "/dashboard"];
+const PRIVADAS = ["/flota", "/conductores", "/pedidos", "/rutas", "/dashboard", "/modo"];
 
 test("el inicio de sesión válido abre la flota", async ({ page }) => {
   await entrar(page);

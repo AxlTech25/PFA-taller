@@ -6,7 +6,7 @@ test("los documentos y la API responden los códigos esperados", async ({ reques
   const login = await request.get("/login");
   expect(login.status()).toBe(200);
 
-  for (const ruta of ["/flota", "/conductores", "/pedidos", "/rutas", "/dashboard"]) {
+  for (const ruta of ["/flota", "/conductores", "/pedidos", "/rutas", "/dashboard", "/modo"]) {
     const documento = await request.get(ruta, { headers: { Accept: "text/html" } });
     expect(documento.status(), ruta).toBe(200);
     expect(await documento.text()).toContain('id="root"');

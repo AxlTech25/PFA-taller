@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     seed_operador_password: str = ""
     seed_gerente_email: str = "gerente@distrirapido.example.com"
     seed_gerente_password: str = ""
+    seed_conductor_email: str = "conductor@distrirapido.example.com"
+    seed_conductor_password: str = ""
 
     @model_validator(mode="after")
     def resolver_database_url(self) -> Self:

@@ -21,6 +21,7 @@ const rutasApi = [
   "/clientes",
   "/optimizaciones",
   "/rutas",
+  "/modo/jornada",
   "/indicadores",
   "/health",
   "/openapi.json",

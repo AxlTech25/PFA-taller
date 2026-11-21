@@ -178,7 +178,7 @@ Carpeta: [`docs/03 Implementación/Sprint 1/`](./docs/03%20Implementaci%C3%B3n/S
 
 El sitio público es [https://ecologistica-lima-beige.vercel.app](https://ecologistica-lima-beige.vercel.app). La API está en [https://api-production-b8dfa3c0.up.railway.app](https://api-production-b8dfa3c0.up.railway.app) (salud en `/health`, contrato en `/docs`). El dominio `ecologistica-lima.vercel.app` es otro sitio y no es esta aplicación.
 
-La interfaz vive en Vercel (equipo `eco-pfa`, proyecto `ecologistica-lima`, raíz `frontend`, Node 22, `npm ci` / `npm run build`, salida `dist`). `frontend/vercel.json` reenvía las rutas de la API al servicio Railway y, si el navegador pide HTML en `/usuarios`, `/conductores`, `/pedidos` o `/rutas`, sirve la SPA. El backend está en el proyecto Railway `81c6f2b1-cac0-4061-bc96-6d8bd46754be`, entorno `production`: `api` y `worker` salen de `backend/Dockerfile` (`railway up`, sin enlace a GitHub). El entrypoint aplica Alembic, siembra y arranca uvicorn; el worker usa `PROCESO=worker`. `db` es la imagen `postgis/postgis:16-3.4` y `Redis` queda en la red privada.
+La interfaz vive en Vercel (equipo `eco-pfa`, proyecto `ecologistica-lima`, raíz `frontend`, Node 22, `npm ci` / `npm run build`, salida `dist`). `frontend/vercel.json` reenvía las rutas de la API al servicio Railway y, si el navegador pide HTML en `/usuarios`, `/conductores`, `/pedidos`, `/rutas` o `/modo`, sirve la SPA. El backend está en el proyecto Railway `81c6f2b1-cac0-4061-bc96-6d8bd46754be`, entorno `production`: `api` y `worker` salen de `backend/Dockerfile` (`railway up`, sin enlace a GitHub). El entrypoint aplica Alembic, siembra y arranca uvicorn; el worker usa `PROCESO=worker`. `db` es la imagen `postgis/postgis:16-3.4` y `Redis` queda en la red privada.
 
 El workflow [`.github/workflows/deploy-production.yml`](./.github/workflows/deploy-production.yml) despliega después de que `Tests` termine en verde en un push a `main`, o al publicar una etiqueta `v*`, o con `workflow_dispatch` sobre `main` o esa etiqueta. En un pull request el job se omite y no falla. Usa el entorno de GitHub `production`.
 
@@ -300,7 +300,7 @@ El servidor de Vite reenvía las llamadas de la interfaz hacia `http://localhost
 
 ### 4. Recorrido de punta a punta
 
-1. Abra http://localhost:5173 e inicie sesión con `SEED_ADMIN_EMAIL`. En **Usuarios** cree una cuenta con rol Conductor.
+1. Abra http://localhost:5173 e inicie sesión con `SEED_ADMIN_EMAIL`. En **Usuarios** cree una cuenta con rol Conductor. Si definió `SEED_CONDUCTOR_PASSWORD` (8 caracteres o más), la carga inicial ya crea `SEED_CONDUCTOR_EMAIL` y le asigna la ruta confirmada de hoy sobre `DMO-101` y Bodega El Ahorro.
 2. Cierre sesión e ingrese con `SEED_OPERADOR_EMAIL`. El menú muestra Flota, Conductores, Pedidos, Rutas y Tablero.
 3. En **Flota** pase `DMO-101` a Mantenimiento o cambie su factor de CO₂ y pulse Guardar.
 4. En **Conductores** registre DNI, licencia, horario y coordenadas de partida.
@@ -308,7 +308,7 @@ El servidor de Vite reenvía las llamadas de la interfaz hacia `http://localhost
 6. En **Rutas** elija la fecha del pedido y pulse **Generar rutas**. La API responde enseguida; el worker, en otro proceso, corre el algoritmo genético y compara el costo verde con el vecino más cercano. El plan queda en Borrador. El mapa dibuja la partida y las paradas, y traza el recorrido por las calles con OSRM (servidor público por defecto; otro servidor con `VITE_OSRM_URL`). Si OSRM no responde en 8 segundos, el trazado vuelve a la línea recta entre paradas; si OpenStreetMap no carga, queda la tabla. **Confirmar ruta** asigna los pedidos si la conducción no pasa de 8 horas.
 7. En **Tablero**, la misma fecha muestra km, CO₂, combustible, soles y el porcentaje de ventanas. Un día sin rutas dice «Sin datos de operación para el período seleccionado». Los árboles equivalentes quedan en blanco hasta ratificar el factor de RN-018.
 8. Tres contraseñas incorrectas bloquean la cuenta: la API responde 423 durante 15 minutos.
-9. El usuario Conductor ve Flota (solo consulta) y Modo conductor. No entra a Usuarios, ni a Rutas, ni al Tablero, ni puede editar la flota (HTTP 403).
+9. El usuario Conductor ve Flota (solo consulta) y Modo conductor. En **Modo conductor** aparece la ruta confirmada del día (secuencia, hora estimada y alertas) o el aviso de que no tiene una. **Confirmar entrega** se alcanza con teclado y no guarda el resultado: el registro de entregado o fallido es la historia US-018. No entra a Usuarios, ni a Rutas, ni al Tablero, ni puede editar la flota (HTTP 403). `GET /modo/jornada` responde 403 a cualquier otro rol.
 10. Abra http://localhost:8000/docs para el contrato OpenAPI. `GET /clientes` es solo el catálogo de demostración.
 
 No hay una segunda URL de Staging distinta de producción. El sitio público y la API están en [Producción](#producción). El análisis CodeQL corre en GitHub Actions (`.github/workflows/codeql.yml`).

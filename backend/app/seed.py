@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.security import hash_password
 from app.db.session import SessionLocal, engine
 from app.models.entities import Usuario
+from app.services.jornada_demo import asegurar_jornada_demo
 
 logger = logging.getLogger("ecologistica.seed")
 
@@ -52,6 +53,22 @@ def _asegurar_usuario(db, email: str, password: str, rol: str) -> None:
     logger.info("Usuario de demostración creado: %s (%s)", email, rol)
 
 
+def _asegurar_jornada(db) -> None:
+    clave = settings.seed_conductor_password
+    if not clave or len(clave) < 8:
+        return
+    _asegurar_usuario(db, settings.seed_conductor_email, clave, "CONDUCTOR")
+    # SessionLocal no hace autoflush: sin esto la ficha recién agregada no se ve.
+    db.flush()
+    correo = settings.seed_conductor_email.lower()
+    usuario = db.scalar(select(Usuario).where(Usuario.email == correo))
+    if usuario is None or usuario.rol != "CONDUCTOR":
+        logger.warning("No hay usuario CONDUCTOR de demostración para la jornada")
+        return
+    if not asegurar_jornada_demo(db, usuario):
+        logger.warning("No se pudo preparar la ruta de demostración del conductor")
+
+
 def cargar() -> None:
     if not settings.seed_on_startup:
         logger.info("SEED_ON_STARTUP desactivado: no hay carga inicial")
@@ -64,6 +81,7 @@ def cargar() -> None:
         _asegurar_usuario(
             db, settings.seed_gerente_email, settings.seed_gerente_password, "GERENTE"
         )
+        _asegurar_jornada(db)
         db.commit()
 
 

@@ -22,10 +22,25 @@ describe("App y la sesión", () => {
   });
 
   it("lleva al conductor a su modo y le niega usuarios", async () => {
+    instalarFetch((path) => {
+      if (path.includes("/modo/jornada")) {
+        return {
+          body: {
+            hay_ruta: false,
+            fecha: "2026-11-21",
+            mensaje: "No tiene una ruta confirmada para hoy.",
+            paradas: [],
+            alertas: [],
+          },
+        };
+      }
+      return { body: [] };
+    });
     montar(<App />, "CONDUCTOR", "/");
     expect(await screen.findByRole("heading", { name: "Modo conductor" })).toBeInTheDocument();
-    expect(screen.getByText("No tiene una ruta confirmada para hoy.")).toBeInTheDocument();
+    expect(await screen.findByText("No tiene una ruta confirmada para hoy.")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Usuarios" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Tablero" })).not.toBeInTheDocument();
 
     cleanup();
     montar(<App />, "CONDUCTOR", "/usuarios");
