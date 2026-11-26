@@ -22,6 +22,7 @@ def test_openapi_y_swagger(client):
         "/modo/mapa",
         "/modo/paradas/{id_detalle}/confirmacion",
         "/indicadores",
+        "/indicadores/reporte.pdf",
     ):
         assert ruta in paths
     assert "demostración" in paths["/clientes"]["get"]["description"].lower()

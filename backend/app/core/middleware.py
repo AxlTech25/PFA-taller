@@ -91,7 +91,13 @@ async def _emitir(scope: Scope, inicio: Message | None, cuerpo: bytes, send: Sen
     metodo = scope.get("method", "GET")
     ruta = scope.get("path", "")
     peticion = MutableHeaders(scope=scope)
-    if metodo == "GET" and ruta not in _SIN_CACHE and int(inicio["status"]) == 200:
+    propio = headers.get("cache-control", "")
+    if (
+        metodo == "GET"
+        and ruta not in _SIN_CACHE
+        and "no-store" not in propio
+        and int(inicio["status"]) == 200
+    ):
         etag = _etag(cuerpo)
         headers["ETag"] = etag
         headers["Cache-Control"] = "private, max-age=30, must-revalidate"

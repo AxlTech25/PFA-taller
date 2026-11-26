@@ -5,6 +5,7 @@ import { useAuth } from "../auth";
 import { Alerta } from "../avisos";
 import { fechaHoy } from "../fechas";
 import type { Indicadores } from "../types";
+import { ReportePdf } from "./ReportePdf";
 
 function soles(valor: number): string {
   // Sin Intl.NumberFormat: el primer `es-PE` + moneda carga datos ICU en el
@@ -77,6 +78,7 @@ export function DashboardPage() {
           <button type="submit">Consultar</button>
         </form>
       </section>
+      <ReportePdf />
       {datos && !datos.hay_datos ? (
         <output className="aviso">{datos.mensaje}</output>
       ) : null}
