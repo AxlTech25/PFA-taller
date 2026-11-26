@@ -5,6 +5,7 @@ import { useAuth } from "../auth";
 import { Alerta } from "../avisos";
 import { fechaHoy } from "../fechas";
 import type { Indicadores } from "../types";
+import { PlanCompensacion } from "./PlanCompensacion";
 import { ReportePdf } from "./ReportePdf";
 
 function soles(valor: number): string {
@@ -79,6 +80,7 @@ export function DashboardPage() {
         </form>
       </section>
       <ReportePdf />
+      <PlanCompensacion />
       {datos && !datos.hay_datos ? (
         <output className="aviso">{datos.mensaje}</output>
       ) : null}

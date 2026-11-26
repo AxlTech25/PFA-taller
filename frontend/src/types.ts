@@ -225,3 +225,21 @@ export type PedidoDisponible = {
   peso_kg: number;
   prioridad: string;
 };
+
+export type PlanCompensacion = {
+  desde: string;
+  hasta: string;
+  calculable: boolean;
+  mensaje?: string | null;
+  dias_con_operacion: number;
+  rutas: number;
+  co2_emitido_kg: number;
+  factor_captura_arbol_kg?: number | null;
+  estado_factor?: "PENDIENTE" | "CONFIGURADO" | null;
+  arboles_necesarios?: number | null;
+  costo_por_arbol_soles?: number | null;
+  estado_costo?: "PENDIENTE" | "CONFIGURADO" | null;
+  costo_estimado_soles?: number | null;
+  notas: string[];
+  proyectos: { nombre: string }[];
+};

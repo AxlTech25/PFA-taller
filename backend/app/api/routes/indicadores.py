@@ -4,12 +4,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request, Response
 from sqlalchemy.orm import Session
 
-from app.core.deps import LECTURA_RUTAS, REPORTES_SOSTENIBILIDAD, ip_de, require_roles
+from app.core.deps import (
+    LECTURA_RUTAS,
+    PLAN_COMPENSACION,
+    REPORTES_SOSTENIBILIDAD,
+    ip_de,
+    require_roles,
+)
 from app.db.session import get_db
 from app.models.entities import Usuario
-from app.schemas.ruta import IndicadoresOut
+from app.schemas.ruta import IndicadoresOut, PlanCompensacionOut
+from app.services import compensacion, reporte_pdf
 from app.services import indicadores as servicio
-from app.services import reporte_pdf
 
 router = APIRouter(prefix="/indicadores", tags=["Sostenibilidad"])
 
@@ -68,3 +74,28 @@ def reporte(
             "Cache-Control": "no-store",
         },
     )
+
+
+@router.get(
+    "/compensacion",
+    response_model=PlanCompensacionOut,
+    summary="Plan de compensación de carbono del período (US-017)",
+    description=(
+        "RF-010. Suma el CO₂ emitido del período con el mismo cálculo del tablero (RN-016), "
+        "estima los árboles necesarios con el factor RN-018 y el costo con "
+        "`costo_compensacion_arbol_soles`, y sugiere Lomas de Lima, Parque Zonal Huáscar y "
+        "«Árboles para Lima». Si un factor no está configurado se devuelve PENDIENTE, sin "
+        "cifras inventadas. Sin emisiones: `calculable=false` con el aviso. Hasta 31 días."
+    ),
+    responses={
+        403: {"description": "Solo ADMIN, GERENTE, OPERADOR o AUDITOR"},
+        422: {"description": "Período inválido o mayor a 31 días"},
+    },
+)
+def plan_compensacion(
+    db: Annotated[Session, Depends(get_db)],
+    _actor: Annotated[Usuario, Depends(require_roles(*PLAN_COMPENSACION))],
+    desde: Annotated[date, Query(description="Primer día del período (AAAA-MM-DD)")],
+    hasta: Annotated[date, Query(description="Último día del período (AAAA-MM-DD)")],
+) -> dict:
+    return compensacion.plan(db, desde, hasta)

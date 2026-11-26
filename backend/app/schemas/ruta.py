@@ -81,6 +81,32 @@ class IndicadoresOut(BaseModel):
     mejora_porcentaje: float | None = None
 
 
+class ProyectoCompensacionOut(BaseModel):
+    nombre: str
+
+
+class PlanCompensacionOut(BaseModel):
+    desde: date
+    hasta: date
+    calculable: bool
+    mensaje: str | None = None
+    dias_con_operacion: int = 0
+    rutas: int = 0
+    co2_emitido_kg: float = Field(0, description="Suma del CO₂ de las rutas (RN-016).")
+    factor_captura_arbol_kg: float | None = Field(
+        None, description="RN-018. None mientras el factor no esté ratificado."
+    )
+    estado_factor: Literal["PENDIENTE", "CONFIGURADO"] | None = None
+    arboles_necesarios: int | None = Field(
+        None, description="ceil(CO₂ emitido / factor). None si el factor está pendiente."
+    )
+    costo_por_arbol_soles: float | None = None
+    estado_costo: Literal["PENDIENTE", "CONFIGURADO"] | None = None
+    costo_estimado_soles: float | None = None
+    notas: list[str] = Field(default_factory=list)
+    proyectos: list[ProyectoCompensacionOut] = Field(default_factory=list)
+
+
 MotivoReoptimizacion = Literal[
     "NUEVO_PEDIDO",
     "CANCELACION",
