@@ -91,6 +91,8 @@ def test_reoptimiza_conserva_resueltas_agrega_y_cancela(client, db):
     usuario, _, ruta, detalles = _escenario(db, "feliz", "70011001", paradas=5)
     detalles[0].estado_entrega = "ENTREGADO"
     detalles[2].estado_entrega = "FALLIDO"
+    # Desde US-018 (migración 007) una parada FALLIDO exige motivo_fallo.
+    detalles[2].motivo_fallo = "Cliente ausente"
     eta_fijas = {detalles[0].id_pedido: detalles[0].eta, detalles[2].id_pedido: detalles[2].eta}
     cancelado = detalles[4].id_pedido
     db.commit()
@@ -146,6 +148,39 @@ def test_reoptimiza_conserva_resueltas_agrega_y_cancela(client, db):
     jornada = client.get("/modo/jornada", headers=autenticar(client, usuario.email)).json()
     assert jornada["alertas"][0]["codigo"] == "REOPTIMIZACION"
     assert "re-optimizó" in jornada["alertas"][0]["texto"]
+
+
+def test_reoptimiza_tras_la_confirmacion_del_conductor(client, db):
+    # US-018 + US-011: lo que el conductor confirma no se mueve ni pierde su motivo.
+    usuario, _, ruta, detalles = _escenario(db, "us018", "70011010", paradas=4)
+    conductor = autenticar(client, usuario.email)
+    entregada = client.post(
+        f"/modo/paradas/{detalles[0].id_detalle}/confirmacion",
+        json={"resultado": "ENTREGADO"},
+        headers=conductor,
+    )
+    assert entregada.status_code == 200, entregada.text
+    fallida = client.post(
+        f"/modo/paradas/{detalles[1].id_detalle}/confirmacion",
+        json={"resultado": "FALLIDO", "motivo": "Cliente ausente"},
+        headers=conductor,
+    )
+    assert fallida.status_code == 200, fallida.text
+
+    respuesta = client.post(
+        _url(ruta.id_ruta),
+        json={"motivo": "PARADA_FALLIDA", "descripcion": "Reintento mañana"},
+        headers=_operador(client, db, "us018"),
+    )
+    assert respuesta.status_code == 200, respuesta.text
+    assert respuesta.json()["paradas_fijas"] == 2
+    despues = _detalles(db, ruta)
+    assert [d.id_pedido for d in despues[:2]] == [detalles[0].id_pedido, detalles[1].id_pedido]
+    assert despues[1].estado_entrega == "FALLIDO"
+    assert despues[1].motivo_fallo == "Cliente ausente"
+    assert despues[0].confirmada_por == usuario.id_usuario
+    assert despues[0].confirmada_en is not None
+    assert all(d.estado_entrega == "PENDIENTE" for d in despues[2:])
 
 
 def test_nunca_cruza_la_reserva_ecologica(client, db):
