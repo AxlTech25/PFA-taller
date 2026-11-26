@@ -287,3 +287,23 @@ class Incidencia(Base):
         DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
     )
     resuelta_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Reporte(Base):
+    """Tabla `reporte` del documento 11 (RF-006). El PDF se genera bajo demanda."""
+
+    __tablename__ = "reporte"
+
+    id_reporte: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
+    )
+    periodo_inicio: Mapped[date] = mapped_column(Date, nullable=False)
+    periodo_fin: Mapped[date] = mapped_column(Date, nullable=False)
+    tipo: Mapped[str] = mapped_column(String(50), nullable=False)
+    ruta_archivo: Mapped[str | None] = mapped_column(String(500))
+    generado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
+    )
+    generado_por: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey(_FK_USUARIO)
+    )

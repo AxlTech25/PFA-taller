@@ -26,6 +26,8 @@ LECTURA_RUTAS = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
 ESCRITURA_RUTAS = ("ADMIN", "OPERADOR")
 # US-011: la matriz de permisos deja a gerencia ejecutar la re-optimización.
 REOPTIMIZACION_RUTAS = ("ADMIN", "GERENTE", "OPERADOR")
+# US-016 / RF-006: Admin, Gerente y Operador generan; Auditor tiene lectura.
+REPORTES_SOSTENIBILIDAD = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
 
 
 def ip_de(request: Request) -> str | None:
