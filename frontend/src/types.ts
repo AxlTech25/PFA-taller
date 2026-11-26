@@ -116,6 +116,8 @@ export type ComparacionRuta = {
   co2_base_kg?: number;
   mejora_porcentaje?: number;
   segundos?: number;
+  minutos_fuera_preferencia?: number;
+  minutos_fuera_preferencia_base?: number;
 };
 
 export type Ruta = {
@@ -242,4 +244,15 @@ export type PlanCompensacion = {
   costo_estimado_soles?: number | null;
   notas: string[];
   proyectos: { nombre: string }[];
+};
+
+export type PreferenciaCliente = {
+  id_cliente: string;
+  nombre_cliente: string;
+  registrada: boolean;
+  hora_inicio: string | null;
+  hora_fin: string | null;
+  punto_referencia: string | null;
+  restricciones_acceso: string | null;
+  mensaje: string | null;
 };

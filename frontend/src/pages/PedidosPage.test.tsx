@@ -151,4 +151,23 @@ describe("PedidosPage", () => {
     );
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo registrar el pedido.");
   });
+
+  it("muestra la ficha de preferencias según el rol (US-009)", async () => {
+    instalarFetch(responder());
+    montar(<PedidosPage />, "OPERADOR");
+    expect(await screen.findByRole("heading", { name: "Preferencias de entrega del cliente" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Guardar preferencias" })).toBeInTheDocument();
+
+    cleanup();
+    instalarFetch(responder());
+    montar(<PedidosPage />, "GERENTE");
+    expect(await screen.findByRole("heading", { name: "Preferencias de entrega del cliente" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Guardar preferencias" })).not.toBeInTheDocument();
+
+    cleanup();
+    instalarFetch(responder());
+    montar(<PedidosPage />, "AUDITOR");
+    expect(await screen.findByText("Bodega El Ahorro")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Preferencias de entrega del cliente" })).not.toBeInTheDocument();
+  });
 });

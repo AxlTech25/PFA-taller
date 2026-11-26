@@ -7,8 +7,14 @@ import { consultar } from "../consulta";
 import { fechaHoraLocal } from "../fechas";
 import { comoPagina, rutaPagina } from "../listado";
 import { Paginador } from "../Paginador";
-import { etiqueta, puedeRegistrarPedido } from "../permissions";
+import {
+  etiqueta,
+  puedeEditarPreferencias,
+  puedeRegistrarPedido,
+  puedeVerPreferencias,
+} from "../permissions";
 import type { Cliente, Pedido } from "../types";
+import { PreferenciasCliente } from "./PreferenciasCliente";
 
 function horaLocal(hora: string): string {
   return fechaHoraLocal(hora);
@@ -31,6 +37,8 @@ const vacio = {
 export function PedidosPage() {
   const { llamar, sesion } = useAuth();
   const registrar = sesion ? puedeRegistrarPedido(sesion.rol) : false;
+  const verPreferencias = sesion ? puedeVerPreferencias(sesion.rol) : false;
+  const editarPreferencias = sesion ? puedeEditarPreferencias(sesion.rol) : false;
   const [pagina, setPagina] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -248,6 +256,10 @@ export function PedidosPage() {
             </output>
           ) : null}
         </section>
+      ) : null}
+      {/* Se pinta desde el inicio con alto fijo: al llegar los datos no empuja el pie (CLS). */}
+      {verPreferencias ? (
+        <PreferenciasCliente clientes={clientes} editable={editarPreferencias} />
       ) : null}
       <section className="panel" aria-labelledby="titulo-pedidos">
         <h2 id="titulo-pedidos">Pedidos registrados</h2>

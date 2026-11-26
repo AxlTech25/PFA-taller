@@ -5,11 +5,15 @@ genético (Sprint 4). Las restricciones duras son las mismas: capacidad,
 ventana, punto de partida, pico y placa (ya filtrado al armar la flota),
 jornada de 8 h, descanso de la Ley N.º 30224 y reserva ecológica (RN-013).
 Una zona de riesgo se penaliza, no se prohíbe (RN-012).
+El horario preferido del cliente (US-009 / RF-009) es restricción suave: no
+descarta ninguna parada, solo suma una penalización por minuto de atención
+fuera de ese horario.
 """
 
 import time
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
+from datetime import time as hora
 from math import asin, cos, radians, sin, sqrt
 from uuid import UUID
 
@@ -29,6 +33,10 @@ LITROS_POR_GALON = 3.785411784
 # hacia las primeras posiciones, sin volver blanda la ventana ni la capacidad.
 PENALIZACION_EXPRESS = 50.0
 DEPOSITO_SJL = (-12.0100, -76.9800)
+# US-009: peso técnico de la restricción suave, en la misma escala unitaria del
+# objetivo (S/ + kg CO2). No es un valor de negocio: un minuto de atención fuera
+# del horario preferido pesa 1. La ventana del pedido sigue siendo dura (RN-004).
+PENALIZACION_PREFERENCIA_MIN = 1.0
 
 
 def distancia_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -84,6 +92,7 @@ class PedidoNodo:
     ventana_inicio: datetime
     ventana_fin: datetime
     express: bool
+    preferencia: tuple[hora, hora] | None = None
 
 
 @dataclass
@@ -328,8 +337,34 @@ def simular(recurso: Recurso, secuencia: list[PedidoNodo], inst: Instancia) -> R
     return _cerrar(recurso, cursor)
 
 
+def minutos_fuera_preferencia(atencion: datetime, preferencia: tuple[hora, hora]) -> float:
+    """Minutos entre la hora de atención y el horario preferido (0 si cae dentro)."""
+
+    inicio = datetime.combine(atencion.date(), preferencia[0], tzinfo=atencion.tzinfo)
+    fin = datetime.combine(atencion.date(), preferencia[1], tzinfo=atencion.tzinfo)
+    if atencion < inicio:
+        return (inicio - atencion).total_seconds() / 60.0
+    if atencion > fin:
+        return (atencion - fin).total_seconds() / 60.0
+    return 0.0
+
+
+def _fuera_preferencia(rutas: list[RutaPlan], preferencias: dict) -> float:
+    minutos = 0.0
+    for ruta in rutas:
+        for parada in ruta.paradas:
+            preferencia = preferencias.get(parada.id_pedido)
+            if preferencia is not None:
+                atencion = parada.eta - timedelta(minutes=SERVICIO_MIN)
+                minutos += minutos_fuera_preferencia(atencion, preferencia)
+    return minutos
+
+
 def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia) -> dict:
     express = {pedido.id for pedido in inst.pedidos if pedido.express}
+    preferencias = {
+        pedido.id: pedido.preferencia for pedido in inst.pedidos if pedido.preferencia
+    }
     soles = 0.0
     co2 = 0.0
     km = 0.0
@@ -345,7 +380,11 @@ def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia)
         for puesto, parada in enumerate(ruta.paradas):
             if parada.id_pedido in express and puesto > 0:
                 penal += PENALIZACION_EXPRESS * puesto
-    total = len(sin_asignar) * 1_000_000 + soles + co2 + penal + penal_riesgo
+    minutos_fuera = _fuera_preferencia(rutas, preferencias) if preferencias else 0.0
+    penal_preferencia = minutos_fuera * PENALIZACION_PREFERENCIA_MIN
+    total = (
+        len(sin_asignar) * 1_000_000 + soles + co2 + penal + penal_riesgo + penal_preferencia
+    )
     return {
         "total": total,
         "soles": soles,
@@ -354,6 +393,8 @@ def costo_verde(rutas: list[RutaPlan], sin_asignar: list[UUID], inst: Instancia)
         "combustible_l": litros,
         "penalizacion_express": penal,
         "penalizacion_riesgo": penal_riesgo,
+        "penalizacion_preferencia": penal_preferencia,
+        "minutos_fuera_preferencia": minutos_fuera,
         "sin_asignar": len(sin_asignar),
     }
 
