@@ -1,7 +1,8 @@
 import uuid
 from datetime import date, datetime
+from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.schemas.zona import ZonaCruzadaOut
 
@@ -16,6 +17,7 @@ class ParadaOut(BaseModel):
     punto_referencia: str | None = None
     minutos_tramo: float | None = None
     nivel_congestion: str | None = None
+    estado_entrega: str | None = None
 
 
 class DescansoOut(BaseModel):
@@ -77,3 +79,70 @@ class IndicadoresOut(BaseModel):
     nota_arboles: str | None = None
     cumplimiento_ventanas_pct: float = 0
     mejora_porcentaje: float | None = None
+
+
+MotivoReoptimizacion = Literal[
+    "NUEVO_PEDIDO",
+    "CANCELACION",
+    "PARADA_FALLIDA",
+    "ACCIDENTE_TRANSITO",
+    "CONGESTION",
+]
+MENSAJE_SIN_AGREGAR = "Indique al menos un pedido nuevo para agregar."
+MENSAJE_SIN_CANCELAR = "Indique al menos un pedido para cancelar."
+MENSAJE_REPETIDO = "Un pedido no puede agregarse y cancelarse a la vez."
+
+
+class ReoptimizacionIn(BaseModel):
+    motivo: MotivoReoptimizacion = Field(
+        description=(
+            "Evento que dispara la re-optimización (RN-015). NUEVO_PEDIDO exige `agregar`; "
+            "CANCELACION exige `cancelar`. ACCIDENTE_TRANSITO cubre una vía o zona bloqueada."
+        )
+    )
+    descripcion: str | None = Field(default=None, max_length=255)
+    agregar: list[uuid.UUID] = Field(default_factory=list, max_length=20)
+    cancelar: list[uuid.UUID] = Field(default_factory=list, max_length=20)
+
+    @field_validator("descripcion")
+    @classmethod
+    def _recortar(cls, valor: str | None) -> str | None:
+        if valor is None:
+            return None
+        limpio = " ".join(valor.split())
+        return limpio or None
+
+    @model_validator(mode="after")
+    def _coherente(self) -> "ReoptimizacionIn":
+        self.agregar = list(dict.fromkeys(self.agregar))
+        self.cancelar = list(dict.fromkeys(self.cancelar))
+        if self.motivo == "NUEVO_PEDIDO" and not self.agregar:
+            raise ValueError(MENSAJE_SIN_AGREGAR)
+        if self.motivo == "CANCELACION" and not self.cancelar:
+            raise ValueError(MENSAJE_SIN_CANCELAR)
+        if set(self.agregar) & set(self.cancelar):
+            raise ValueError(MENSAJE_REPETIDO)
+        return self
+
+
+class ReoptimizacionOut(BaseModel):
+    mensaje: str
+    segundos: float = Field(description="Tiempo medido del cálculo (perf_counter), en segundos.")
+    presupuesto_s: float = Field(description="Tope aplicado: tiempo_max_reoptimizacion_s ≤ 30 s.")
+    cortado: bool = Field(description="True si se usó la mejor solución hallada al llegar al tope.")
+    estrategia: str
+    paradas_fijas: int
+    paradas_reordenadas: int
+    agregadas: int
+    canceladas: int
+    distancia_antes_km: float | None = None
+    distancia_despues_km: float | None = None
+    ruta: RutaOut
+
+
+class PedidoDisponibleOut(BaseModel):
+    id_pedido: uuid.UUID
+    nombre_cliente: str | None = None
+    punto_referencia: str | None = None
+    peso_kg: float
+    prioridad: str

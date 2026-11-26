@@ -149,6 +149,7 @@ def _parada(
         "punto_referencia": referencia,
         "minutos_tramo": minutos,
         "nivel_congestion": nivel_congestion(congestion, detalle.eta),
+        "estado_entrega": getattr(detalle, "estado_entrega", None),
     }
     return parada, previo
 

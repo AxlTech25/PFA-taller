@@ -16,6 +16,8 @@ def test_openapi_y_swagger(client):
         "/optimizaciones",
         "/rutas",
         "/rutas/zonas-restriccion",
+        "/rutas/{id_ruta}/reoptimizar",
+        "/rutas/{id_ruta}/pedidos-disponibles",
         "/modo/jornada",
         "/modo/mapa",
         "/indicadores",
