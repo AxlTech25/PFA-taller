@@ -24,10 +24,12 @@ def test_openapi_y_swagger(client):
         "/indicadores",
         "/indicadores/reporte.pdf",
         "/indicadores/compensacion",
+        "/clientes/{id_cliente}/preferencia",
     ):
         assert ruta in paths
     assert "demostración" in paths["/clientes"]["get"]["description"].lower()
     assert "put" in paths["/vehiculos/{id_vehiculo}"]
+    assert "put" in paths["/clientes/{id_cliente}/preferencia"]
     assert "patch" in paths["/usuarios/{id_usuario}"]
     assert "423" in paths["/auth/login"]["post"]["responses"]
     docs = client.get("/docs")

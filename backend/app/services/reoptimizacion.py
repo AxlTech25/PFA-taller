@@ -31,6 +31,7 @@ from app.optimizacion.heuristica import _origen, _parametro, pedidos_del_dia
 from app.optimizacion.reoptimizacion import presupuesto, reoptimizar
 from app.optimizacion.zonas import RESERVA, cargar_poligonos, linea_de_puntos
 from app.services.auditoria import registrar
+from app.services.preferencias import horarios_por_pedido
 from app.services.rutas import salida_ruta
 from app.services.sanitizacion import exigir_textos_seguros
 from app.services.zonas import consultar_cruces
@@ -58,7 +59,7 @@ def _cantidad(valor: float, escala: str) -> Decimal:
     return Decimal(str(round(valor, 4))).quantize(Decimal(escala))
 
 
-def _nodo(pedido: Pedido) -> PedidoNodo:
+def _nodo(pedido: Pedido, horarios: dict | None = None) -> PedidoNodo:
     return PedidoNodo(
         id=pedido.id_pedido,
         lat=float(pedido.latitud),
@@ -68,6 +69,7 @@ def _nodo(pedido: Pedido) -> PedidoNodo:
         ventana_inicio=pedido.ventana_inicio,
         ventana_fin=pedido.ventana_fin,
         express=pedido.prioridad == "EXPRESS",
+        preferencia=(horarios or {}).get(pedido.id_pedido),
     )
 
 
@@ -299,13 +301,19 @@ def reoptimizar_ruta(
 
     cancelados = set(datos.cancelar)
     pedidos = {d.id_pedido: db.get(Pedido, d.id_pedido) for d in detalles}
-    fijas = [_nodo(pedidos[d.id_pedido]) for d in detalles if d.estado_entrega in ESTADOS_FIJOS]
+    # US-009: el horario preferido del cliente también pesa al re-optimizar.
+    horarios = horarios_por_pedido(db, [*pedidos.values(), *nuevos])
+    fijas = [
+        _nodo(pedidos[d.id_pedido], horarios)
+        for d in detalles
+        if d.estado_entrega in ESTADOS_FIJOS
+    ]
     pendientes = [
-        _nodo(pedidos[d.id_pedido])
+        _nodo(pedidos[d.id_pedido], horarios)
         for d in detalles
         if d.estado_entrega not in ESTADOS_FIJOS and d.id_pedido not in cancelados
     ]
-    agregados = [_nodo(pedido) for pedido in nuevos]
+    agregados = [_nodo(pedido, horarios) for pedido in nuevos]
     if not pendientes and not agregados:
         raise HTTPException(status_code=409, detail=MENSAJE_SIN_PENDIENTES)
 

@@ -60,6 +60,29 @@ class Cliente(Base):
     )
 
 
+class PreferenciaCliente(Base):
+    """Ficha de preferencias de entrega (RF-009 / US-009). Tabla creada en la migración 001."""
+
+    __tablename__ = "preferencia_cliente"
+
+    id_preferencia: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text(_UUID_V4)
+    )
+    id_cliente: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("cliente.id_cliente", ondelete="CASCADE"),
+        unique=True,
+        nullable=False,
+    )
+    hora_inicio_preferida: Mapped[time | None] = mapped_column(Time)
+    hora_fin_preferida: Mapped[time | None] = mapped_column(Time)
+    punto_referencia: Mapped[str | None] = mapped_column(String(255))
+    restricciones_acceso: Mapped[str | None] = mapped_column(Text)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text(_AHORA)
+    )
+
+
 class Vehiculo(Base):
     __tablename__ = "vehiculo"
 

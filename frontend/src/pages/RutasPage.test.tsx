@@ -87,6 +87,7 @@ describe("RutasPage", () => {
     });
     montar(<RutasPage />);
     expect(await screen.findByText(/Costo verde frente al vecino/)).toHaveTextContent("15 %");
+    expect(screen.getByText(/Costo verde frente al vecino/)).not.toHaveTextContent("horario preferido");
     expect(document.title).toBe("Rutas · EcoLogística Lima");
     expect(screen.getByText("mapa r1")).toBeInTheDocument();
     expect(screen.getByText(/60 min \(Ley/)).toBeInTheDocument();
@@ -288,5 +289,17 @@ describe("RutasPage", () => {
     await screen.findByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" });
     fireEvent.click(screen.getByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo confirmar la ruta.");
+  });
+
+  it("informa los minutos fuera del horario preferido (US-009)", async () => {
+    const conPreferencia: Ruta = {
+      ...ruta,
+      comparacion: { ...ruta.comparacion, minutos_fuera_preferencia: 0, minutos_fuera_preferencia_base: 15 },
+    };
+    instalarFetch(() => ({ body: [conPreferencia] }));
+    montar(<RutasPage />);
+    expect(await screen.findByText(/Costo verde frente al vecino/)).toHaveTextContent(
+      "Atención fuera del horario preferido: 0 min (base 15 min).",
+    );
   });
 });

@@ -25,6 +25,7 @@ from app.optimizacion.evaluacion import (
 )
 from app.optimizacion.pico_placa import placa_restringida
 from app.optimizacion.zonas import cargar_poligonos
+from app.services.preferencias import horarios_por_pedido
 
 MENSAJE_SIN_PEDIDOS = (
     "No hay pedidos pendientes para esa fecha. "
@@ -167,6 +168,7 @@ def preparar(db: Session, fecha: date) -> Instancia | Plan:
     if time.perf_counter() >= limite:
         return Plan(False, MENSAJE_TIEMPO, sin_asignar=identificadores)
 
+    horarios = horarios_por_pedido(db, pedidos)
     nodos = [
         PedidoNodo(
             id=pedido.id_pedido,
@@ -177,6 +179,7 @@ def preparar(db: Session, fecha: date) -> Instancia | Plan:
             ventana_inicio=pedido.ventana_inicio,
             ventana_fin=pedido.ventana_fin,
             express=pedido.prioridad == "EXPRESS",
+            preferencia=horarios.get(pedido.id_pedido),
         )
         for pedido in pedidos
     ]

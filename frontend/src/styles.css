@@ -664,3 +664,16 @@ dl.metricas { margin: 0.8rem 0 0; }
   font-weight: 700;
 }
 .compensacion-resultado h3 { margin-top: 0.8rem; }
+
+.grilla textarea {
+  font: inherit;
+  color: var(--texto);
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #6d8178;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  box-sizing: border-box;
+  background: #fff;
+}
+.preferencia-lectura dd { font-size: 1.05rem; }

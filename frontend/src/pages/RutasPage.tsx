@@ -9,7 +9,7 @@ import { comoPagina, rutaPagina } from "../listado";
 import { etiquetaCongestion } from "../mapa";
 import { Paginador } from "../Paginador";
 import { etiqueta, puedeGenerarRutas, puedeReoptimizarRutas } from "../permissions";
-import type { JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
+import type { ComparacionRuta, JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
 import { ADVERTENCIA_ZONAS, comoZonas } from "../zonas";
 import { MapaRutas } from "./MapaRutas";
 import { ESTADOS_REOPTIMIZABLES, ReoptimizarRuta } from "./ReoptimizarRuta";
@@ -22,6 +22,14 @@ function esperar(ms: number): Promise<void> {
   return new Promise((resolver) => {
     globalThis.setTimeout(resolver, ms);
   });
+}
+
+// US-009: minutos de atención fuera del horario preferido del cliente (restricción suave).
+function fueraDePreferencia(comparacion: ComparacionRuta): string {
+  const minutos = comparacion.minutos_fuera_preferencia;
+  const base = comparacion.minutos_fuera_preferencia_base ?? 0;
+  if (typeof minutos !== "number" || (minutos <= 0 && base <= 0)) return "";
+  return ` Atención fuera del horario preferido: ${minutos} min (base ${base} min).`;
 }
 
 export function RutasPage() {
@@ -211,6 +219,7 @@ export function RutasPage() {
             Distancia {rutas[0].comparacion.distancia_km ?? 0} km (base{" "}
             {rutas[0].comparacion.distancia_base_km ?? 0} km). CO₂ {rutas[0].comparacion.co2_kg ?? 0} kg
             (base {rutas[0].comparacion.co2_base_kg ?? 0} kg).
+            {fueraDePreferencia(rutas[0].comparacion)}
           </output>
         ) : null}
         {rutas.length === 0 ? (

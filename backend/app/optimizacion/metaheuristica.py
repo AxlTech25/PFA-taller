@@ -92,6 +92,11 @@ def _ficha(
         "segundos": round(segundos, 4),
         "generaciones": generaciones,
         "sin_asignar": len(sin_asignar),
+        # US-009: minutos de atención fuera del horario preferido (restricción suave).
+        "minutos_fuera_preferencia": round(actual["minutos_fuera_preferencia"], 4),
+        "minutos_fuera_preferencia_base": round(
+            float(base.get("minutos_fuera_preferencia", 0.0)), 4
+        ),
     }
 
 

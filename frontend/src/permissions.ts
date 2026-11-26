@@ -64,6 +64,15 @@ export function puedeRegistrarPedido(rol: string): boolean {
   return rol === "ADMIN" || rol === "OPERADOR";
 }
 
+// US-009 / RF-009: Admin y Operador registran; Gerente solo lee; Auditor y Conductor sin acceso.
+export function puedeVerPreferencias(rol: string): boolean {
+  return rol === "ADMIN" || rol === "GERENTE" || rol === "OPERADOR";
+}
+
+export function puedeEditarPreferencias(rol: string): boolean {
+  return rol === "ADMIN" || rol === "OPERADOR";
+}
+
 export function puedeGestionarUsuarios(rol: string): boolean {
   return rol === "ADMIN";
 }
