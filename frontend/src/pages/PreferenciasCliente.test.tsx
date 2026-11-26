@@ -40,7 +40,7 @@ describe("PreferenciasCliente (US-009)", () => {
       return { body: ficha({ registrada: false, hora_inicio: null, hora_fin: null, punto_referencia: null, restricciones_acceso: null }) };
     });
     const { container } = montar(<PreferenciasCliente clientes={CLIENTES} editable />, "OPERADOR");
-    expect(await screen.findByText(/aún no tiene preferencias/)).toBeInTheDocument();
+    expect(await screen.findByText("Sin preferencias registradas.")).toBeInTheDocument();
     expect(llamadas[0].path).toBe("/clientes/cli-1/preferencia");
     expect(llamadas[0].init?.cache).toBe("no-cache");
     expect(await violacionesDe(container)).toBe("");
@@ -113,6 +113,7 @@ describe("PreferenciasCliente (US-009)", () => {
     instalarFetch(() => ({ status: 403, body: { detail: "Sin permiso" } }));
     montar(<PreferenciasCliente clientes={CLIENTES} editable />);
     expect(await screen.findByRole("alert")).toHaveTextContent("Sin permiso");
+    expect(screen.getByText("Ficha no disponible.")).toBeInTheDocument();
     instalarFetch(() => {
       throw new Error("red");
     });

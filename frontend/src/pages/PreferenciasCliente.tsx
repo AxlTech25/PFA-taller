@@ -23,6 +23,12 @@ function comoFormulario(datos: PreferenciaCliente) {
   };
 }
 
+function estadoFicha(ficha: PreferenciaCliente | null, cargando: boolean): string {
+  if (cargando) return "Cargando ficha…";
+  if (!ficha) return "Ficha no disponible.";
+  return ficha.registrada ? "Ficha registrada." : "Sin preferencias registradas.";
+}
+
 export function horarioContradictorio(inicio: string, fin: string): boolean {
   return Boolean(inicio && fin && inicio >= fin);
 }
@@ -37,12 +43,15 @@ export function PreferenciasCliente({ clientes, editable }: Props) {
   const [error, setError] = useState("");
   const [exito, setExito] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [cargando, setCargando] = useState(true);
   const seleccionado = idCliente || clientes[0]?.id_cliente || "";
   const cliente = clientes.find((item) => item.id_cliente === seleccionado);
 
   useEffect(() => {
     if (!seleccionado) return;
     let vigente = true;
+    setFicha(null);
+    setCargando(true);
     setError("");
     setExito("");
     llamar<PreferenciaCliente>(`/clientes/${encodeURIComponent(seleccionado)}/preferencia`, {
@@ -52,11 +61,13 @@ export function PreferenciasCliente({ clientes, editable }: Props) {
         if (!vigente) return;
         setFicha(datos);
         setFormulario(datos?.registrada ? comoFormulario(datos) : vacio);
+        setCargando(false);
       })
       .catch((err: unknown) => {
         if (!vigente) return;
         setFicha(null);
         setFormulario(vacio);
+        setCargando(false);
         setError(err instanceof ApiError ? err.message : "No se pudo cargar la ficha del cliente.");
       });
     return () => {
@@ -135,9 +146,10 @@ export function PreferenciasCliente({ clientes, editable }: Props) {
           ))}
         </select>
       </label>
-      {ficha && !ficha.registrada ? (
-        <p className="muted">Este cliente aún no tiene preferencias de entrega registradas.</p>
-      ) : null}
+      {/* Línea siempre presente: el estado cambia de texto sin mover el formulario (CLS). */}
+      <p className="muted estado-preferencia" aria-live="polite">
+        {estadoFicha(ficha, cargando)}
+      </p>
       {editable ? (
         <form
           className="grilla"
@@ -192,24 +204,24 @@ export function PreferenciasCliente({ clientes, editable }: Props) {
             {ocupado ? "Guardando…" : "Guardar preferencias"}
           </button>
         </form>
-      ) : ficha?.registrada ? (
+      ) : (
         <dl className="metricas preferencia-lectura">
           <div className="metrica">
             <dt>Horario preferido</dt>
             <dd>
-              {hora(ficha.hora_inicio)} – {hora(ficha.hora_fin)}
+              {ficha?.registrada ? `${hora(ficha.hora_inicio)} – ${hora(ficha.hora_fin)}` : "—"}
             </dd>
           </div>
           <div className="metrica">
             <dt>Referencia habitual</dt>
-            <dd>{ficha.punto_referencia ?? "—"}</dd>
+            <dd>{ficha?.punto_referencia ?? "—"}</dd>
           </div>
           <div className="metrica">
             <dt>Restricción de acceso</dt>
-            <dd>{ficha.restricciones_acceso ?? "—"}</dd>
+            <dd>{ficha?.restricciones_acceso ?? "—"}</dd>
           </div>
         </dl>
-      ) : null}
+      )}
       {editable && cliente && !cliente.consentimiento_datos ? (
         <output className="aviso">
           Este cliente no tiene consentimiento. El sistema no guardará sus preferencias (Ley N.º

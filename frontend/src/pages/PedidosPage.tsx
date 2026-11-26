@@ -257,6 +257,10 @@ export function PedidosPage() {
           ) : null}
         </section>
       ) : null}
+      {/* Se pinta desde el inicio con alto fijo: al llegar los datos no empuja el pie (CLS). */}
+      {verPreferencias ? (
+        <PreferenciasCliente clientes={clientes} editable={editarPreferencias} />
+      ) : null}
       <section className="panel" aria-labelledby="titulo-pedidos">
         <h2 id="titulo-pedidos">Pedidos registrados</h2>
         {pedidos.length === 0 ? (
@@ -304,9 +308,6 @@ export function PedidosPage() {
         )}
         <Paginador page={pagina} totalPages={totalPaginas} onPage={setPagina} />
       </section>
-      {verPreferencias && clientes.length > 0 ? (
-        <PreferenciasCliente clientes={clientes} editable={editarPreferencias} />
-      ) : null}
     </>
   );
 }

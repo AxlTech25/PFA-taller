@@ -677,3 +677,4 @@ dl.metricas { margin: 0.8rem 0 0; }
   background: #fff;
 }
 .preferencia-lectura dd { font-size: 1.05rem; }
+.estado-preferencia { min-height: 1.5em; }
