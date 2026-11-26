@@ -10,6 +10,7 @@ import {
   puedeRegistrarConductor,
   puedeRegistrarFlota,
   puedeGenerarRutas,
+  puedeReoptimizarRutas,
   puedeRegistrarPedido,
 } from "./permissions";
 
@@ -33,6 +34,11 @@ describe("permisos de Sprint 2", () => {
     expect(puedeGenerarRutas("OPERADOR")).toBe(true);
     expect(puedeGenerarRutas("GERENTE")).toBe(false);
     expect(puedeGenerarRutas("CONDUCTOR")).toBe(false);
+    expect(puedeReoptimizarRutas("ADMIN")).toBe(true);
+    expect(puedeReoptimizarRutas("OPERADOR")).toBe(true);
+    expect(puedeReoptimizarRutas("GERENTE")).toBe(true);
+    expect(puedeReoptimizarRutas("CONDUCTOR")).toBe(false);
+    expect(puedeReoptimizarRutas("AUDITOR")).toBe(false);
     expect(modulosVisibles("ADMIN")).toEqual([
       "flota",
       "conductores",

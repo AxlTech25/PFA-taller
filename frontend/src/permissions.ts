@@ -72,6 +72,11 @@ export function puedeGenerarRutas(rol: string): boolean {
   return rol === "ADMIN" || rol === "OPERADOR";
 }
 
+// US-011: gerencia también re-optimiza una ruta activa (matriz de permisos).
+export function puedeReoptimizarRutas(rol: string): boolean {
+  return puedeGenerarRutas(rol) || rol === "GERENTE";
+}
+
 export function modulosVisibles(rol: string): Modulo[] {
   if (rol === "ADMIN") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];
   if (rol === "GERENTE") return ["flota", "conductores", "pedidos", "rutas", "dashboard", "usuarios"];

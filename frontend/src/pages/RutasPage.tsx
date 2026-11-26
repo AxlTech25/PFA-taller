@@ -8,10 +8,11 @@ import { fechaHoy } from "../fechas";
 import { comoPagina, rutaPagina } from "../listado";
 import { etiquetaCongestion } from "../mapa";
 import { Paginador } from "../Paginador";
-import { etiqueta, puedeGenerarRutas } from "../permissions";
+import { etiqueta, puedeGenerarRutas, puedeReoptimizarRutas } from "../permissions";
 import type { JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
 import { ADVERTENCIA_ZONAS, comoZonas } from "../zonas";
 import { MapaRutas } from "./MapaRutas";
+import { ESTADOS_REOPTIMIZABLES, ReoptimizarRuta } from "./ReoptimizarRuta";
 
 function nombreRuta(ruta: Ruta): string {
   return `${ruta.placa ?? "Vehículo"} · ${ruta.conductor ?? "Conductor"}`;
@@ -26,6 +27,7 @@ function esperar(ms: number): Promise<void> {
 export function RutasPage() {
   const { llamar, sesion } = useAuth();
   const generar = sesion ? puedeGenerarRutas(sesion.rol) : false;
+  const reoptimizar = sesion ? puedeReoptimizarRutas(sesion.rol) : false;
   const [fecha, setFecha] = useState(fechaHoy);
   const [pagina, setPagina] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(0);
@@ -40,7 +42,10 @@ export function RutasPage() {
   const [advertenciaZonas, setAdvertenciaZonas] = useState(ADVERTENCIA_ZONAS);
 
   async function cargar(dia: string, numero = pagina, forzar = false) {
-    const data = await consultar(llamar, rutaPagina(`/rutas?fecha=${dia}`, numero), forzar);
+    // Al forzar también se salta la caché HTTP privada de 30 s: tras confirmar o re-optimizar
+    // el navegador no debe devolver la secuencia anterior.
+    const pedir = (path: string) => llamar<unknown>(path, forzar ? { cache: "no-cache" } : undefined);
+    const data = await consultar(pedir, rutaPagina(`/rutas?fecha=${dia}`, numero), forzar);
     const lista = comoPagina<Ruta>(data);
     setRutas(lista.items);
     setTotalPaginas(lista.total_pages);
@@ -146,7 +151,9 @@ export function RutasPage() {
           (Ley N.º 30224). Los vehículos con el último dígito restringido ese día no entran al plan.
           El mapa usa OpenStreetMap y marca las zonas de restricción. La reserva ecológica es una
           restricción dura: una ruta que la atraviesa no se confirma (RN-013). La acción «ruta
-          alternativa más segura» rodea las zonas de riesgo. Si las teselas no cargan, queda la
+          alternativa más segura» rodea las zonas de riesgo. Si cambia algo durante la jornada, una
+          ruta confirmada o en ejecución se re-optimiza en 30 s como máximo sin mover las paradas
+          ya entregadas. Si las teselas no cargan, queda la
           tabla de paradas.
           Al cambiar la fecha se actualiza el plan mostrado.
         </p>
@@ -253,6 +260,7 @@ export function RutasPage() {
                       <th scope="col">ETA</th>
                       <th scope="col">Tramo</th>
                       <th scope="col">Congestión</th>
+                      <th scope="col">Entrega</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -268,6 +276,7 @@ export function RutasPage() {
                             {etiquetaCongestion(parada.nivel_congestion)}
                           </span>
                         </td>
+                        <td>{etiqueta(parada.estado_entrega ?? "PENDIENTE")}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -303,6 +312,17 @@ export function RutasPage() {
                     Confirmar ruta
                   </button>
                 </div>
+              ) : null}
+              {reoptimizar && ESTADOS_REOPTIMIZABLES.includes(ruta.estado) ? (
+                <ReoptimizarRuta
+                  ruta={ruta}
+                  nombre={nombreRuta(ruta)}
+                  onListo={async () => {
+                    setError("");
+                    setAviso("");
+                    await cargar(fecha, pagina, true);
+                  }}
+                />
               ) : null}
             </article>
           ))

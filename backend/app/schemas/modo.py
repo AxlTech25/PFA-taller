@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-CodigoAlerta = Literal["CONGESTION", "VENTANA", "DESCANSO", "INCIDENCIA"]
+CodigoAlerta = Literal["CONGESTION", "VENTANA", "DESCANSO", "INCIDENCIA", "REOPTIMIZACION"]
 
 
 class AlertaModo(BaseModel):

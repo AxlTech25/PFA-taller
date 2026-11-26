@@ -5,11 +5,23 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
-from app.core.deps import ESCRITURA_RUTAS, LECTURA_RUTAS, ip_de, require_roles
+from app.core.deps import (
+    ESCRITURA_RUTAS,
+    LECTURA_RUTAS,
+    REOPTIMIZACION_RUTAS,
+    ip_de,
+    require_roles,
+)
 from app.db.session import get_db
 from app.models.entities import Usuario
 from app.schemas.pagina import Pagina
-from app.schemas.ruta import RutaOut
+from app.schemas.ruta import (
+    PedidoDisponibleOut,
+    ReoptimizacionIn,
+    ReoptimizacionOut,
+    RutaOut,
+)
+from app.services import reoptimizacion as reoptimizacion
 from app.services import rutas as servicio
 
 router = APIRouter(prefix="/rutas", tags=["Optimización"])
@@ -62,3 +74,47 @@ def confirmar(
     actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
 ) -> dict:
     return servicio.confirmar(db, id_ruta, actor, ip_de(request))
+
+
+@router.post(
+    "/{id_ruta}/reoptimizar",
+    response_model=ReoptimizacionOut,
+    summary="Re-optimizar las paradas pendientes de una ruta activa",
+    description=(
+        "US-011 (RF-007, RN-014, RN-015). Recalcula solo esta ruta CONFIRMADA o EN_EJECUCION "
+        "ante un pedido nuevo, una cancelación, una parada fallida, un accidente o vía "
+        "bloqueada, o congestión. Las paradas ENTREGADO o FALLIDO se conservan. La reserva "
+        "ecológica es restricción dura (RN-013) y la zona de riesgo se penaliza (RN-012). "
+        "El cálculo usa `tiempo_max_reoptimizacion_s`, con tope de 30 s; al llegar al tope "
+        "devuelve la mejor secuencia completa hallada. Sin solución, conserva la ruta, "
+        "registra el evento como SIN_SOLUCION y responde 422."
+    ),
+    responses={
+        403: {"description": "Solo ADMIN, GERENTE u OPERADOR"},
+        404: {"description": "La ruta no existe"},
+        409: {"description": "La ruta no está activa o no quedan paradas pendientes"},
+        422: {"description": "Datos inválidos o sin solución factible dentro del tope"},
+    },
+)
+def reoptimizar(
+    id_ruta: UUID,
+    datos: ReoptimizacionIn,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles(*REOPTIMIZACION_RUTAS))],
+) -> dict:
+    return reoptimizacion.reoptimizar_ruta(db, id_ruta, datos, actor, ip_de(request))
+
+
+@router.get(
+    "/{id_ruta}/pedidos-disponibles",
+    response_model=list[PedidoDisponibleOut],
+    summary="Pedidos pendientes que pueden sumarse a la ruta",
+    description="Pedidos PENDIENTE de la fecha de la ruta que no están en otra ruta (máx. 50).",
+)
+def disponibles(
+    id_ruta: UUID,
+    db: Annotated[Session, Depends(get_db)],
+    _actor: Annotated[Usuario, Depends(require_roles(*REOPTIMIZACION_RUTAS))],
+) -> list[dict]:
+    return reoptimizacion.pedidos_disponibles(db, id_ruta)

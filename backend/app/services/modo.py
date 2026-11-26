@@ -23,6 +23,7 @@ from app.models.entities import (
     DescansoRuta,
     DetalleRuta,
     Incidencia,
+    LogAuditoria,
     Pedido,
     Ruta,
     Usuario,
@@ -164,6 +165,34 @@ def _alertas_incidencia(db: Session, id_ruta: UUID) -> list[dict]:
     ]
 
 
+def _alerta_reoptimizacion(db: Session, id_ruta: UUID) -> list[dict]:
+    """Aviso in-app al conductor cuando el operador re-optimizó su ruta (US-011, RF-007)."""
+
+    momento = db.scalar(
+        select(LogAuditoria.creado_en)
+        .where(
+            LogAuditoria.accion == "reoptimizar_ruta",
+            LogAuditoria.tabla_afectada == "ruta",
+            LogAuditoria.registro_id == id_ruta,
+        )
+        .order_by(LogAuditoria.creado_en.desc())
+        .limit(1)
+    )
+    if momento is None:
+        return []
+    hora = momento.astimezone(ZONA_LIMA).strftime("%H:%M")
+    return [
+        {
+            "codigo": "REOPTIMIZACION",
+            "secuencia": None,
+            "texto": (
+                f"La ruta se re-optimizó a las {hora} (hora de Lima). "
+                "Revise el nuevo orden de las paradas pendientes."
+            ),
+        }
+    ]
+
+
 def _alertas_descanso(db: Session, id_ruta: UUID) -> list[dict]:
     descansos = db.scalars(
         select(DescansoRuta)
@@ -196,7 +225,8 @@ def jornada(db: Session, actor: Usuario) -> dict:
     factor = max(_parametro(db, "factor_congestion", 1.0), 0.1)
     paradas, alertas_parada = _paradas(db, ruta.id_ruta, factor)
     alertas = (
-        _alertas_incidencia(db, ruta.id_ruta)
+        _alerta_reoptimizacion(db, ruta.id_ruta)
+        + _alertas_incidencia(db, ruta.id_ruta)
         + alertas_parada
         + _alertas_descanso(db, ruta.id_ruta)
     )

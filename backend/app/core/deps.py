@@ -24,6 +24,8 @@ ESCRITURA_PEDIDOS = ("ADMIN", "OPERADOR")
 LECTURA_CLIENTES = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
 LECTURA_RUTAS = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
 ESCRITURA_RUTAS = ("ADMIN", "OPERADOR")
+# US-011: la matriz de permisos deja a gerencia ejecutar la re-optimización.
+REOPTIMIZACION_RUTAS = ("ADMIN", "GERENTE", "OPERADOR")
 
 
 def ip_de(request: Request) -> str | None:

@@ -102,6 +102,7 @@ export type ParadaRuta = {
   punto_referencia?: string | null;
   minutos_tramo?: number | null;
   nivel_congestion?: string | null;
+  estado_entrega?: string | null;
 };
 
 export type ComparacionRuta = {
@@ -158,7 +159,7 @@ export type Indicadores = {
 };
 
 export type AlertaModo = {
-  codigo: "CONGESTION" | "VENTANA" | "DESCANSO" | "INCIDENCIA";
+  codigo: "CONGESTION" | "VENTANA" | "DESCANSO" | "INCIDENCIA" | "REOPTIMIZACION";
   secuencia?: number | null;
   texto: string;
 };
@@ -193,4 +194,34 @@ export type JobOptimizacion = {
   algoritmo?: string | null;
   comparacion?: ComparacionRuta | null;
   rutas: Ruta[];
+};
+
+export type MotivoReoptimizacion =
+  | "NUEVO_PEDIDO"
+  | "CANCELACION"
+  | "PARADA_FALLIDA"
+  | "ACCIDENTE_TRANSITO"
+  | "CONGESTION";
+
+export type Reoptimizacion = {
+  mensaje: string;
+  segundos: number;
+  presupuesto_s: number;
+  cortado: boolean;
+  estrategia: string;
+  paradas_fijas: number;
+  paradas_reordenadas: number;
+  agregadas: number;
+  canceladas: number;
+  distancia_antes_km?: number | null;
+  distancia_despues_km?: number | null;
+  ruta: Ruta;
+};
+
+export type PedidoDisponible = {
+  id_pedido: string;
+  nombre_cliente?: string | null;
+  punto_referencia?: string | null;
+  peso_kg: number;
+  prioridad: string;
 };
