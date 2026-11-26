@@ -651,3 +651,16 @@ label.opcion input {
   min-height: 0;
   flex: none;
 }
+
+dl.metricas { margin: 0.8rem 0 0; }
+.metrica dt {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.metrica dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+.compensacion-resultado h3 { margin-top: 0.8rem; }

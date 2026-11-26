@@ -21,20 +21,25 @@ NOTA_ARBOLES = (
 )
 
 
-def _factor_arboles(db: Session) -> float | None:
+def valor_positivo(db: Session, clave: str) -> float | None:
+    """Valor numérico > 0 de `configuracion_sistema`; None si falta o no es válido."""
     valor = db.execute(
         text("SELECT valor FROM configuracion_sistema WHERE clave = :clave"),
-        {"clave": "factor_captura_arbol_kg"},
+        {"clave": clave},
     ).scalar()
     if valor is None:
         return None
     try:
-        factor = float(valor)
+        numero = float(valor)
     except ValueError:
         return None
-    if factor <= 0:
+    if numero != numero or numero <= 0 or numero == float("inf"):
         return None
-    return factor
+    return numero
+
+
+def _factor_arboles(db: Session) -> float | None:
+    return valor_positivo(db, "factor_captura_arbol_kg")
 
 
 def _sin_datos(fecha: date) -> dict:

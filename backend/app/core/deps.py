@@ -28,6 +28,8 @@ ESCRITURA_RUTAS = ("ADMIN", "OPERADOR")
 REOPTIMIZACION_RUTAS = ("ADMIN", "GERENTE", "OPERADOR")
 # US-016 / RF-006: Admin, Gerente y Operador generan; Auditor tiene lectura.
 REPORTES_SOSTENIBILIDAD = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
+# US-017 / RF-010: el documento 08 da lectura del plan a Admin, Gerente, Operador y Auditor.
+PLAN_COMPENSACION = ("ADMIN", "GERENTE", "OPERADOR", "AUDITOR")
 
 
 def ip_de(request: Request) -> str | None:
