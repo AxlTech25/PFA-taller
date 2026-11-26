@@ -171,6 +171,7 @@ export type ParadaModo = {
   punto_referencia?: string | null;
   eta?: string | null;
   estado_entrega: string;
+  motivo_fallo?: string | null;
   nivel_congestion?: string | null;
 };
 

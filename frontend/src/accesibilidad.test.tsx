@@ -261,6 +261,24 @@ describe("accesibilidad WCAG AA", () => {
     await sinViolaciones();
   });
 
+  it("el formulario de confirmar entrega no tiene violaciones de axe", async () => {
+    instalarFetch((path) => {
+      if (path.includes("/modo/jornada")) return { body: jornadaModo };
+      return { body: [] };
+    });
+    montar(<App />, "CONDUCTOR", "/modo");
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Confirmar entrega de la parada 1, Bodega El Ahorro" }),
+    );
+    fireEvent.click(screen.getByRole("radio", { name: "Fallido" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar resultado" }));
+    expect(screen.getByRole("textbox", { name: "Motivo del fallo (obligatorio)" })).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    await sinViolaciones();
+  });
+
   it("el acceso denegado tiene encabezado y no tiene violaciones de axe", async () => {
     montar(<App />, "CONDUCTOR", "/usuarios");
     expect(await screen.findByRole("heading", { name: "Acceso denegado" })).toBeInTheDocument();
