@@ -5,7 +5,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
-from app.core.deps import ESCRITURA_RUTAS, LECTURA_RUTAS, ip_de, require_roles
+from app.core.deps import (
+    ESCRITURA_RUTAS,
+    LECTURA_RUTAS,
+    REOPTIMIZACION_RUTAS,
+    ip_de,
+    require_roles,
+)
 from app.db.session import get_db
 from app.models.entities import Usuario
 from app.schemas.pagina import Pagina
@@ -84,7 +90,7 @@ def confirmar(
         "registra el evento como SIN_SOLUCION y responde 422."
     ),
     responses={
-        403: {"description": "Rol sin permiso de escritura de rutas"},
+        403: {"description": "Solo ADMIN, GERENTE u OPERADOR"},
         404: {"description": "La ruta no existe"},
         409: {"description": "La ruta no está activa o no quedan paradas pendientes"},
         422: {"description": "Datos inválidos o sin solución factible dentro del tope"},
@@ -95,7 +101,7 @@ def reoptimizar(
     datos: ReoptimizacionIn,
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-    actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
+    actor: Annotated[Usuario, Depends(require_roles(*REOPTIMIZACION_RUTAS))],
 ) -> dict:
     return reoptimizacion.reoptimizar_ruta(db, id_ruta, datos, actor, ip_de(request))
 
@@ -109,6 +115,6 @@ def reoptimizar(
 def disponibles(
     id_ruta: UUID,
     db: Annotated[Session, Depends(get_db)],
-    _actor: Annotated[Usuario, Depends(require_roles(*ESCRITURA_RUTAS))],
+    _actor: Annotated[Usuario, Depends(require_roles(*REOPTIMIZACION_RUTAS))],
 ) -> list[dict]:
     return reoptimizacion.pedidos_disponibles(db, id_ruta)

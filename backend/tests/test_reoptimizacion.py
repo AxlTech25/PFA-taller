@@ -263,8 +263,8 @@ def test_mide_el_tiempo_real_de_reoptimizacion(client, db, paradas):
     assert total <= TOPE_REOPTIMIZACION_S
 
 
-@pytest.mark.parametrize("rol", ["CONDUCTOR", "GERENTE", "AUDITOR"])
-def test_solo_admin_y_operador(client, db, rol):
+@pytest.mark.parametrize("rol", ["CONDUCTOR", "AUDITOR"])
+def test_solo_admin_gerente_y_operador(client, db, rol):
     _, _, ruta, _ = _escenario(db, f"rol{rol.lower()}", f"7001120{len(rol)}", paradas=2)
     usuario = crear_usuario(db, email=f"{rol.lower()}.reopt@distrirapido.example.com", rol=rol)
     respuesta = client.post(
@@ -280,12 +280,14 @@ def test_solo_admin_y_operador(client, db, rol):
     assert client.post(_url(ruta.id_ruta), json={"motivo": "CONGESTION"}).status_code == 401
 
 
-def test_admin_puede_reoptimizar(client, db):
-    _, _, ruta, _ = _escenario(db, "admin", "70011301", paradas=2)
-    admin = crear_usuario(db, email="admin.reopt@distrirapido.example.com", rol="ADMIN")
-    respuesta = client.post(
-        _url(ruta.id_ruta), json={"motivo": "CONGESTION"}, headers=autenticar(client, admin.email)
-    )
+@pytest.mark.parametrize(("rol", "dni"), [("ADMIN", "70011301"), ("GERENTE", "70011302")])
+def test_admin_y_gerente_pueden_reoptimizar(client, db, rol, dni):
+    _, _, ruta, _ = _escenario(db, rol.lower(), dni, paradas=2)
+    usuario = crear_usuario(db, email=f"{rol.lower()}.reopt@distrirapido.example.com", rol=rol)
+    headers = autenticar(client, usuario.email)
+    disponibles = client.get(f"/rutas/{ruta.id_ruta}/pedidos-disponibles", headers=headers)
+    assert disponibles.status_code == 200, disponibles.text
+    respuesta = client.post(_url(ruta.id_ruta), json={"motivo": "CONGESTION"}, headers=headers)
     assert respuesta.status_code == 200, respuesta.text
 
 

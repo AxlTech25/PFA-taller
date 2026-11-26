@@ -186,13 +186,25 @@ describe("Re-optimización de ruta (US-011)", () => {
     expect(await screen.findByText("No hay pedidos pendientes para la fecha de esta ruta.")).toBeInTheDocument();
   });
 
-  it("no ofrece la acción a gerencia ni a rutas en borrador", async () => {
-    datos(() => ({ body: respuesta }));
+  it("gerencia también re-optimiza, aunque no genera ni confirma rutas", async () => {
+    const { llamadas } = datos(() => ({ body: respuesta }));
     montar(<RutasPage />, "GERENTE");
+    await abrir();
+    expect(screen.queryByRole("button", { name: "Generar rutas" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox", { name: /Cliente Nuevo/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Re-optimizar ahora" }));
+    expect(await screen.findByText(/Tiempo medido: 0.04 s/)).toBeInTheDocument();
+    expect(llamadas.some((llamada) => llamada.path === "/rutas/r1/reoptimizar")).toBe(true);
+  });
+
+  it.each(["AUDITOR", "CONDUCTOR"])("no ofrece la acción a %s", async (rol) => {
+    datos(() => ({ body: respuesta }));
+    montar(<RutasPage />, rol);
     expect(await screen.findByRole("cell", { name: "Bodega Dos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: NOMBRE })).not.toBeInTheDocument();
+  });
 
-    cleanup();
+  it("no ofrece la acción en rutas en borrador", async () => {
     instalarFetch(() => ({ body: [{ ...activa, estado: "BORRADOR" }] }));
     montar(<RutasPage />);
     expect(await screen.findByRole("button", { name: "Confirmar ruta ABC123 · Ana Ramos" })).toBeInTheDocument();

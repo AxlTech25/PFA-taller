@@ -8,7 +8,7 @@ import { fechaHoy } from "../fechas";
 import { comoPagina, rutaPagina } from "../listado";
 import { etiquetaCongestion } from "../mapa";
 import { Paginador } from "../Paginador";
-import { etiqueta, puedeGenerarRutas } from "../permissions";
+import { etiqueta, puedeGenerarRutas, puedeReoptimizarRutas } from "../permissions";
 import type { JobOptimizacion, Ruta, ZonaRestriccion } from "../types";
 import { ADVERTENCIA_ZONAS, comoZonas } from "../zonas";
 import { MapaRutas } from "./MapaRutas";
@@ -27,6 +27,7 @@ function esperar(ms: number): Promise<void> {
 export function RutasPage() {
   const { llamar, sesion } = useAuth();
   const generar = sesion ? puedeGenerarRutas(sesion.rol) : false;
+  const reoptimizar = sesion ? puedeReoptimizarRutas(sesion.rol) : false;
   const [fecha, setFecha] = useState(fechaHoy);
   const [pagina, setPagina] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(0);
@@ -312,7 +313,7 @@ export function RutasPage() {
                   </button>
                 </div>
               ) : null}
-              {generar && ESTADOS_REOPTIMIZABLES.includes(ruta.estado) ? (
+              {reoptimizar && ESTADOS_REOPTIMIZABLES.includes(ruta.estado) ? (
                 <ReoptimizarRuta
                   ruta={ruta}
                   nombre={nombreRuta(ruta)}
