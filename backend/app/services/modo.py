@@ -4,14 +4,15 @@ El conductor autenticado solo recibe la ruta CONFIRMADA o EN_EJECUCION
 asignada a su ficha en el día civil de Lima (UTC−5, sin horario de verano).
 No hay identificador de otro conductor en la consulta.
 
-US-018 (Sprint 6) persistirá ENTREGADO o FALLIDO sobre `id_detalle`,
-auditará la acción y responderá 403 si el detalle no es de este conductor.
-Este módulo no escribe `estado_entrega`.
+US-018: `confirmar_parada` registra ENTREGADO o FALLIDO sobre `id_detalle`,
+guarda quién y cuándo, lo audita y responde 403 si el detalle pertenece a la
+ruta de otro conductor.
 """
 
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from uuid import UUID
 
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -29,6 +30,8 @@ from app.models.entities import (
 )
 from app.optimizacion.congestion import nivel_congestion
 from app.optimizacion.heuristica import _parametro
+from app.services.auditoria import registrar
+from app.services.sanitizacion import exigir_textos_seguros
 
 # Perú no observa horario de verano: el día operativo es UTC−5 todo el año.
 ZONA_LIMA = timezone(timedelta(hours=-5))
@@ -128,6 +131,7 @@ def _paradas(db: Session, id_ruta: UUID, factor: float) -> tuple[list[dict], lis
                 "punto_referencia": pedido.punto_referencia,
                 "eta": detalle.eta,
                 "estado_entrega": detalle.estado_entrega,
+                "motivo_fallo": detalle.motivo_fallo,
                 "nivel_congestion": nivel,
             }
         )
@@ -237,4 +241,101 @@ def mapa(db: Session, actor: Usuario) -> dict:
             }
             for secuencia, latitud, longitud, nombre in filas
         ],
+    }
+
+
+ESTADOS_CONFIRMABLES = ("PENDIENTE", "REPROGRAMADO")
+MENSAJE_PARADA_NO_ENCONTRADA = "Parada no encontrada"
+MENSAJE_PARADA_AJENA = "La parada pertenece a la ruta de otro conductor"
+MENSAJE_RUTA_NO_ACTIVA = "La ruta de esta parada no está confirmada ni en ejecución"
+_TEXTO_RESULTADO = {"ENTREGADO": "entregada", "FALLIDO": "fallida"}
+
+
+def _conductor_de_ruta(db: Session, id_ruta: UUID) -> UUID | None:
+    return db.scalar(
+        select(Conductor.id_usuario)
+        .join(AsignacionRuta, AsignacionRuta.id_conductor == Conductor.id_conductor)
+        .where(AsignacionRuta.id_ruta == id_ruta)
+        .order_by(AsignacionRuta.asignada_en.desc())
+        .limit(1)
+    )
+
+
+def confirmar_parada(
+    db: Session,
+    actor: Usuario,
+    id_detalle: UUID,
+    resultado: str,
+    motivo: str | None,
+    ip: str | None,
+) -> dict:
+    """Registra ENTREGADO o FALLIDO en una parada del propio conductor.
+
+    404 si la parada no existe, 403 si es de otro conductor, 409 si la ruta no
+    está activa o la parada ya tiene resultado. La fila se bloquea para que
+    dos confirmaciones simultáneas no ganen las dos.
+    """
+
+    detalle = db.scalar(
+        select(DetalleRuta).where(DetalleRuta.id_detalle == id_detalle).with_for_update()
+    )
+    if detalle is None:
+        raise HTTPException(status_code=404, detail=MENSAJE_PARADA_NO_ENCONTRADA)
+    if _conductor_de_ruta(db, detalle.id_ruta) != actor.id_usuario:
+        registrar(
+            db,
+            id_usuario=actor.id_usuario,
+            accion="confirmacion_entrega_denegada",
+            tabla="detalle_ruta",
+            registro_id=detalle.id_detalle,
+            ip=ip,
+        )
+        db.commit()
+        raise HTTPException(status_code=403, detail=MENSAJE_PARADA_AJENA)
+    ruta = db.get(Ruta, detalle.id_ruta)
+    if ruta is None or ruta.estado not in ESTADOS_DEL_DIA:
+        raise HTTPException(status_code=409, detail=MENSAJE_RUTA_NO_ACTIVA)
+    if detalle.estado_entrega not in ESTADOS_CONFIRMABLES:
+        raise HTTPException(
+            status_code=409,
+            detail=f"La parada ya fue registrada como {detalle.estado_entrega}",
+        )
+    exigir_textos_seguros(
+        db,
+        id_usuario=actor.id_usuario,
+        ip=ip,
+        tabla="detalle_ruta",
+        campos=[(motivo, "motivo")],
+    )
+
+    anterior = detalle.estado_entrega
+    momento = datetime.now(UTC)
+    detalle.estado_entrega = resultado
+    detalle.motivo_fallo = motivo if resultado == "FALLIDO" else None
+    detalle.confirmada_por = actor.id_usuario
+    detalle.confirmada_en = momento
+    if resultado == "ENTREGADO":
+        pedido = db.get(Pedido, detalle.id_pedido)
+        if pedido is not None:
+            pedido.estado = "ENTREGADO"
+    if ruta.estado == "CONFIRMADA":
+        ruta.estado = "EN_EJECUCION"
+    registrar(
+        db,
+        id_usuario=actor.id_usuario,
+        accion="confirmar_entrega",
+        tabla="detalle_ruta",
+        registro_id=detalle.id_detalle,
+        ip=ip,
+        anteriores={"estado_entrega": anterior},
+        nuevos={"estado_entrega": resultado, "motivo_fallo": detalle.motivo_fallo},
+    )
+    db.commit()
+    return {
+        "id_detalle": detalle.id_detalle,
+        "secuencia": detalle.secuencia,
+        "estado_entrega": resultado,
+        "motivo_fallo": detalle.motivo_fallo,
+        "confirmada_en": momento,
+        "mensaje": f"Parada {detalle.secuencia} registrada como {_TEXTO_RESULTADO[resultado]}.",
     }

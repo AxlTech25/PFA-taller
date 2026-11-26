@@ -4,6 +4,8 @@ La carga inicial la llama solo si SEED_CONDUCTOR_PASSWORD está definida.
 Reutiliza el cliente con consentimiento y la unidad DMO-101. No inventa
 kilómetros, CO₂ ni el factor de árboles: esos campos de la ruta quedan vacíos.
 Cada arranque deja la misma ruta en la fecha operativa, sin duplicar paradas.
+Si la ruta era de otro día, las paradas vuelven a PENDIENTE (US-018): la
+demostración de confirmar entrega se puede repetir al día siguiente.
 """
 
 import logging
@@ -145,7 +147,9 @@ def _pedido(db: Session, cliente: Cliente, spec: dict, fecha) -> Pedido:
     return pedido
 
 
-def _ruta_demo(db: Session, conductor: Conductor, vehiculo: Vehiculo, fecha) -> Ruta:
+def _ruta_demo(
+    db: Session, conductor: Conductor, vehiculo: Vehiculo, fecha
+) -> tuple[Ruta, bool]:
     ruta = db.scalar(
         select(Ruta)
         .join(DetalleRuta, DetalleRuta.id_ruta == Ruta.id_ruta)
@@ -168,13 +172,21 @@ def _ruta_demo(db: Session, conductor: Conductor, vehiculo: Vehiculo, fecha) -> 
                 id_conductor=conductor.id_conductor,
             )
         )
-        return ruta
+        return ruta, False
+    nuevo_dia = ruta.fecha != fecha
     ruta.fecha = fecha
     ruta.estado = "CONFIRMADA"
-    return ruta
+    return ruta, nuevo_dia
 
 
-def _detalle(db: Session, ruta: Ruta, pedido: Pedido, secuencia: int, eta: datetime) -> None:
+def _detalle(
+    db: Session,
+    ruta: Ruta,
+    pedido: Pedido,
+    secuencia: int,
+    eta: datetime,
+    reiniciar: bool = False,
+) -> None:
     detalle = db.scalar(
         select(DetalleRuta).where(
             DetalleRuta.id_ruta == ruta.id_ruta,
@@ -194,6 +206,11 @@ def _detalle(db: Session, ruta: Ruta, pedido: Pedido, secuencia: int, eta: datet
         return
     detalle.secuencia = secuencia
     detalle.eta = eta
+    if reiniciar:
+        detalle.estado_entrega = "PENDIENTE"
+        detalle.motivo_fallo = None
+        detalle.confirmada_por = None
+        detalle.confirmada_en = None
 
 
 def _aviso(db: Session, ruta: Ruta) -> None:
@@ -227,10 +244,10 @@ def asegurar_jornada_demo(db: Session, usuario: Usuario) -> bool:
     if conductor is None:
         return False
     fecha = fecha_operativa()
-    ruta = _ruta_demo(db, conductor, vehiculo, fecha)
+    ruta, nuevo_dia = _ruta_demo(db, conductor, vehiculo, fecha)
     for secuencia, spec in enumerate(PARADAS, start=1):
         pedido = _pedido(db, cliente, spec, fecha)
-        _detalle(db, ruta, pedido, secuencia, _marcar(fecha, *spec["eta"]))
+        _detalle(db, ruta, pedido, secuencia, _marcar(fecha, *spec["eta"]), nuevo_dia)
     _aviso(db, ruta)
     db.flush()
     return True

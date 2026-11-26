@@ -231,6 +231,11 @@ class DetalleRuta(Base):
     secuencia: Mapped[int] = mapped_column(Integer, nullable=False)
     eta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     estado_entrega: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDIENTE")
+    motivo_fallo: Mapped[str | None] = mapped_column(String(250))
+    confirmada_por: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey(_FK_USUARIO)
+    )
+    confirmada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ZonaRestriccion(Base):

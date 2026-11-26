@@ -3,10 +3,10 @@ import { expect, test } from "@playwright/test";
 
 import { ADMIN, CONDUCTOR, entrarConductor } from "./helpers";
 
-test("el conductor ve su ruta del día y confirma sin guardar", async ({ page }) => {
+test("el conductor ve su ruta del día y abre confirmar entrega sin guardar", async ({ page }) => {
   const posts: string[] = [];
   page.on("request", (request) => {
-    if (request.method() === "POST" && request.url().includes("/modo/jornada")) {
+    if (request.method() === "POST" && request.url().includes("/modo/")) {
       posts.push(request.url());
     }
   });
@@ -31,11 +31,13 @@ test("el conductor ve su ruta del día y confirma sin guardar", async ({ page })
   await boton.focus();
   await expect(boton).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(
-    page.getByText(
-      "Parada 1, Bodega El Ahorro: la confirmación quedó en esta pantalla y todavía no se guarda.",
-    ),
-  ).toBeVisible();
+  await expect(boton).toHaveAttribute("aria-expanded", "true");
+  const formulario = page.getByRole("form", { name: "Resultado de la parada 1" });
+  await expect(formulario).toBeVisible();
+  await expect(formulario.getByRole("radio", { name: "Entregado" })).toBeChecked();
+  await page.keyboard.press("Escape");
+  await expect(formulario).toHaveCount(0);
+  await expect(boton).toBeFocused();
   await expect(page.getByText("Pendiente").first()).toBeVisible();
   expect(posts).toEqual([]);
 });
@@ -110,8 +112,8 @@ test("el teclado llega a confirmar entrega antes que al mapa", async ({ page }) 
   });
   console.log(`FOCO_JSON ${JSON.stringify(caja)}`);
   await page.keyboard.press("Enter");
-  await expect(page.getByText(/todavía no se guarda/)).toBeVisible();
-  for (let paso = 0; paso < 8; paso += 1) {
+  await expect(page.getByRole("form", { name: "Resultado de la parada 1" })).toBeVisible();
+  for (let paso = 0; paso < 14; paso += 1) {
     await page.keyboard.press("Tab");
     const actual = await page.evaluate(() => document.activeElement?.textContent?.replace(/\s+/g, " ").trim() ?? "");
     if (actual === "Ver mapa") break;
@@ -126,4 +128,21 @@ test("el modo conductor no tiene violaciones WCAG 2.2 AA", async ({ page }) => {
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
   expect(resultado.violations).toEqual([]);
+
+  await page.getByRole("button", { name: /Confirmar entrega de la parada 1/ }).click();
+  await page.getByRole("radio", { name: "Fallido" }).check();
+  await page.getByRole("button", { name: "Guardar resultado" }).click();
+  await expect(page.getByText("Indique el motivo cuando la entrega es fallida.")).toBeVisible();
+  const conFormulario = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(conFormulario.violations).toEqual([]);
+  for (const nombre of ["Entregado", "Fallido"]) {
+    const caja = await page.locator("label.opcion-entrega", { hasText: nombre }).boundingBox();
+    expect(caja?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+  for (const nombre of ["Guardar resultado", "Cancelar"]) {
+    const caja = await page.getByRole("button", { name: nombre }).boundingBox();
+    expect(caja?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
 });

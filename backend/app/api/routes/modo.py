@@ -1,12 +1,18 @@
 from typing import Annotated
+from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
-from app.core.deps import require_roles
+from app.core.deps import ip_de, require_roles
 from app.db.session import get_db
 from app.models.entities import Usuario
-from app.schemas.modo import JornadaModo, MapaModo
+from app.schemas.modo import (
+    ConfirmacionEntregaIn,
+    ConfirmacionEntregaOut,
+    JornadaModo,
+    MapaModo,
+)
 from app.services import modo as servicio
 
 router = APIRouter(prefix="/modo", tags=["Modo conductor"])
@@ -16,9 +22,8 @@ _DESCRIPCION = (
     "o EN_EJECUCION asignada a su ficha en el día civil de Lima (UTC−5, sin horario "
     "de verano): secuencia, hora estimada y alertas. No incluye el tablero de gerencia "
     "ni coordenadas. Un conductor no puede consultar la ruta de otro: no se acepta "
-    "un identificador ajeno. Cada parada trae id_detalle para la acción de confirmar. "
-    "Persistir ENTREGADO o FALLIDO, auditar y responder 403 si el detalle es de otro "
-    "conductor es US-018; este endpoint no escribe."
+    "un identificador ajeno. Cada parada trae id_detalle para la acción de confirmar "
+    "(POST /modo/paradas/{id_detalle}/confirmacion, US-018). Este endpoint no escribe."
 )
 
 
@@ -50,3 +55,32 @@ def consultar_mapa(
     actor: Annotated[Usuario, Depends(require_roles("CONDUCTOR"))],
 ) -> dict:
     return servicio.mapa(db, actor)
+
+
+@router.post(
+    "/paradas/{id_detalle}/confirmacion",
+    response_model=ConfirmacionEntregaOut,
+    summary="Confirmar una parada como entregada o fallida",
+    description=(
+        "US-018. El conductor autenticado registra ENTREGADO o FALLIDO en una parada "
+        "de su ruta CONFIRMADA o EN_EJECUCION. FALLIDO exige motivo. Guarda quién y "
+        "cuándo confirmó, y lo deja en el log de auditoría. La primera confirmación "
+        "pasa la ruta a EN_EJECUCION."
+    ),
+    responses={
+        403: {"description": "Rol distinto de CONDUCTOR o parada de otro conductor"},
+        404: {"description": "La parada no existe"},
+        409: {"description": "La parada ya tiene resultado o la ruta no está activa"},
+        422: {"description": "Resultado inválido o FALLIDO sin motivo"},
+    },
+)
+def confirmar_parada(
+    id_detalle: UUID,
+    datos: ConfirmacionEntregaIn,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[Usuario, Depends(require_roles("CONDUCTOR"))],
+) -> dict:
+    return servicio.confirmar_parada(
+        db, actor, id_detalle, datos.resultado, datos.motivo, ip_de(request)
+    )
