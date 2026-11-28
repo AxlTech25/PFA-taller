@@ -5,20 +5,18 @@ import { useAuth } from "../auth";
 import { Alerta } from "../avisos";
 import { fechaHoy } from "../fechas";
 import { errorPeriodo } from "../reporte";
-import type { PlanCompensacion as Plan } from "../types";
-
-function numero(valor: number, decimales: number): string {
-  // Sin Intl: mismo criterio del tablero para no cargar datos ICU.
-  const [entero, fraccion] = valor.toFixed(decimales).split(".");
-  const grupos = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return fraccion ? `${grupos}.${fraccion}` : grupos;
-}
+import { numero } from "../numeros";
+import type { ConversionGnv as Gnv, PlanAnual, PlanCompensacion as Plan } from "../types";
+import { ConversionGnv } from "./ConversionGnv";
+import { MetaCarbonoNeutral } from "./MetaCarbonoNeutral";
 
 export function PlanCompensacion() {
   const { llamar } = useAuth();
   const [desde, setDesde] = useState(fechaHoy);
   const [hasta, setHasta] = useState(fechaHoy);
   const [plan, setPlan] = useState<Plan | null>(null);
+  const [anual, setAnual] = useState<PlanAnual | null>(null);
+  const [gnv, setGnv] = useState<Gnv | null>(null);
   const [error, setError] = useState("");
   const [ocupado, setOcupado] = useState(false);
 
@@ -32,13 +30,19 @@ export function PlanCompensacion() {
     }
     setOcupado(true);
     try {
-      const datos = await llamar<Plan>(
-        `/indicadores/compensacion?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`,
-        { cache: "no-cache" },
-      );
+      const periodo = `desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`;
+      const [datos, proyeccion, conversion] = await Promise.all([
+        llamar<Plan>(`/indicadores/compensacion?${periodo}`, { cache: "no-cache" }),
+        llamar<PlanAnual>(`/indicadores/compensacion/anual?${periodo}`, { cache: "no-cache" }),
+        llamar<Gnv>(`/indicadores/gnv?${periodo}`, { cache: "no-cache" }),
+      ]);
       setPlan(datos);
+      setAnual(proyeccion);
+      setGnv(conversion);
     } catch (err) {
       setPlan(null);
+      setAnual(null);
+      setGnv(null);
       setError(err instanceof ApiError ? err.message : "No se pudo calcular el plan de compensación.");
     } finally {
       setOcupado(false);
@@ -50,8 +54,10 @@ export function PlanCompensacion() {
       <h2 id="titulo-compensacion">Plan de compensación de carbono</h2>
       <p id="ayuda-compensacion" className="ayuda">
         Suma el CO₂ emitido del período con el mismo cálculo del tablero, estima los árboles
-        necesarios con el factor de captura (RN-018) y sugiere proyectos locales. Si un factor no
-        está ratificado, se muestra como pendiente y no se inventa la cifra. Hasta 31 días.
+        necesarios con el factor de captura (RN-018) y sugiere proyectos locales. También proyecta
+        el año, propone el plan para ser carbono neutral en 3 años y evalúa el ROI de convertir la
+        flota a GNV. Si un dato no está ratificado, se muestra como pendiente y no se inventa la
+        cifra. Hasta 31 días.
       </p>
       {error ? <Alerta id="alerta-compensacion">{error}</Alerta> : null}
       <form
@@ -103,6 +109,22 @@ export function PlanCompensacion() {
                 </dd>
               </div>
               <div className="panel metrica">
+                <dt>Factor de captura por árbol</dt>
+                <dd>
+                  {plan.factor_captura_arbol_kg == null
+                    ? "Pendiente"
+                    : `${numero(plan.factor_captura_arbol_kg, 0)} kg/árbol/año`}
+                </dd>
+              </div>
+              <div className="panel metrica">
+                <dt>Costo por árbol</dt>
+                <dd>
+                  {plan.costo_por_arbol_soles == null
+                    ? "Pendiente"
+                    : `S/ ${numero(plan.costo_por_arbol_soles, 2)}`}
+                </dd>
+              </div>
+              <div className="panel metrica">
                 <dt>Costo estimado</dt>
                 <dd>
                   {plan.costo_estimado_soles == null
@@ -129,6 +151,8 @@ export function PlanCompensacion() {
                 <li key={proyecto.nombre}>{proyecto.nombre}</li>
               ))}
             </ul>
+            {anual ? <MetaCarbonoNeutral anual={anual} /> : null}
+            {gnv ? <ConversionGnv gnv={gnv} /> : null}
           </div>
         ) : null}
       </div>

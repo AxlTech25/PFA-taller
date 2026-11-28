@@ -107,6 +107,98 @@ class PlanCompensacionOut(BaseModel):
     proyectos: list[ProyectoCompensacionOut] = Field(default_factory=list)
 
 
+EstadoValor = Literal["PENDIENTE", "CONFIGURADO"]
+
+
+class FilaPlanAnioOut(BaseModel):
+    anio: int
+    arboles_a_plantar: int
+    arboles_acumulados: int
+    cobertura_pct: float = Field(description="% del CO₂ anual que capturan los árboles acumulados.")
+    costo_soles: float | None = None
+
+
+class EscenarioArbolOut(BaseModel):
+    nombre: str
+    clave_factor: str
+    fuente: str
+    factor_kg_arbol_anio: float | None = None
+    estado_factor: EstadoValor
+    arboles_anuales: int | None = Field(None, description="ceil(CO₂ anual / factor).")
+    costo_por_arbol_soles: float | None = None
+    estado_costo: EstadoValor
+    costo_total_soles: float | None = None
+    arboles_por_anio: int | None = None
+    plan: list[FilaPlanAnioOut] = Field(default_factory=list)
+
+
+class AvanceMetaOut(BaseModel):
+    arboles_registrados: int
+    estado_registro: EstadoValor
+    avance_pct: float | None = None
+    nota: str | None = None
+
+
+class PlanAnualOut(BaseModel):
+    desde: date
+    hasta: date
+    calculable: bool
+    mensaje: str | None = None
+    dias_calendario: int = 0
+    dias_con_operacion: int = 0
+    co2_periodo_kg: float = 0
+    co2_anual_kg: float = Field(0, description="CO₂ del período × 365 / días calendario.")
+    escala: float = 0
+    aviso: str | None = Field(None, description="Aviso de que la cifra anual es una proyección.")
+    anios_meta: int = 3
+    escenarios: list[EscenarioArbolOut] = Field(default_factory=list)
+    avance: AvanceMetaOut | None = None
+
+
+class EscenarioGnvOut(BaseModel):
+    nombre: str
+    clave_precio: str
+    fuente: str
+    precio_gnv_m3: float | None = None
+    estado_precio: EstadoValor
+    costo_gnv_anual_soles: float | None = None
+    ahorro_anual_soles: float | None = None
+    recuperacion_meses: float | None = Field(None, description="None si no hay ahorro.")
+    roi_3_anios_pct: float | None = None
+    ahorro_3_anios_soles: float | None = None
+    se_recupera: bool | None = Field(None, description="¿Se recupera la inversión en 3 años?")
+
+
+class GnvOut(BaseModel):
+    desde: date
+    hasta: date
+    calculable: bool
+    mensaje: str | None = None
+    vehiculos: int = 0
+    dias_calendario: int = 0
+    dias_con_operacion: int = 0
+    litros_periodo: float = 0
+    aviso_proyeccion: str | None = None
+    precio_diesel_galon: float | None = None
+    costo_conversion_vehiculo: float | None = None
+    estado_conversion: EstadoValor | None = None
+    anios_roi: int = 3
+    equivalencia_m3_por_galon: float | None = None
+    estado_equivalencia: EstadoValor | None = None
+    inversion_soles: float | None = None
+    costo_diesel_anual_soles: float | None = None
+    gnv_m3_anual: float | None = None
+    precio_equilibrio_gnv_m3: float | None = None
+    co2_diesel_anual_kg: float | None = None
+    co2_gnv_anual_kg: float | None = None
+    co2_evitado_periodo_kg: float | None = None
+    co2_evitado_anual_kg: float | None = None
+    reduccion_co2_pct: float | None = None
+    estado_factor_co2: EstadoValor | None = None
+    escenarios: list[EscenarioGnvOut] = Field(default_factory=list)
+    notas: list[str] = Field(default_factory=list)
+
+
 MotivoReoptimizacion = Literal[
     "NUEVO_PEDIDO",
     "CANCELACION",

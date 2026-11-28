@@ -13,7 +13,7 @@ from app.core.deps import (
 )
 from app.db.session import get_db
 from app.models.entities import Usuario
-from app.schemas.ruta import IndicadoresOut, PlanCompensacionOut
+from app.schemas.ruta import GnvOut, IndicadoresOut, PlanAnualOut, PlanCompensacionOut
 from app.services import compensacion, reporte_pdf
 from app.services import indicadores as servicio
 
@@ -99,3 +99,56 @@ def plan_compensacion(
     hasta: Annotated[date, Query(description="Último día del período (AAAA-MM-DD)")],
 ) -> dict:
     return compensacion.plan(db, desde, hasta)
+
+
+@router.get(
+    "/compensacion/anual",
+    response_model=PlanAnualOut,
+    summary="Compensación anual y meta de carbono neutral a 3 años (RF-10, RES-02)",
+    description=(
+        "Proyecta el CO₂ del período a 365 días (valor × 365 / días calendario; no es un año "
+        "observado) y calcula los árboles y el costo para compensarlo con el factor de la EPA "
+        "(`factor_captura_arbol_kg`) y con el escenario pesimista de la tesis UPN 2024 "
+        "(`factor_captura_arbol_pesimista_kg`). Incluye el plan de árboles por año para ser "
+        "neutral en 3 años y el avance con `arboles_plantados_registrados`. Un factor sin "
+        "configurar queda PENDIENTE. Mismos roles que `/indicadores/compensacion`. Hasta 31 días."
+    ),
+    responses={
+        403: {"description": "Solo ADMIN, GERENTE, OPERADOR o AUDITOR"},
+        422: {"description": "Período inválido o mayor a 31 días"},
+    },
+)
+def plan_compensacion_anual(
+    db: Annotated[Session, Depends(get_db)],
+    _actor: Annotated[Usuario, Depends(require_roles(*PLAN_COMPENSACION))],
+    desde: Annotated[date, Query(description="Primer día del período (AAAA-MM-DD)")],
+    hasta: Annotated[date, Query(description="Último día del período (AAAA-MM-DD)")],
+) -> dict:
+    return compensacion.anual(db, desde, hasta)
+
+
+@router.get(
+    "/gnv",
+    response_model=GnvOut,
+    summary="ROI a 3 años de convertir la flota a GNV (RES-01)",
+    description=(
+        "Con los litros de diésel del período proyectados a 365 días calcula el ahorro anual, "
+        "la recuperación de la inversión, el ROI a 3 años y el CO₂ evitado de la flota con "
+        "ruta en el período. Compara el precio del GNV de la consigna (S/ 12.50 por m³) con la "
+        "referencia de mercado de Osinergmin. La equivalencia energética y los factores de "
+        "emisión son de la EPA (GHG Emission Factors Hub 2025). Los parámetros están en "
+        "`configuracion_sistema`; si falta alguno queda PENDIENTE. Mismos roles que "
+        "`/indicadores/compensacion`. Hasta 31 días."
+    ),
+    responses={
+        403: {"description": "Solo ADMIN, GERENTE, OPERADOR o AUDITOR"},
+        422: {"description": "Período inválido o mayor a 31 días"},
+    },
+)
+def conversion_gnv(
+    db: Annotated[Session, Depends(get_db)],
+    _actor: Annotated[Usuario, Depends(require_roles(*PLAN_COMPENSACION))],
+    desde: Annotated[date, Query(description="Primer día del período (AAAA-MM-DD)")],
+    hasta: Annotated[date, Query(description="Último día del período (AAAA-MM-DD)")],
+) -> dict:
+    return compensacion.gnv(db, desde, hasta)

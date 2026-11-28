@@ -24,6 +24,8 @@ def test_openapi_y_swagger(client):
         "/indicadores",
         "/indicadores/reporte.pdf",
         "/indicadores/compensacion",
+        "/indicadores/compensacion/anual",
+        "/indicadores/gnv",
         "/clientes/{id_cliente}/preferencia",
     ):
         assert ruta in paths

@@ -27,7 +27,7 @@ from sqlalchemy.orm import Session
 from app.models.entities import AsignacionRuta, Reporte, Usuario, Vehiculo
 from app.optimizacion.evaluacion import LITROS_POR_GALON
 from app.optimizacion.heuristica import _parametro
-from app.services import auditoria, indicadores
+from app.services import auditoria, indicadores, metas
 
 MAX_DIAS = 31
 TIPO_REPORTE = "SOSTENIBILIDAD_PDF"
@@ -92,6 +92,9 @@ class DatosReporte:
     factor_arboles: float | None = None
     arboles: float | None = None
     ciclo: CostoCicloVida | None = None
+    meta: dict | None = None
+    gnv: dict | None = None
+    creditos: dict | None = None
 
     def total(self, clave: str) -> float:
         return sum(float(dia[clave]) for dia in self.dias)
@@ -210,11 +213,24 @@ def recopilar(db: Session, desde: date, hasta: date) -> DatosReporte:
         )
     placas = {fila.placa for fila in datos.rutas if fila.placa != "Sin asignar"}
     datos.ciclo = costo_ciclo_vida(db, desde, hasta, placas)
+    if datos.dias:
+        co2 = datos.total("co2_kg")
+        dias_calendario = (hasta - desde).days + 1
+        datos.meta = metas.meta_anual(db, co2, dias_calendario, len(datos.dias))
+        datos.gnv = metas.evaluar_gnv(
+            db,
+            litros_periodo=datos.total("combustible_l"),
+            co2_periodo_kg=co2,
+            dias_calendario=dias_calendario,
+            dias_con_operacion=len(datos.dias),
+            vehiculos=len(placas),
+        )
+        datos.creditos = metas.creditos(db, co2, datos.total("co2_ahorrado_kg"))
     return datos
 
 
 def _soles(valor: float) -> str:
-    return f"S/ {valor:,.2f}"
+    return f"-S/ {-valor:,.2f}" if valor < 0 else f"S/ {valor:,.2f}"
 
 
 def _num(valor: float, decimales: int = 2) -> str:
@@ -285,6 +301,193 @@ def _bloque_ciclo(datos: DatosReporte, estilos, nota) -> list:
         Paragraph(NOTA_CICLO_VIDA, nota),
         Spacer(1, 0.3 * cm),
     ]
+
+
+def _usd(valor: float | None) -> str:
+    return "Pendiente" if valor is None else f"US$ {valor:,.2f}"
+
+
+def _bloque_creditos(datos: DatosReporte, estilos, nota) -> list:
+    c = datos.creditos
+    if c is None:
+        return []
+    filas = [
+        ["Concepto", "Toneladas CO2e", "US$", "Soles"],
+        [
+            "Créditos para compensar el CO2 del período",
+            _num(c["toneladas_periodo"], 4),
+            _usd(c["valor_usd"]),
+            _celda(c["valor_soles"]),
+        ],
+        [
+            "Ahorro en créditos por CO2 evitado",
+            _num(c["toneladas_evitadas"], 4),
+            _usd(c["ahorro_usd"]),
+            _celda(c["ahorro_soles"]),
+        ],
+    ]
+    precio = (
+        "Pendiente" if c["precio_usd_t"] is None else f"US$ {c['precio_usd_t']:,.2f} por t CO2e"
+    )
+    cambio = "Pendiente" if c["tipo_cambio"] is None else f"S/ {c['tipo_cambio']:,.3f} por US$"
+    return [
+        Paragraph("Créditos de carbono (RF-06)", estilos["Heading2"]),
+        Paragraph(f"Precio del crédito: {precio}. Tipo de cambio: {cambio}.", estilos["BodyText"]),
+        _tabla(filas, [7 * cm, 3.5 * cm, 3.5 * cm, 3.5 * cm]),
+        Paragraph(
+            c["nota"]
+            or "Precio medio de créditos de forestación y reforestación (ARR), Ecosystem "
+            "Marketplace, State of the Voluntary Carbon Market 2025 (US$ 20.44 por t CO2e). "
+            "Tipo de cambio interbancario venta BCRP del 26/11/2026 (S/ 3.478). "
+            "Valor referencial: no es una cotización ni una compra.",
+            nota,
+        ),
+        Spacer(1, 0.3 * cm),
+    ]
+
+
+def _bloque_meta(datos: DatosReporte, estilos, nota) -> list:
+    meta = datos.meta
+    if meta is None:
+        return []
+    filas = [["Escenario", "kg/árbol/año", "Árboles al año", "Árboles por año (3 años)", "Costo"]]
+    for esc in meta["escenarios"]:
+        filas.append(
+            [
+                esc["nombre"],
+                "Pendiente"
+                if esc["factor_kg_arbol_anio"] is None
+                else _num(esc["factor_kg_arbol_anio"], 0),
+                "Pendiente" if esc["arboles_anuales"] is None else f"{esc['arboles_anuales']:,}",
+                "Pendiente" if esc["arboles_por_anio"] is None else f"{esc['arboles_por_anio']:,}",
+                _celda(esc["costo_total_soles"]),
+            ]
+        )
+    historia = [
+        Paragraph("Meta de cero emisiones netas a 3 años (RES-02, RF-10)", estilos["Heading2"]),
+        Paragraph(
+            f"CO2 anual proyectado: {_num(meta['co2_anual_kg'], 1)} kg (CO2 del período "
+            f"{_num(meta['co2_periodo_kg'], 3)} kg × 365 / {meta['dias_calendario']} días). "
+            + meta["aviso"],
+            estilos["BodyText"],
+        ),
+        _tabla(filas, [4.6 * cm, 2.4 * cm, 2.9 * cm, 4 * cm, 3.6 * cm]),
+        Spacer(1, 0.15 * cm),
+    ]
+    principal = next((e for e in meta["escenarios"] if e["plan"]), None)
+    if principal is not None:
+        plan = [["Año", "Árboles a plantar", "Acumulados", "Cobertura del CO2 anual", "Costo"]]
+        for fila in principal["plan"]:
+            plan.append(
+                [
+                    f"Año {fila['anio']}",
+                    f"{fila['arboles_a_plantar']:,}",
+                    f"{fila['arboles_acumulados']:,}",
+                    f"{fila['cobertura_pct']:.1f} %",
+                    _celda(fila["costo_soles"]),
+                ]
+            )
+        historia += [
+            Paragraph(f"Plan de plantación, escenario {principal['nombre']}", estilos["BodyText"]),
+            _tabla(plan, [3 * cm, 3.6 * cm, 3 * cm, 4.6 * cm, 3.3 * cm]),
+        ]
+    avance = meta["avance"]
+    pct = "Pendiente" if avance["avance_pct"] is None else f"{avance['avance_pct']:.1f} %"
+    historia += [
+        Spacer(1, 0.15 * cm),
+        Paragraph(
+            f"Avance hacia la meta: {avance['arboles_registrados']:,} árboles plantados "
+            f"registrados, {pct} del CO2 anual proyectado. " + (avance["nota"] or ""),
+            estilos["BodyText"],
+        ),
+        Paragraph(
+            "Árboles = CO2 anual / factor de captura, redondeado hacia arriba. EPA: 60 kg por "
+            "árbol urbano al año (promedio de 10 años). Pesimista: 15 kg, tesis UPN 2024 "
+            "(Los Olivos, i-Tree Eco), que no aclara si es C o CO2. El costo por árbol es de "
+            "SERPAR (S/ 94, 2021). Supone que las emisiones anuales no cambian y que cada "
+            "árbol captura el factor desde el año en que se planta.",
+            nota,
+        ),
+        Spacer(1, 0.3 * cm),
+    ]
+    return historia
+
+
+def _bloque_gnv(datos: DatosReporte, estilos, nota) -> list:
+    g = datos.gnv
+    if g is None:
+        return []
+    historia = [
+        Paragraph("Conversión de la flota a GNV (RES-01)", estilos["Heading2"]),
+        Paragraph(
+            f"Vehículos con ruta en el período: {g['vehiculos']}. Inversión: "
+            f"{_celda(g['inversion_soles'])} (S/ 5,000 por vehículo, consigna). Diésel anual "
+            f"proyectado: {_celda(g['costo_diesel_anual_soles'])}. " + g["aviso_proyeccion"],
+            estilos["BodyText"],
+        ),
+    ]
+    if g["escenarios"]:
+        filas = [
+            [
+                "Escenario",
+                "Precio GNV",
+                "Ahorro anual",
+                "Recuperación",
+                "ROI a 3 años",
+                "CO2 evitado/año",
+            ]
+        ]
+        evitado = (
+            "Pendiente"
+            if g["co2_evitado_anual_kg"] is None
+            else f"{_num(g['co2_evitado_anual_kg'], 1)} kg"
+        )
+        for esc in g["escenarios"]:
+            if g["inversion_soles"] is None or esc["ahorro_anual_soles"] is None:
+                recup = "Pendiente"
+            elif g["inversion_soles"] == 0:
+                recup = "Sin inversión"
+            elif esc["recuperacion_meses"] is None:
+                recup = "No se recupera"
+            else:
+                recup = f"{_num(esc['recuperacion_meses'], 1)} meses"
+            roi = (
+                "Pendiente" if esc["roi_3_anios_pct"] is None else f"{esc['roi_3_anios_pct']:.1f} %"
+            )
+            filas.append(
+                [
+                    esc["nombre"],
+                    "Pendiente"
+                    if esc["precio_gnv_m3"] is None
+                    else f"S/ {_num(esc['precio_gnv_m3'], 2)}/m3",
+                    _celda(esc["ahorro_anual_soles"]),
+                    recup,
+                    roi,
+                    evitado,
+                ]
+            )
+        historia.append(_tabla(filas, [4.6 * cm, 2.2 * cm, 2.9 * cm, 2.7 * cm, 2.3 * cm, 2.8 * cm]))
+    for texto in g["notas"]:
+        historia.append(Paragraph(texto, nota))
+    historia += [
+        Paragraph(
+            "Método: 1 galón de diésel = 0.138 mmBtu y 1 m3 de GNV = 0.001026 mmBtu/scf × "
+            "35.3147 scf/m3 (US EPA, GHG Emission Factors Hub 2025, poder calorífico "
+            "superior), es decir "
+            + (
+                "pendiente"
+                if g["equivalencia_m3_por_galon"] is None
+                else f"{g['equivalencia_m3_por_galon']:.3f} m3 de GNV por galón"
+            )
+            + ". CO2 del GNV = CO2 del diésel × 53.06 / 73.96 (kg CO2/mmBtu, EPA, factores de "
+            "EE. UU.). Supone el mismo rendimiento del motor con diésel y con GNV; no incluye "
+            "mantenimiento ni otros costos de la conversión. Precio de mercado: promedio de "
+            "Lima, Osinergmin Facilito vía El Comercio, 21/11/2026.",
+            nota,
+        ),
+        Spacer(1, 0.3 * cm),
+    ]
+    return historia
 
 
 def generar_pdf(datos: DatosReporte, generado_en: datetime | None = None) -> bytes:
@@ -379,6 +582,9 @@ def generar_pdf(datos: DatosReporte, generado_en: datetime | None = None) -> byt
         _tabla(por_ruta, ANCHOS_RUTA),
         Spacer(1, 0.3 * cm),
         *_bloque_ciclo(datos, estilos, nota),
+        *_bloque_creditos(datos, estilos, nota),
+        *_bloque_meta(datos, estilos, nota),
+        *_bloque_gnv(datos, estilos, nota),
         Paragraph(
             "Método: las emisiones de cada ruta son la distancia planificada por el factor de "
             "emisión del vehículo (RN-016, ISO 14083). El ahorro y el CO2 evitado comparan el "
