@@ -54,8 +54,8 @@ export function DashboardPage() {
         <h1>Tablero</h1>
         <p className="ayuda">
           Inicio del tablero de sostenibilidad del día. Muestra kilómetros, CO₂, combustible,
-          soles y el cumplimiento de ventanas del último plan. El equivalente en árboles espera
-          el factor de captura (RN-018). El cierre del dashboard queda para el siguiente sprint.
+          soles y el cumplimiento de ventanas del último plan. El equivalente en árboles usa
+          el factor de captura (RN-018) de la configuración. El cierre del dashboard queda para el siguiente sprint.
         </p>
       </header>
       {error ? <Alerta id="alerta-tablero">{error}</Alerta> : null}

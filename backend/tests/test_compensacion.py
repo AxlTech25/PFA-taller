@@ -44,14 +44,15 @@ def _configurar(db, clave: str, valor: str) -> None:
     db.execute(
         text(
             "INSERT INTO configuracion_sistema (clave, valor, unidad, descripcion) "
-            "VALUES (:clave, :valor, 'prueba', 'prueba')"
+            "VALUES (:clave, :valor, 'prueba', 'prueba') "
+            "ON CONFLICT (clave) DO UPDATE SET valor = EXCLUDED.valor"
         ),
         {"clave": clave, "valor": valor},
     )
     db.commit()
 
 
-def test_plan_con_emisiones_y_factores_pendientes(client, db, cola):
+def test_plan_con_emisiones_usa_valores_ratificados(client, db, cola):
     headers = _plan(client, db, cola, "op.comp@distrirapido.example.com", "70817001")
     tablero = client.get(f"/indicadores?fecha={FECHA}", headers=headers).json()
     respuesta = client.get(f"{URL}?desde={FECHA}&hasta={FECHA}", headers=headers)
@@ -64,12 +65,15 @@ def test_plan_con_emisiones_y_factores_pendientes(client, db, cola):
     # Mismo CO₂ que el tablero: no hay un cálculo aparte.
     assert plan["co2_emitido_kg"] == tablero["co2_kg"]
     assert plan["co2_emitido_kg"] > 0
-    assert plan["estado_factor"] == "PENDIENTE"
-    assert plan["factor_captura_arbol_kg"] is None
-    assert plan["arboles_necesarios"] is None
-    assert plan["estado_costo"] == "PENDIENTE"
-    assert plan["costo_estimado_soles"] is None
-    assert plan["notas"] == [compensacion.NOTA_FACTOR, compensacion.NOTA_COSTO]
+    # Migración 008: EPA 60 kg/árbol y SERPAR S/ 94.
+    assert plan["estado_factor"] == "CONFIGURADO"
+    assert plan["factor_captura_arbol_kg"] == 60
+    esperado = math.ceil(plan["co2_emitido_kg"] / 60)
+    assert plan["arboles_necesarios"] == esperado
+    assert plan["estado_costo"] == "CONFIGURADO"
+    assert plan["costo_por_arbol_soles"] == 94
+    assert plan["costo_estimado_soles"] == round(esperado * 94, 2)
+    assert plan["notas"] == []
     assert plan["proyectos"] == PROYECTOS
 
 
@@ -91,6 +95,11 @@ def test_plan_con_factores_configurados(client, db, cola):
 
 def test_costo_pendiente_si_solo_hay_factor(client, db, cola):
     headers = _plan(client, db, cola, "op.comp3@distrirapido.example.com", "70817003")
+    db.execute(
+        text("DELETE FROM configuracion_sistema WHERE clave = :clave"),
+        {"clave": "costo_compensacion_arbol_soles"},
+    )
+    db.commit()
     _configurar(db, "factor_captura_arbol_kg", "10")
     plan = client.get(f"{URL}?desde={FECHA}&hasta={FECHA}", headers=headers).json()
     assert plan["arboles_necesarios"] == math.ceil(plan["co2_emitido_kg"] / 10)

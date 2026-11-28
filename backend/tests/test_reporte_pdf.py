@@ -81,8 +81,29 @@ def test_pdf_con_las_cifras_del_tablero_y_arboles_pendientes(client, db, cola):
     assert "diésel S/ 17.50 por galón" in texto
     assert "mantenimiento S/ 1.20 por km" in texto
     assert "Emisiones por ruta" in texto
-    assert "Pendiente: el factor de captura por árbol (RN-018)" in texto
-    assert "árboles (factor" not in texto
+    # Migración 008: el factor EPA (60 kg) ya está en la configuración.
+    if tablero["arboles"] is None:
+        assert "sin CO2 evitado en el período" in texto
+    else:
+        assert f"{tablero['arboles']:,.2f} árboles (factor RN-018" in texto
+    assert "Pendiente: el factor de captura por árbol (RN-018)" not in texto
+    assert "Costo de ciclo de vida (supuestos referenciales)" in texto
+    assert "S/ 23,988.00 / año" in texto
+    assert "S/ 8,072.00 / año" in texto
+    assert "S/ 150.00 / año" in texto
+    assert "S/ 18,000.00 / año" in texto
+    assert "Supuestos referenciales por vehículo y año" in texto
+    assert "Grupo Pana" in texto
+    assert "Positiva" in texto
+    assert "Interbank" in texto
+    # 1 día y 1 vehículo: 23,988/365 ≈ 65.72, etc.
+    assert "Vehículos con ruta en el período: 1" in texto
+    assert "Días calendario del período: 1" in texto
+    assert "S/ 65.72" in texto
+    assert "S/ 22.12" in texto
+    assert "S/ 0.41" in texto
+    assert "S/ 49.32" in texto
+    assert "S/ 137.57" in texto
 
     registro = db.scalar(select(Reporte).where(Reporte.periodo_inicio == date.fromisoformat(FECHA)))
     assert registro is not None
@@ -99,7 +120,8 @@ def test_arboles_solo_con_factor_ratificado(client, db, cola):
     db.execute(
         text(
             "INSERT INTO configuracion_sistema (clave, valor, unidad, descripcion) "
-            "VALUES ('factor_captura_arbol_kg', '20', 'kg', 'prueba')"
+            "VALUES ('factor_captura_arbol_kg', '20', 'kg', 'prueba') "
+            "ON CONFLICT (clave) DO UPDATE SET valor = EXCLUDED.valor"
         )
     )
     db.commit()

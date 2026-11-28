@@ -28,7 +28,8 @@ def test_periodo_sin_rutas(client, db):
     assert cuerpo["mensaje"] == "Sin datos de operación para el período seleccionado."
     assert cuerpo["km"] == 0
     assert cuerpo["arboles"] is None
-    assert "RN-018" in cuerpo["nota_arboles"]
+    # Con el factor ratificado (migración 008) no se muestra la nota de pendiente.
+    assert cuerpo["nota_arboles"] is None
 
 
 def test_indicadores_del_plan_y_conductor_sin_acceso(client, db, cola):
@@ -50,8 +51,11 @@ def test_indicadores_del_plan_y_conductor_sin_acceso(client, db, cola):
     assert cuerpo["soles_combustible"] > 0
     assert cuerpo["soles_mantenimiento"] > 0
     assert cuerpo["cumplimiento_ventanas_pct"] == 100
-    assert cuerpo["arboles"] is None
-    assert "RN-018" in cuerpo["nota_arboles"]
+    assert cuerpo["nota_arboles"] is None
+    if cuerpo["co2_ahorrado_kg"] > 0:
+        assert cuerpo["arboles"] == round(cuerpo["co2_ahorrado_kg"] / 60, 2)
+    else:
+        assert cuerpo["arboles"] is None
     assert cuerpo["mejora_porcentaje"] is not None
     conductor = crear_usuario(db, email="con.ind@distrirapido.example.com", rol="CONDUCTOR")
     prohibido = client.get(
