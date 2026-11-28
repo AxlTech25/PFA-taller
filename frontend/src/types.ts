@@ -246,6 +246,88 @@ export type PlanCompensacion = {
   proyectos: { nombre: string }[];
 };
 
+export type EstadoValor = "PENDIENTE" | "CONFIGURADO";
+
+export type FilaPlanAnio = {
+  anio: number;
+  arboles_a_plantar: number;
+  arboles_acumulados: number;
+  cobertura_pct: number;
+  costo_soles: number | null;
+};
+
+export type EscenarioArbol = {
+  nombre: string;
+  clave_factor: string;
+  fuente: string;
+  factor_kg_arbol_anio: number | null;
+  estado_factor: EstadoValor;
+  arboles_anuales: number | null;
+  costo_por_arbol_soles: number | null;
+  estado_costo: EstadoValor;
+  costo_total_soles: number | null;
+  arboles_por_anio: number | null;
+  plan: FilaPlanAnio[];
+};
+
+export type PlanAnual = {
+  desde: string;
+  hasta: string;
+  calculable: boolean;
+  mensaje?: string | null;
+  dias_calendario: number;
+  dias_con_operacion: number;
+  co2_periodo_kg: number;
+  co2_anual_kg: number;
+  aviso?: string | null;
+  anios_meta: number;
+  escenarios: EscenarioArbol[];
+  avance?: {
+    arboles_registrados: number;
+    estado_registro: EstadoValor;
+    avance_pct: number | null;
+    nota: string | null;
+  } | null;
+};
+
+export type EscenarioGnv = {
+  nombre: string;
+  clave_precio: string;
+  fuente: string;
+  precio_gnv_m3: number | null;
+  estado_precio: EstadoValor;
+  costo_gnv_anual_soles: number | null;
+  ahorro_anual_soles: number | null;
+  recuperacion_meses: number | null;
+  roi_3_anios_pct: number | null;
+  ahorro_3_anios_soles: number | null;
+  se_recupera: boolean | null;
+};
+
+export type ConversionGnv = {
+  desde: string;
+  hasta: string;
+  calculable: boolean;
+  mensaje?: string | null;
+  vehiculos: number;
+  dias_calendario: number;
+  dias_con_operacion: number;
+  litros_periodo: number;
+  aviso_proyeccion?: string | null;
+  precio_diesel_galon?: number | null;
+  costo_conversion_vehiculo?: number | null;
+  anios_roi: number;
+  equivalencia_m3_por_galon?: number | null;
+  inversion_soles?: number | null;
+  costo_diesel_anual_soles?: number | null;
+  precio_equilibrio_gnv_m3?: number | null;
+  co2_evitado_periodo_kg?: number | null;
+  co2_evitado_anual_kg?: number | null;
+  reduccion_co2_pct?: number | null;
+  escenarios: EscenarioGnv[];
+  notas: string[];
+};
+
 export type PreferenciaCliente = {
   id_cliente: string;
   nombre_cliente: string;

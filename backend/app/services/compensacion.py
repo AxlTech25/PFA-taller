@@ -92,3 +92,27 @@ def plan(db: Session, desde: date, hasta: date) -> dict:
         "notas": notas,
         "proyectos": [{"nombre": nombre} for nombre in PROYECTOS],
     }
+
+
+def _vacio(desde: date, hasta: date) -> dict:
+    return {"desde": desde, "hasta": hasta, "calculable": False, "mensaje": MENSAJE_SIN_DATOS}
+
+
+def _con_datos(desde: date, hasta: date, bloque: dict) -> dict:
+    return {"desde": desde, "hasta": hasta, "calculable": True, "mensaje": None, **bloque}
+
+
+def anual(db: Session, desde: date, hasta: date) -> dict:
+    """RF-10 / RES-02: compensación anual proyectada y plan para ser neutral en 3 años."""
+    datos = reporte_pdf.recopilar(db, desde, hasta)
+    if not datos.dias or datos.meta is None or datos.total("co2_kg") <= 0:
+        return _vacio(desde, hasta)
+    return _con_datos(desde, hasta, datos.meta)
+
+
+def gnv(db: Session, desde: date, hasta: date) -> dict:
+    """RES-01: ROI a 3 años de convertir la flota del período a GNV."""
+    datos = reporte_pdf.recopilar(db, desde, hasta)
+    if not datos.dias or datos.gnv is None or datos.total("combustible_l") <= 0:
+        return _vacio(desde, hasta)
+    return _con_datos(desde, hasta, datos.gnv)

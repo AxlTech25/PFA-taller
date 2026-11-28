@@ -94,6 +94,12 @@ test("el tablero calcula el plan de compensación con teclado (US-017)", async (
   const respuesta = page.waitForResponse(
     (r) => r.url().includes("/indicadores/compensacion?") && r.status() === 200,
   );
+  const respuestaAnual = page.waitForResponse(
+    (r) => r.url().includes("/indicadores/compensacion/anual?") && r.status() === 200,
+  );
+  const respuestaGnv = page.waitForResponse(
+    (r) => r.url().includes("/indicadores/gnv?") && r.status() === 200,
+  );
   await page.keyboard.press("Enter");
   const plan = (await (await respuesta).json()) as {
     calculable: boolean;
@@ -127,13 +133,68 @@ test("el tablero calcula el plan de compensación con teclado (US-017)", async (
   await expect(page.getByText("Costo estimado").locator("xpath=following-sibling::dd")).toHaveText(
     `S/ ${costo}`,
   );
+  // El factor y el costo por árbol ya no se ocultan: se muestran junto al total.
+  await expect(
+    page.getByText("Factor de captura por árbol").locator("xpath=following-sibling::dd"),
+  ).toHaveText("60 kg/árbol/año");
+  await expect(page.getByText("Costo por árbol", { exact: true }).locator("xpath=following-sibling::dd")).toHaveText(
+    "S/ 94.00",
+  );
+
+  // RF-10/RES-02: proyección anual y plan a 3 años, con el escenario EPA y el pesimista.
+  const anual = (await (await respuestaAnual).json()) as {
+    calculable: boolean;
+    co2_periodo_kg: number;
+    co2_anual_kg: number;
+    aviso: string;
+    escenarios: { factor_kg_arbol_anio: number; arboles_anuales: number; costo_total_soles: number }[];
+  };
+  expect(anual.calculable).toBe(true);
+  expect(anual.co2_anual_kg).toBeCloseTo(anual.co2_periodo_kg * 365, 0);
+  const [epa, pesimista] = anual.escenarios;
+  expect(epa.factor_kg_arbol_anio).toBe(60);
+  expect(pesimista.factor_kg_arbol_anio).toBe(15);
+  expect(epa.arboles_anuales).toBe(Math.ceil(anual.co2_anual_kg / 60));
+  expect(pesimista.arboles_anuales).toBe(Math.ceil(anual.co2_anual_kg / 15));
+  await expect(page.getByRole("heading", { name: /carbono neutral a 3 años/ })).toBeVisible();
+  await expect(page.getByText(/Proyección lineal a 365 días/).first()).toBeVisible();
+  const escenarios = page.getByRole("table", {
+    name: "Árboles y costo para compensar las emisiones anuales",
+  });
+  await expect(escenarios).toContainText("EPA (referencia)");
+  await expect(escenarios).toContainText("Pesimista (tesis UPN 2024)");
+  await expect(escenarios).toContainText("15 kg/árbol/año");
+  await expect(
+    page.getByRole("table", { name: "Plan de plantación a 3 años, escenario Pesimista (tesis UPN 2024)" }),
+  ).toContainText("Año 3");
+
+  // RES-01: con S/ 12.50 por m³ no hay ahorro; con el precio de mercado sí.
+  const conversion = (await (await respuestaGnv).json()) as {
+    calculable: boolean;
+    vehiculos: number;
+    inversion_soles: number;
+    escenarios: { precio_gnv_m3: number; ahorro_anual_soles: number; se_recupera: boolean }[];
+  };
+  expect(conversion.calculable).toBe(true);
+  expect(conversion.inversion_soles).toBe(5000 * conversion.vehiculos);
+  expect(conversion.escenarios[0].precio_gnv_m3).toBe(12.5);
+  expect(conversion.escenarios[0].ahorro_anual_soles).toBeLessThan(0);
+  expect(conversion.escenarios[0].se_recupera).toBe(false);
+  expect(conversion.escenarios[1].precio_gnv_m3).toBe(1.68);
+  expect(conversion.escenarios[1].ahorro_anual_soles).toBeGreaterThan(0);
+  const tablaGnv = page.getByRole("table", {
+    name: "Ahorro, recuperación y ROI a 3 años de convertir a GNV",
+  });
+  await expect(tablaGnv).toContainText("No se recupera");
+  await expect(tablaGnv).toContainText("Mercado Lima (referencial)");
+
   const axe = await new AxeBuilder({ page }).withTags(ETIQUETAS).analyze();
   expect(axe.violations).toEqual([]);
 
   await page.getByLabel("Inicio del período").fill("2099-01-01");
   await page.getByLabel("Fin del período").fill("2099-01-31");
   await boton.click();
-  await expect(page.getByText(/No es posible calcular la compensación/)).toBeVisible();
+  await expect(page.getByText(/No es posible calcular la compensación/).first()).toBeVisible();
   const axeVacio = await new AxeBuilder({ page }).withTags(ETIQUETAS).analyze();
   expect(axeVacio.violations).toEqual([]);
 });
