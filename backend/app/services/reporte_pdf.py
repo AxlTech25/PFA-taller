@@ -38,6 +38,25 @@ NOTA_ARBOLES_PDF = (
     "Pendiente: el factor de captura por árbol (RN-018) no está ratificado en la "
     "configuración. El reporte no muestra un equivalente inventado."
 )
+# Costo de ciclo de vida: valores anuales por vehículo, en configuracion_sistema.
+# Se prorratean a los días calendario del período (año de 365 días) y a las
+# placas distintas con ruta en ese período. No se mezclan con el costo local RN-017.
+DIAS_ANIO = 365
+CLAVE_DEPRECIACION = "depreciacion_anual_vehiculo_soles"
+CLAVE_SEGURO = "seguro_anual_vehiculo_soles"
+CLAVE_SOAT = "soat_anual_vehiculo_soles"
+CLAVE_SUELDO = "sueldo_anual_conductor_soles"
+NOTA_CICLO_VIDA = (
+    "Supuestos referenciales por vehículo y año, prorrateados a los días calendario "
+    "del período (año de 365 días) y a los vehículos con ruta en el período. No son "
+    "tarifas contratadas de DistriRápido. Depreciación: 20 % anual sobre S/ 119,941 "
+    "(Toyota Hilux 4x2 D/C 2GD M/T SR, lista Grupo Pana US$ 34,490 × tipo de cambio "
+    "BCRP S/ 3,478 al 26/11/2026) = S/ 23,988. Seguro: 6,73 % anual (Interbank/Rímac, "
+    "pick-up Lima, tarifario dic. 2021, uso particular; no hay tarifa pública de flota) "
+    "≈ S/ 8,072. SOAT: S/ 150 (La Positiva, pick-up N1 uso carga, Lima, ago. 2026, "
+    "referencial). Sueldo del conductor: S/ 1,500 al mes = S/ 18,000 al año (consigna "
+    "del proyecto)."
+)
 
 ESTADOS = {
     "BORRADOR": "Borrador",
@@ -72,6 +91,7 @@ class DatosReporte:
     cumplimiento_pct: float = 0.0
     factor_arboles: float | None = None
     arboles: float | None = None
+    ciclo: CostoCicloVida | None = None
 
     def total(self, clave: str) -> float:
         return sum(float(dia[clave]) for dia in self.dias)
@@ -79,6 +99,64 @@ class DatosReporte:
     @property
     def costo_local(self) -> float:
         return self.total("soles_combustible") + self.total("soles_mantenimiento")
+
+
+@dataclass
+class CostoCicloVida:
+    """Costo anual por vehículo, prorrateado al período del reporte."""
+
+    vehiculos: int
+    dias_periodo: int
+    depreciacion_anual: float | None
+    seguro_anual: float | None
+    soat_anual: float | None
+    sueldo_anual: float | None
+    depreciacion_periodo: float | None
+    seguro_periodo: float | None
+    soat_periodo: float | None
+    sueldo_periodo: float | None
+    total_anual_por_vehiculo: float | None
+    total_periodo: float | None
+    completo: bool
+
+
+def prorratear(anual: float, dias: int, vehiculos: int) -> float:
+    return round(anual * dias * vehiculos / DIAS_ANIO, 2)
+
+
+def _linea_ciclo(anual: float | None, dias: int, vehiculos: int) -> float | None:
+    if anual is None:
+        return None
+    return prorratear(anual, dias, vehiculos)
+
+
+def costo_ciclo_vida(db: Session, desde: date, hasta: date, placas: set[str]) -> CostoCicloVida:
+    dias = (hasta - desde).days + 1
+    vehiculos = len(placas)
+    depreciacion = indicadores.valor_positivo(db, CLAVE_DEPRECIACION)
+    seguro = indicadores.valor_positivo(db, CLAVE_SEGURO)
+    soat = indicadores.valor_positivo(db, CLAVE_SOAT)
+    sueldo = indicadores.valor_positivo(db, CLAVE_SUELDO)
+    anuales = (depreciacion, seguro, soat, sueldo)
+    completo = all(valor is not None for valor in anuales)
+    total_anual = round(sum(anuales), 2) if completo else None  # type: ignore[arg-type]
+    lineas = [_linea_ciclo(valor, dias, vehiculos) for valor in anuales]
+    total_periodo = round(sum(lineas), 2) if completo else None  # type: ignore[arg-type]
+    return CostoCicloVida(
+        vehiculos=vehiculos,
+        dias_periodo=dias,
+        depreciacion_anual=depreciacion,
+        seguro_anual=seguro,
+        soat_anual=soat,
+        sueldo_anual=sueldo,
+        depreciacion_periodo=lineas[0],
+        seguro_periodo=lineas[1],
+        soat_periodo=lineas[2],
+        sueldo_periodo=lineas[3],
+        total_anual_por_vehiculo=total_anual,
+        total_periodo=total_periodo,
+        completo=completo,
+    )
 
 
 def validar_periodo(desde: date, hasta: date) -> None:
@@ -130,6 +208,8 @@ def recopilar(db: Session, desde: date, hasta: date) -> DatosReporte:
         datos.arboles = indicadores._equivalente_arboles(
             datos.factor_arboles, datos.total("co2_ahorrado_kg")
         )
+    placas = {fila.placa for fila in datos.rutas if fila.placa != "Sin asignar"}
+    datos.ciclo = costo_ciclo_vida(db, desde, hasta, placas)
     return datos
 
 
@@ -158,6 +238,53 @@ def _tabla(filas: list[list[str]], anchos: list[float]) -> Table:
         )
     )
     return tabla
+
+
+def _celda(valor: float | None, anual: bool = False) -> str:
+    if valor is None:
+        return "Pendiente"
+    return _soles(valor) + (" / año" if anual else "")
+
+
+def _bloque_ciclo(datos: DatosReporte, estilos, nota) -> list:
+    ciclo = datos.ciclo
+    if ciclo is None:
+        return []
+    filas = [
+        ["Concepto", "Anual por vehículo", "Prorrateado al período"],
+        [
+            "Depreciación (20 % sobre S/ 119,941)",
+            _celda(ciclo.depreciacion_anual, True),
+            _celda(ciclo.depreciacion_periodo),
+        ],
+        [
+            "Seguro vehicular (6,73 %)",
+            _celda(ciclo.seguro_anual, True),
+            _celda(ciclo.seguro_periodo),
+        ],
+        ["SOAT", _celda(ciclo.soat_anual, True), _celda(ciclo.soat_periodo)],
+        [
+            "Sueldo del conductor",
+            _celda(ciclo.sueldo_anual, True),
+            _celda(ciclo.sueldo_periodo),
+        ],
+        [
+            "Total",
+            _celda(ciclo.total_anual_por_vehiculo, True),
+            _celda(ciclo.total_periodo),
+        ],
+    ]
+    return [
+        Paragraph("Costo de ciclo de vida (supuestos referenciales)", estilos["Heading2"]),
+        Paragraph(
+            f"Vehículos con ruta en el período: {ciclo.vehiculos}. "
+            f"Días calendario del período: {ciclo.dias_periodo}.",
+            estilos["BodyText"],
+        ),
+        _tabla(filas, [8.5 * cm, 4.5 * cm, 4.5 * cm]),
+        Paragraph(NOTA_CICLO_VIDA, nota),
+        Spacer(1, 0.3 * cm),
+    ]
 
 
 def generar_pdf(datos: DatosReporte, generado_en: datetime | None = None) -> bytes:
@@ -251,6 +378,7 @@ def generar_pdf(datos: DatosReporte, generado_en: datetime | None = None) -> byt
         Paragraph("Emisiones por ruta", estilos["Heading2"]),
         _tabla(por_ruta, ANCHOS_RUTA),
         Spacer(1, 0.3 * cm),
+        *_bloque_ciclo(datos, estilos, nota),
         Paragraph(
             "Método: las emisiones de cada ruta son la distancia planificada por el factor de "
             "emisión del vehículo (RN-016, ISO 14083). El ahorro y el CO2 evitado comparan el "

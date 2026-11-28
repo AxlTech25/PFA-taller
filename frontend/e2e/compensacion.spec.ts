@@ -98,8 +98,12 @@ test("el tablero calcula el plan de compensación con teclado (US-017)", async (
   const plan = (await (await respuesta).json()) as {
     calculable: boolean;
     co2_emitido_kg: number;
+    factor_captura_arbol_kg: number | null;
+    costo_por_arbol_soles: number | null;
     arboles_necesarios: number | null;
     costo_estimado_soles: number | null;
+    estado_factor: string;
+    estado_costo: string;
   };
   expect(plan.calculable).toBe(true);
   expect(plan.co2_emitido_kg).toBeGreaterThan(0);
@@ -107,14 +111,21 @@ test("el tablero calcula el plan de compensación con teclado (US-017)", async (
   await expect(resultado).toContainText("Lomas de Lima");
   await expect(resultado).toContainText("Parque Zonal Huáscar");
   await expect(resultado).toContainText("Árboles para Lima");
-  // Sin factor RN-018 ni costo por árbol ratificados, ambos quedan pendientes.
-  expect(plan.arboles_necesarios).toBeNull();
-  expect(plan.costo_estimado_soles).toBeNull();
-  await expect(page.getByText("Árboles necesarios").locator("xpath=following-sibling::dd")).toHaveText(
-    "Pendiente",
+  // Migración 008: factor EPA 60 kg y costo SERPAR S/ 94.
+  expect(plan.estado_factor).toBe("CONFIGURADO");
+  expect(plan.estado_costo).toBe("CONFIGURADO");
+  expect(plan.factor_captura_arbol_kg).toBe(60);
+  expect(plan.costo_por_arbol_soles).toBe(94);
+  expect(plan.arboles_necesarios).toBe(Math.ceil(plan.co2_emitido_kg / 60));
+  expect(plan.costo_estimado_soles).toBe(
+    Math.round((plan.arboles_necesarios ?? 0) * 94 * 100) / 100,
   );
+  await expect(page.getByText("Árboles necesarios").locator("xpath=following-sibling::dd")).toHaveText(
+    String(plan.arboles_necesarios),
+  );
+  const costo = (plan.costo_estimado_soles ?? 0).toFixed(2);
   await expect(page.getByText("Costo estimado").locator("xpath=following-sibling::dd")).toHaveText(
-    "Pendiente",
+    `S/ ${costo}`,
   );
   const axe = await new AxeBuilder({ page }).withTags(ETIQUETAS).analyze();
   expect(axe.violations).toEqual([]);

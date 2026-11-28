@@ -99,7 +99,8 @@ def test_factor_ahorros_cumplimiento_y_arboles(db):
     db.execute(
         text(
             "INSERT INTO configuracion_sistema (clave, valor, unidad, descripcion) "
-            "VALUES ('factor_captura_arbol_kg', '10', 'kg', 'prueba')"
+            "VALUES ('factor_captura_arbol_kg', '10', 'kg', 'prueba') "
+            "ON CONFLICT (clave) DO UPDATE SET valor = EXCLUDED.valor"
         )
     )
     assert _factor_arboles(db) == 10
@@ -264,6 +265,7 @@ def test_mensaje_evaluacion_y_adopcion_del_genetico(monkeypatch):
         "app.optimizacion.metaheuristica.mejorar_orden_local",
         lambda rutas, libres, _inst: (rutas, libres),
     )
+
     class _Individuo(list):
         def __init__(self, valor: float):
             super().__init__([0])

@@ -2,7 +2,7 @@
 
 Agrega el último trabajo completado del día. Los soles usan RN-017
 (S/ 17.50 por galón y S/ 1.20 por km). El equivalente en árboles queda
-vacío mientras `factor_captura_arbol_kg` no esté ratificado.
+usa `factor_captura_arbol_kg` de la configuración (RN-018).
 """
 
 from datetime import date
@@ -42,7 +42,7 @@ def _factor_arboles(db: Session) -> float | None:
     return valor_positivo(db, "factor_captura_arbol_kg")
 
 
-def _sin_datos(fecha: date) -> dict:
+def _sin_datos(fecha: date, factor: float | None = None) -> dict:
     return {
         "fecha": fecha,
         "hay_datos": False,
@@ -56,7 +56,7 @@ def _sin_datos(fecha: date) -> dict:
         "soles_ahorrados": 0,
         "co2_ahorrado_kg": 0,
         "arboles": None,
-        "nota_arboles": NOTA_ARBOLES,
+        "nota_arboles": None if factor is not None else NOTA_ARBOLES,
         "cumplimiento_ventanas_pct": 0,
         "mejora_porcentaje": None,
     }
@@ -114,7 +114,7 @@ def _equivalente_arboles(factor: float | None, co2_ahorrado: float) -> float | N
 def consultar(db: Session, fecha: date) -> dict:
     job, rutas = _rutas_del_dia(db, fecha)
     if not rutas:
-        return _sin_datos(fecha)
+        return _sin_datos(fecha, _factor_arboles(db))
 
     precio_litro = _parametro(db, "precio_diesel_galon", 17.50) / LITROS_POR_GALON
     costo_km = _parametro(db, "costo_mantenimiento_km", 1.20)
@@ -137,7 +137,7 @@ def consultar(db: Session, fecha: date) -> dict:
         "soles_ahorrados": round(soles_ahorrados, 2),
         "co2_ahorrado_kg": round(co2_ahorrado, 3),
         "arboles": arboles,
-        "nota_arboles": None if arboles is not None else NOTA_ARBOLES,
+        "nota_arboles": None if _factor_arboles(db) is not None else NOTA_ARBOLES,
         "cumplimiento_ventanas_pct": round(pct, 1),
         "mejora_porcentaje": None if mejora is None else round(mejora, 2),
     }

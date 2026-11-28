@@ -117,3 +117,9 @@ def test_parametros_iniciales(db):
     assert "costo_mantenimiento_km" in claves
     assert "velocidad_urbana_km_h" in claves
     assert "factor_congestion" in claves
+    assert "factor_captura_arbol_kg" in claves
+    assert "costo_compensacion_arbol_soles" in claves
+    assert "depreciacion_anual_vehiculo_soles" in claves
+    assert "seguro_anual_vehiculo_soles" in claves
+    assert "soat_anual_vehiculo_soles" in claves
+    assert "sueldo_anual_conductor_soles" in claves

@@ -3,9 +3,9 @@
 El CO₂ emitido sale del mismo cálculo del tablero y del reporte PDF (RN-016:
 km planificados × factor de emisión del vehículo). Los árboles necesarios usan
 el factor de captura `factor_captura_arbol_kg` de `configuracion_sistema`
-(RN-018) y el costo usa `costo_compensacion_arbol_soles`. Ninguno de los dos
-está ratificado: mientras falten, el plan los devuelve como PENDIENTE y no
-muestra cifras inventadas. Los proyectos locales son los que nombra RF-010.
+(RN-018) y el costo usa `costo_compensacion_arbol_soles`. Si faltan o no
+son un número > 0, el plan los devuelve como PENDIENTE y no inventa cifras.
+Los proyectos locales son los que nombra RF-010.
 """
 
 from __future__ import annotations
